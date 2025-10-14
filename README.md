@@ -229,6 +229,9 @@ proxy_set_header Connection $connection_upgrade;
 docker compose up -d
 docker compose up -d jellyfin prowlarr qbittorrent
 
+# Arrancar todo con perfil de GPU
+docker compose --profile gpu-nvidia up -d
+
 # Parar (manteniendo contenedores)
 docker compose stop
 
