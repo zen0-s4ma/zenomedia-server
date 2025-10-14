@@ -1,0 +1,1016 @@
+volumes:
+  heimdall_storage:
+  media_data:
+  qbittorrent_data:
+  sonarr_data:
+  radarr_data:
+  bazarr_data:
+  lidarr_data:
+  readarr_data:
+  prowlarr_data:
+  jellyseerr_data:
+  jellyfin_data:
+  tdarr_server:
+  tdarr_configs:
+  tdarr_logs:
+  tdarr_cache:
+  komga_config:
+  komga_data:
+  calibre_config:
+  kavita_config:
+  kavita_data:
+  audiobookshelf_config:
+  netdata_config:
+  recyclarr_config:
+  portainer_data:
+  unmanic_config:
+  netdata_lib:
+  autobrr_config:
+  netdata_cache:
+  audiobookshelf_metadata:
+  notifiarr_config:
+  jackett_data:
+  organizr_config:
+  n8n_storage:
+  postgres_storage:
+  ollama_storage:
+  cloudbeaver_workspace:
+  qdrant_storage:
+  npm_data:
+  npm_letsencrypt:
+  kometa_config:
+  calibre_web_config:
+  navidrome_data:
+  openwebui_data:
+  uptime_kuma_data:
+  onlyoffice_logs:
+  onlyoffice_data:
+  onlyoffice_lib:
+  onlyoffice_db:
+  filebrowser_data:
+
+x-n8n: &service-n8n
+  image: n8nio/n8n:latest
+  environment:
+    - DB_TYPE=postgresdb
+    - DB_POSTGRESDB_HOST=postgres
+    - DB_POSTGRESDB_USER=${POSTGRES_USER}
+    - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}
+    - N8N_DIAGNOSTICS_ENABLED=false
+    - N8N_PERSONALIZATION_ENABLED=false
+    - N8N_ENCRYPTION_KEY
+    - N8N_USER_MANAGEMENT_JWT_SECRET
+    - OLLAMA_HOST=${OLLAMA_HOST:-ollama:11434}
+  env_file:
+    - path: .env
+      required: true
+
+x-ollama: &service-ollama
+  image: ollama/ollama:latest
+  container_name: ollama
+  restart: unless-stopped
+  ports:
+    - 11000:11434
+  volumes:
+    - ollama_storage:/root/.ollama
+
+x-init-ollama: &init-ollama
+  image: ollama/ollama:latest
+  container_name: ollama-pull-llama
+  volumes:
+    - ollama_storage:/root/.ollama
+  entrypoint: /bin/sh
+  environment:
+    - OLLAMA_HOST=ollama:11434
+  command:
+    - "-c"
+    - "sleep 3; ollama pull llama3.2:1b"
+
+
+services:
+  # --- JELLYFIN -------------------------------------------------------------
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    ports:
+      - "8096:8096"
+      - "8920:8920"
+      - "7359:7359/udp"
+      # - "1900:1900/udp"    # SSDP (puede colisionar con SSDP de Windows)
+    environment:
+      TZ: Europe/Madrid
+      UMASK: "022"
+      JELLYFIN_PublishedServerUrl: "${JELLYFIN_PUBLISHED_URL}"
+      NVIDIA_VISIBLE_DEVICES: all
+      NVIDIA_DRIVER_CAPABILITIES: compute,video,utility
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    volumes:
+      - "F:/_Multimedia/Peliculas:/media/Peliculas"
+      - "F:/_Multimedia/Documentales:/media/Documentales"
+      - "F:/_Multimedia/Series:/media/Series"
+      - "F:/_Multimedia/TA/media:/media/YouTube"
+      - "F:/_Multimedia/metadata:/config"
+      - "F:/_Multimedia/cache:/cache"
+      - "F:/_Multimedia/transcodes:/transcode"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8096/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+
+  # --- JELLIX (UI :3000) --------------------------------------------
+  jellix:
+    image: ghcr.io/doihaveto/jellix:latest
+    container_name: jellix
+    environment:
+      - API_URL=http://localhost:8096/  # URL interna del servidor Jellyfin
+    ports:
+      - "3003:80"                      # Acceso: http://IP:3003
+    depends_on:
+      - jellyfin
+    restart: unless-stopped
+
+  # --- TUBEARCHIVIST (UI :8000) --------------------------------------------
+  tubearchivist:
+    image: bbilly1/tubearchivist:latest
+    container_name: tubearchivist
+    depends_on:
+      - archivist-es
+      - archivist-redis
+    ports:
+    - "8001:8000"
+    environment:
+      TZ: Europe/Madrid
+      TA_HOST: "${TA_HOSTS}"
+      TA_USERNAME: "${TA_USERNAME}"
+      TA_PASSWORD: "${TA_PASSWORD}"
+      ES_URL: "http://archivist-es:9200"
+      REDIS_CON: "redis://archivist-redis:6379"
+      ELASTIC_PASSWORD: "${TA_ES_PASSWORD}"
+      HOST_UID: "1000"
+      HOST_GID: "1000"
+    volumes:
+      - "F:/_Multimedia/TA/media:/youtube"
+      - "F:/_Multimedia/TA/cache:/cache"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 2m
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  archivist-redis:
+    image: redis/redis-stack-server:latest
+    container_name: archivist-redis
+    expose: ["6379"]  # expose no mapea al host
+    volumes:
+      - "F:/_Multimedia/TA/redis:/data"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -h 127.0.0.1 -p 6379 ping | grep PONG"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+  archivist-es:
+    image: bbilly1/tubearchivist-es:latest
+    container_name: archivist-es
+    environment:
+      - ELASTIC_PASSWORD=${TA_ES_PASSWORD}
+      - ES_JAVA_OPTS=-Xms512m -Xmx1g
+      - discovery.type=single-node
+      - xpack.security.enabled=true
+      - ES_SETTING_PATH_REPO=/usr/share/elasticsearch/data/snapshot
+    expose: ["9200"]
+    volumes:
+      - "F:/_Multimedia/TA/es:/usr/share/elasticsearch/data"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS -u elastic:${TA_ES_PASSWORD} http://localhost:9200 >/dev/null"]
+      interval: 30s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+
+  # --- Borrado automático a 3 días (salvo *.keep) --------------------------
+  ta-janitor:
+    image: alpine:3.20
+    container_name: ta-janitor
+    depends_on: [tubearchivist]
+    volumes:
+      - "F:/_Multimedia/TA/media:/youtube"
+    command: >
+      sh -c "mkdir -p /etc/crontabs
+      && printf '0 4 * * * find /youtube -type f -mtime +3 ! -name \"*.keep\" -delete\n' > /etc/crontabs/root
+      && crond -f -l 2 -L /dev/stdout"
+    restart: unless-stopped
+
+  # --- Gestión de usuarios Jellyfin ----------------------------------------
+  jfa-go:
+    image: hrfee/jfa-go:latest
+    container_name: jfa-go
+    depends_on: [jellyfin]
+    ports: ["8056:8056"]
+    environment:
+      - TZ=Europe/Madrid
+      - JELLYFIN_URL=http://jellyfin:8096
+    volumes:
+      - "F:/_Multimedia/jfa-go:/data"
+      - "F:/_Multimedia/metadata:/jf:ro"
+    restart: unless-stopped
+
+  # --- Estadísticas avanzadas ----------------------------------------------
+  jellystat:
+    image: cyfershepard/jellystat:latest
+    container_name: jellystat
+    depends_on:
+      jellystat-db:
+        condition: service_healthy
+    ports: ["3000:3000"]
+    environment:
+      - TZ=Europe/Madrid
+      - POSTGRES_IP=jellystat-db
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=jellystat
+      - POSTGRES_USER=jellystat
+      - POSTGRES_PASSWORD=${JELLYSTAT_DB_PASS}
+      - JWT_SECRET=${JELLYSTAT_JWT}
+      - JELLYFIN_URL=http://jellyfin:8096
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:3000 >/dev/null"]
+      interval: 1m
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  jellystat-db:
+    image: postgres:16
+    container_name: jellystat-db
+    environment:
+      - POSTGRES_DB=jellystat
+      - POSTGRES_USER=jellystat
+      - POSTGRES_PASSWORD=${JELLYSTAT_DB_PASS}
+    volumes:
+      - "F:/_Multimedia/jellystat/postgres:/var/lib/postgresql/data"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jellystat -d jellystat -h 127.0.0.1 -p 5432"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+  # --- IPTV proxy (xTeVe moderno) ------------------------------------------
+  threadfin:
+    image: fyb3roptik/threadfin:latest
+    container_name: threadfin
+    ports: ["34400:34400"]
+    environment:
+      - TZ=Europe/Madrid
+    volumes:
+      - "F:/_Multimedia/threadfin:/home/threadfin/.threadfin"
+    restart: unless-stopped
+
+  # --- Backend PVR completo (timeshift/DVR) --------------------------------
+  tvheadend:
+    image: lscr.io/linuxserver/tvheadend:latest
+    container_name: tvheadend
+    ports:
+      - "9981:9981"
+      - "9982:9982"
+    environment:
+      - TZ=Europe/Madrid
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - "F:/_Multimedia/tvheadend/config:/config"
+      - "F:/_Multimedia/tvheadend/recordings:/recordings"
+    restart: unless-stopped
+
+  heimdall:
+    image: linuxserver/heimdall
+    container_name: heimdall_dashboard
+    restart: unless-stopped
+    ports:
+      - "7771:80"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    volumes:
+      - heimdall_storage:/config
+
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    ports:
+      - "8080:8080"        # WebUI (cont. 8080)
+      - "6881:6881"         # BitTorrent TCP
+      - "6881:6881/udp"     # BitTorrent UDP
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+      - WEBUI_PORT=8080
+      - TORRENTING_PORT=6881
+    volumes:
+      - qbittorrent_data:/config
+      - media_data:/downloads
+
+
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    ports:
+      - "33074:8989"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    volumes:
+      - sonarr_data:/config
+      - media_data:/downloads
+      - "F:/_Multimedia/Series:/tv"              # <- librería final para mover/renombrar
+
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    ports:
+      - "33075:7878"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    volumes:
+      - radarr_data:/config
+      - media_data:/downloads
+      - "F:/_Multimedia/Peliculas:/movies"       # <- librería final para mover/renombrar
+
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    ports:
+      - "33076:6767"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    volumes:
+      - bazarr_data:/config
+      - media_data:/downloads
+      - "F:/_Multimedia/Peliculas:/movies:ro"    # <- ve la librería final (RO)
+      - "F:/_Multimedia/Series:/tv:ro"           # <- ve la librería final (RO)
+
+  lidarr:
+    image: lscr.io/linuxserver/lidarr:latest
+    container_name: lidarr
+    ports:
+      - "33077:8686"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    volumes:
+      - lidarr_data:/config
+      - media_data:/downloads
+
+  readarr:
+    image: ghcr.io/hotio/readarr:latest
+    container_name: readarr
+    ports:
+      - "33078:8787"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    volumes:
+      - readarr_data:/config
+      - "F:/_Multimedia/Libros/descargas:/downloads"
+      - "F:/_Multimedia/Libros:/books"
+
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    ports:
+      - "33079:9696"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    volumes:
+      - prowlarr_data:/config
+
+  jellyseerr:
+    image: fallenbagel/jellyseerr:latest
+    container_name: jellyseerr
+    ports: ["33080:5055"]
+    environment:
+      - TZ=Europe/Madrid
+      - LOG_LEVEL=info
+    volumes:
+      - jellyseerr_data:/app/config
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:5055/api/v1/status >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  # --- TDARR ---------------------------------------------------------------
+  tdarr:
+    image: ghcr.io/haveagitgat/tdarr:latest
+    container_name: tdarr
+    ports:
+      - "33081:8265"
+      - "33082:8266"
+    environment:
+      - TZ=Europe/Madrid
+      - PUID=1000
+      - PGID=1000
+      - UMASK_SET=002
+      - serverIP=0.0.0.0
+      - serverPort=8266
+      - webUIPort=8265
+      - internalNode=true
+      - inContainer=true
+      - ffmpegVersion=7
+      - nodeName=InternalNode
+      - auth=false
+      - NVIDIA_DRIVER_CAPABILITIES=all
+      - NVIDIA_VISIBLE_DEVICES=all
+    volumes:
+      - tdarr_server:/app/server
+      - tdarr_configs:/app/configs
+      - tdarr_logs:/app/logs
+      - media_data:/media
+      - tdarr_cache:/temp
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    restart: unless-stopped
+
+  # --- KOMGA ---------------------------------------------------------------
+  komga:
+    image: gotson/komga:latest
+    container_name: komga
+    ports: ["33083:25600"]
+    environment:
+      - TZ=Europe/Madrid
+    volumes:
+      - komga_config:/config
+      - komga_data:/data
+    restart: unless-stopped
+
+  # --- CALIBRE -------------------------------------------------------------
+  calibre:
+    image: lscr.io/linuxserver/calibre:latest
+    container_name: calibre
+    ports:
+      - "33084:8080"
+      - "33085:8181"
+      - "33087:8081"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+      # - PASSWORD=
+      # - CLI_ARGS=
+    volumes:
+      - calibre_config:/config
+    restart: unless-stopped
+
+  # --- KAVITA --------------------------------------------------------------
+  kavita:
+    image: lscr.io/linuxserver/kavita:latest
+    container_name: kavita
+    ports: ["33086:5000"]
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    volumes:
+      - kavita_config:/config
+      - kavita_data:/data
+    restart: unless-stopped
+
+  # --- Amule -------------------------------------------------------
+  amule:
+    image: ghcr.io/ngosang/amule
+    container_name: amule
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    volumes:
+      - C:\amule\config:/config
+      - D:\Descargas\eMule\Incoming:/downloads/Incoming
+      - D:\Descargas\eMule\Temp:/downloads/Temp
+    ports:
+      - "4711:4711"        # WebUI aMule
+      - "4712:4712"        # Control externo (amulecmd)
+      - "4662:4662/tcp"    # eD2K TCP
+      - "4672:4672/udp"    # Kad UDP
+    restart: unless-stopped
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    ports:
+      - "9443:9443"   # HTTPS
+      - "8000:8000"   # Edge (opcional)
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    restart: unless-stopped
+
+  dozzle:
+    image: amir20/dozzle:latest
+    container_name: dozzle
+    ports:
+      - "9999:8080"
+    environment:
+      - TZ=Europe/Madrid
+      - DOZZLE_LEVEL=info
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: unless-stopped
+
+  netdata:
+    image: netdata/netdata:stable
+    container_name: netdata
+    hostname: netdata
+    ports:
+      - "19999:19999"
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
+    environment:
+      - TZ=Europe/Madrid
+    volumes:
+      - netdata_config:/etc/netdata
+      - netdata_lib:/var/lib/netdata
+      - netdata_cache:/var/cache/netdata
+      - /etc/passwd:/host/etc/passwd:ro
+      - /etc/group:/host/etc/group:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /etc/os-release:/host/etc/os-release:ro
+    restart: unless-stopped
+
+  audiobookshelf:
+    image: ghcr.io/advplyr/audiobookshelf:latest
+    container_name: audiobookshelf
+    ports:
+      - "13378:80"
+    environment:
+      - TZ=Europe/Madrid
+    volumes:
+      - audiobookshelf_config:/config
+      - audiobookshelf_metadata:/metadata
+      - "F:/_Multimedia/Audiolibros:/audiobooks"   # ajusta si usas otra ruta
+      - "F:/_Multimedia/Podcasts:/podcasts"        # ajusta si usas otra ruta
+    restart: unless-stopped
+
+  unmanic:
+    image: josh5/unmanic:latest
+    container_name: unmanic
+    ports:
+      - "8888:8888"
+    environment:
+      - TZ=Europe/Madrid
+      - PUID=1000
+      - PGID=1000
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+    volumes:
+      - unmanic_config:/config
+      - media_data:/watch                     # procesa lo descargado
+      - "F:/_Multimedia:/library"             # bibliotecas finales
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu,video,utility]
+    restart: unless-stopped
+
+  recyclarr:
+    image: ghcr.io/recyclarr/recyclarr:latest
+    container_name: recyclarr
+    environment:
+      - TZ=Europe/Madrid
+      - CRON_SCHEDULE=0 5 * * *     # sync diario a las 05:00
+    volumes:
+      - recyclarr_config:/config     # coloca aquí recyclarr.yml
+    restart: unless-stopped
+
+  autobrr:
+    image: ghcr.io/autobrr/autobrr:latest
+    container_name: autobrr
+    ports:
+      - "7474:7474"
+    environment:
+      - TZ=Europe/Madrid
+    volumes:
+      - autobrr_config:/config
+    restart: unless-stopped
+
+
+  newtrackon:
+    image: corralpeltzer/newtrackon:latest
+    container_name: newtrackon
+    ports:
+      - "33101:8080"   # abre http://localhost:33101
+    command: ["--address=0.0.0.0", "--ignore-ipv6"]  # quita --ignore-ipv6 si tu red tiene IPv6
+    restart: unless-stopped
+
+  notifiarr:
+    image: golift/notifiarr:latest
+    container_name: notifiarr
+    ports:
+      - "5454:5454"             # UI local (opcional)
+    environment:
+      - TZ=Europe/Madrid
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - notifiarr_config:/config
+    restart: unless-stopped
+    
+
+  homarr:
+    container_name: homarr
+    image: ghcr.io/homarr-labs/homarr:latest
+    restart: unless-stopped
+    ports:
+      - "7575:7575"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock   # opcional: integra Docker en los widgets
+      - F:/_Multimedia/homarr/appdata:/appdata      # ← cambia la ruta a tu preferencia
+    environment:
+      - SECRET_ENCRYPTION_KEY=e111e33c3056a58c37491e24fd3a90b087f906ab1468893544c23205dd10e96b       # genera uno con: openssl rand -hex 32
+
+  jackett:
+    image: lscr.io/linuxserver/jackett:latest
+    container_name: jackett
+    ports:
+      - "9117:9117"                 # WebUI: http://localhost:9117
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+      - AUTO_UPDATE=true            # opcional: actualiza indexers
+    volumes:
+      - jackett_data:/config        # configuración de Jackett
+      - media_data:/downloads       # opcional: carpeta para blackhole
+    restart: unless-stopped
+  
+  organizr:
+    image: ghcr.io/organizr/organizr:latest
+    container_name: organizr
+    ports:
+      - "33102:80"                # UI: http://localhost:33102
+    environment:
+      - TZ=Europe/Madrid
+      - PUID=1000                 # en Windows no siempre aplica, pero no estorba
+      - PGID=1000
+      - branch=v2-master          # rama estable por defecto
+    volumes:
+      - organizr_config:/config   # guarda todo (DB, ajustes, etc.)
+      # Si prefieres ruta del host (como con otros servicios):
+      # - F:/_Multimedia/organizr/config:/config
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost/ > /dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres
+    hostname: postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+    volumes:
+      - postgres_storage:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -h localhost -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  cloudbeaver:
+    image: dbeaver/cloudbeaver:latest
+    container_name: cloudbeaver
+    ports:
+      - "18978:8978"             # http://localhost:18978
+    volumes:
+      - cloudbeaver_workspace:/opt/cloudbeaver/workspace
+    restart: unless-stopped
+
+  n8n-import:
+    <<: *service-n8n
+    hostname: n8n-import
+    container_name: n8n-import
+    entrypoint: /bin/sh
+    command:
+      - "-c"
+      - "n8n import:credentials --separate --input=/demo-data/credentials && n8n import:workflow --separate --input=/demo-data/workflows"
+    volumes:
+      - ./n8n/demo-data:/demo-data
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  n8n:
+    <<: *service-n8n
+    hostname: n8n
+    container_name: n8n
+    restart: unless-stopped
+    ports:
+      - 5678:5678
+    volumes:
+      - n8n_storage:/home/node/.n8n
+      - ./n8n/demo-data:/demo-data
+      - ./shared:/data/shared
+    depends_on:
+      postgres:
+        condition: service_healthy
+      n8n-import:
+        condition: service_completed_successfully
+
+
+  ollama-cpu:
+    profiles: ["cpu"]
+    <<: *service-ollama
+
+  ollama-gpu:
+    profiles: ["gpu-nvidia"]
+    <<: *service-ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  ollama-gpu-amd:
+    profiles: ["gpu-amd"]
+    <<: *service-ollama
+    image: ollama/ollama:rocm
+    devices:
+      - "/dev/kfd"
+      - "/dev/dri"
+
+  ollama-pull-llama-cpu:
+    profiles: ["cpu"]
+    <<: *init-ollama
+    depends_on:
+      - ollama-cpu
+
+  ollama-pull-llama-gpu:
+    profiles: ["gpu-nvidia"]
+    <<: *init-ollama
+    depends_on:
+      - ollama-gpu
+
+  ollama-pull-llama-gpu-amd:
+    profiles: [gpu-amd]
+    <<: *init-ollama
+    image: ollama/ollama:rocm
+    depends_on:
+     - ollama-gpu-amd
+
+  qdrant:
+    image: qdrant/qdrant
+    hostname: qdrant
+    container_name: qdrant
+    restart: unless-stopped
+    ports:
+      - 6333:6333
+    volumes:
+      - qdrant_storage:/qdrant/storage
+
+  searxng:
+    image: searxng/searxng:latest
+    container_name: searxng
+    restart: unless-stopped
+    ports:
+      - "4080:8080"                # host:container (no usamos 8888 porque ya lo tienes con Unmanic)
+    environment:
+      - SEARXNG_BASE_URL=http://localhost:4080
+      # Alternativamente podrías pasar la clave por env:
+      # - SEARXNG_SECRET=CAMBIA_ESTA_CLAVE_LARGA_Y_UNICA
+    volumes:
+      - "F:/SearXNG/config:/etc/searxng"     # settings.yml persiste aquí
+      - "F:/SearXNG/cache:/var/cache/searxng"
+
+    # --- NGINX PROXY MANAGER (HTTP/HTTPS + Panel) ------------------------------
+  nginx-proxy-manager:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: nginx-proxy-manager
+    restart: unless-stopped
+    ports:
+      - "80:80"    # HTTP público  (libera este puerto si está ocupado en Windows)
+      - "443:443"  # HTTPS público
+      - "81:81"    # Panel admin
+    environment:
+      - TZ=Europe/Madrid
+      # - DISABLE_IPV6=true     # descomenta si tu host no usa IPv6
+      - INITIAL_ADMIN_EMAIL=admin@admin.com   # opcional
+      - INITIAL_ADMIN_PASSWORD=admin    # opcional
+    volumes:
+      - npm_data:/data
+      - npm_letsencrypt:/etc/letsencrypt
+
+    # --- KOMETA (ex Plex-Meta-Manager) ----------------------------------------
+  kometa:
+    image: lscr.io/linuxserver/kometa:latest
+    container_name: kometa
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+      - KOMETA_CONFIG=/config/config.yml   # opcional: ruta del config
+      - KOMETA_TIME=05:00                  # hora diaria de ejecución (24h)
+      # - KOMETA_RUN=True                  # descomenta para ejecutar y salir
+    volumes:
+      - kometa_config:/config              # pon aquí tu config.yml y assets
+
+    # --- CALIBRE-WEB (frontend para base de Calibre) --------------------------
+  calibre-web:
+    image: lscr.io/linuxserver/calibre-web:latest
+    container_name: calibre-web
+    restart: unless-stopped
+    ports:
+      - "8083:8083"                        # UI: http://localhost:8083
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    volumes:
+      - calibre_web_config:/config
+      - "F:/_Multimedia/Libros:/books"     # <-- ajusta a tu biblioteca con metadata.db
+
+    # --- NAVIDROME (servidor de música Subsonic API) --------------------------
+  navidrome:
+    image: deluan/navidrome:latest
+    container_name: navidrome
+    restart: unless-stopped
+    ports:
+      - "4533:4533"                        # UI/API: http://localhost:4533
+    environment:
+      - TZ=Europe/Madrid
+      - ND_LOGLEVEL=info
+      - ND_SCANSCHEDULE=1h                 # reescaneo cada 1h (ajustable)
+    volumes:
+      - navidrome_data:/data
+      - "F:/_Multimedia/Musica:/music:ro"  # <-- ajusta a tu carpeta de música
+
+    # --- OPEN WEBUI (UI para Ollama/LLMs) -------------------------------------
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    restart: unless-stopped
+    ports:
+      - "3002:8080"                        # UI: http://localhost:3002 (evita choques)
+    environment:
+      # Conecta a tu Ollama publicado en el host (x-ollama mapea 11000:11434)
+      - OLLAMA_BASE_URL=http://host.docker.internal:11000
+      - WEBUI_NAME=OpenWebUI
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  # necesario para resolver el host
+    volumes:
+      - openwebui_data:/app/backend/data
+    # Nota: si usas perfil GPU de Open WebUI, cambia la imagen a :cuda
+
+    # --- UPTIME KUMA (monitor de servicios) -----------------------------------
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: uptime-kuma
+    restart: unless-stopped
+    ports:
+      - "3001:3001"                        # UI: http://localhost:3001
+    volumes:
+      - uptime_kuma_data:/app/data
+
+
+  # --- OnlyOffice -------------------------------------------------------
+  onlyoffice:
+    image: onlyoffice/documentserver:latest
+    container_name: onlyoffice
+    restart: unless-stopped
+    # Opción A (acceso directo desde el host):
+    ports:
+      - "8088:80"              # http://localhost:8088
+    environment:
+      - TZ=Europe/Madrid
+      # JWT: evita que cambie al reiniciar; ponlo en tu .env (ver más abajo)
+      - JWT_ENABLED=true
+      - JWT_SECRET=${ONLYOFFICE_JWT_SECRET}
+      - JWT_HEADER=Authorization
+      # Muchos conectores (p.ej., Nextcloud) aceptan token en el body:
+      - JWT_IN_BODY=true
+    volumes:
+      - onlyoffice_logs:/var/log/onlyoffice
+      - onlyoffice_data:/var/www/onlyoffice/Data
+      - onlyoffice_lib:/var/lib/onlyoffice
+      - onlyoffice_db:/var/lib/postgresql
+    healthcheck:
+      # /healthcheck puede fallar detrás de proxy; /welcome es más estable
+      test: ["CMD-SHELL", "curl -fsS http://localhost/welcome >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+
+# --- Mover de emule a pelis -------------------------------------------------------
+  moverpelis:
+    image: alpine:3.20
+    container_name: moverpelis
+    # Instalamos findutils (find con -mmin) y coreutils (stat/mv GNU) y lanzamos el bucle
+    command: >
+      sh -c 'apk add --no-cache findutils coreutils >/dev/null
+      && echo "$(date "+%F %T.%3N") | Monitoreando /watch -> /target (cada 15s, mueve archivos con >1 min sin cambios)..."
+      && while :; do
+           /usr/bin/find /watch -maxdepth 1 -type f -mmin +1 \
+             -exec mv -n -t /target {} +    # <- SIN punto y coma
+           sleep 15
+         done'
+    volumes:
+      - "D:/Descargas/eMule/Incoming/pelis:/watch"
+      - "F:/_Multimedia/Peliculas:/target"
+    restart: unless-stopped
+
+# --- Explorador de carpetas compartidas -------------------------------------------------------
+  filebrowser:
+    image: filebrowser/filebrowser:latest
+    container_name: filebrowser
+    environment:
+      - TZ=Europe/Madrid
+    volumes:
+      - "F:/_Multimedia/Peliculas:/srv/Peliculas:ro"   # solo lectura
+      - "F:/_Multimedia/Compartida:/srv/Compartida:rw" # lectura/escritura (cámbiala por la ruta que quieras)
+      - filebrowser_data:/database                     # DB/ajustes
+    ports:
+      - "18080:80"
+    restart: unless-stopped
+
+  jellyfin-vue:
+    image: ghcr.io/jellyfin/jellyfin-vue:unstable   # también existe en Docker Hub: jellyfin/jellyfin-vue:unstable
+    container_name: jellyfin-vue
+    restart: unless-stopped
+    depends_on:
+      - jellyfin
+    ports:
+      - "3004:80"   # Acceso: http://IP:3004  (o ponlo detrás de tu NPM)
+    environment:
+      - DEFAULT_SERVERS=${JELLYFIN_PUBLISHED_URL}
+      - DISABLE_SERVER_SELECTION=0
+      - HISTORY_ROUTER_MODE=1
+
+# --- Servicio DNS duckDNS -------------------------------------------------------
+  duckdns:
+    image: lscr.io/linuxserver/duckdns:latest
+    container_name: duckdns
+    environment:
+      - SUBDOMAINS=maripiflix   
+      - TOKEN=453c480f-666f-42b0-96a3-e1f2ab1f7048      # pega aquí el token de DuckDNS
+    restart: unless-stopped
+
+  # --- Prueba de GPU -------------------------------------------------------
+  test-gpu:
+    image: nvidia/cuda:12.9.0-base-ubuntu22.04
+    container_name: test-gpu
+    command: nvidia-smi
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: "no"
