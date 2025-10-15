@@ -126,18 +126,6 @@ services:
       retries: 5
       start_period: 60s
 
-  # --- JELLIX (UI :3000) --------------------------------------------
-  jellix:
-    image: ghcr.io/doihaveto/jellix:latest
-    container_name: jellix
-    environment:
-      - API_URL=http://localhost:8096/  # URL interna del servidor Jellyfin
-    ports:
-      - "3003:80"                      # Acceso: http://IP:3003
-    depends_on:
-      - jellyfin
-    restart: unless-stopped
-
   # --- TUBEARCHIVIST (UI :8000) --------------------------------------------
   tubearchivist:
     image: bbilly1/tubearchivist:latest
@@ -325,6 +313,7 @@ services:
     volumes:
       - qbittorrent_data:/config
       - media_data:/downloads
+    restart: unless-stopped
 
 
   sonarr:
@@ -340,6 +329,7 @@ services:
       - sonarr_data:/config
       - media_data:/downloads
       - "F:/_Multimedia/Series:/tv"              # <- librería final para mover/renombrar
+    restart: unless-stopped
 
   radarr:
     image: lscr.io/linuxserver/radarr:latest
@@ -354,6 +344,7 @@ services:
       - radarr_data:/config
       - media_data:/downloads
       - "F:/_Multimedia/Peliculas:/movies"       # <- librería final para mover/renombrar
+    restart: unless-stopped
 
   bazarr:
     image: lscr.io/linuxserver/bazarr:latest
@@ -369,6 +360,7 @@ services:
       - media_data:/downloads
       - "F:/_Multimedia/Peliculas:/movies:ro"    # <- ve la librería final (RO)
       - "F:/_Multimedia/Series:/tv:ro"           # <- ve la librería final (RO)
+    restart: unless-stopped
 
   lidarr:
     image: lscr.io/linuxserver/lidarr:latest
@@ -382,6 +374,7 @@ services:
     volumes:
       - lidarr_data:/config
       - media_data:/downloads
+    restart: unless-stopped
 
   readarr:
     image: ghcr.io/hotio/readarr:latest
@@ -396,6 +389,7 @@ services:
       - readarr_data:/config
       - "F:/_Multimedia/Libros/descargas:/downloads"
       - "F:/_Multimedia/Libros:/books"
+    restart: unless-stopped
 
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:latest
@@ -408,6 +402,7 @@ services:
       - TZ=Europe/Madrid
     volumes:
       - prowlarr_data:/config
+    restart: unless-stopped
 
   jellyseerr:
     image: fallenbagel/jellyseerr:latest
@@ -425,6 +420,7 @@ services:
       timeout: 5s
       retries: 5
       start_period: 20s
+      
 
   # --- TDARR ---------------------------------------------------------------
   tdarr:
@@ -917,36 +913,6 @@ services:
     volumes:
       - uptime_kuma_data:/app/data
 
-
-  # --- OnlyOffice -------------------------------------------------------
-  onlyoffice:
-    image: onlyoffice/documentserver:latest
-    container_name: onlyoffice
-    restart: unless-stopped
-    # Opción A (acceso directo desde el host):
-    ports:
-      - "8088:80"              # http://localhost:8088
-    environment:
-      - TZ=Europe/Madrid
-      # JWT: evita que cambie al reiniciar; ponlo en tu .env (ver más abajo)
-      - JWT_ENABLED=true
-      - JWT_SECRET=${ONLYOFFICE_JWT_SECRET}
-      - JWT_HEADER=Authorization
-      # Muchos conectores (p.ej., Nextcloud) aceptan token en el body:
-      - JWT_IN_BODY=true
-    volumes:
-      - onlyoffice_logs:/var/log/onlyoffice
-      - onlyoffice_data:/var/www/onlyoffice/Data
-      - onlyoffice_lib:/var/lib/onlyoffice
-      - onlyoffice_db:/var/lib/postgresql
-    healthcheck:
-      # /healthcheck puede fallar detrás de proxy; /welcome es más estable
-      test: ["CMD-SHELL", "curl -fsS http://localhost/welcome >/dev/null || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 40s
-
 # --- Mover de emule a pelis -------------------------------------------------------
   moverpelis:
     image: alpine:3.20
@@ -978,19 +944,6 @@ services:
     ports:
       - "18080:80"
     restart: unless-stopped
-
-  jellyfin-vue:
-    image: ghcr.io/jellyfin/jellyfin-vue:unstable   # también existe en Docker Hub: jellyfin/jellyfin-vue:unstable
-    container_name: jellyfin-vue
-    restart: unless-stopped
-    depends_on:
-      - jellyfin
-    ports:
-      - "3004:80"   # Acceso: http://IP:3004  (o ponlo detrás de tu NPM)
-    environment:
-      - DEFAULT_SERVERS=${JELLYFIN_PUBLISHED_URL}
-      - DISABLE_SERVER_SELECTION=0
-      - HISTORY_ROUTER_MODE=1
 
 # --- Servicio DNS duckDNS -------------------------------------------------------
   duckdns:
