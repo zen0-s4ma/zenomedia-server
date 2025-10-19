@@ -627,7 +627,6 @@ services:
       - autobrr_config:/config
     restart: unless-stopped
 
-
   newtrackon:
     image: corralpeltzer/newtrackon:latest
     container_name: newtrackon
@@ -840,6 +839,7 @@ services:
     volumes:
       - npm_data:/data
       - npm_letsencrypt:/etc/letsencrypt
+
 
     # --- KOMETA (ex Plex-Meta-Manager) ----------------------------------------
   kometa:
