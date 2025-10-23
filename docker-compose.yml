@@ -75,13 +75,13 @@ x-ollama: &service-ollama
   ports:
     - 11000:11434
   volumes:
-    - ollama_storage:/root/.ollama
+    - "E:/Docker_folders/ollama:/root/.ollama"
 
 x-init-ollama: &init-ollama
   image: ollama/ollama:latest
   container_name: ollama-pull-llama
   volumes:
-    - ollama_storage:/root/.ollama
+    - "E:/Docker_folders/ollama:/root/.ollama"
   entrypoint: /bin/sh
   environment:
     - OLLAMA_HOST=ollama:11434
@@ -118,13 +118,12 @@ services:
       - "F:/_Multimedia/Series:/media/Series"
       - "F:/_Multimedia/MiniSeries:/media/MiniSeries"
       - "F:/_Multimedia/TA/media:/media/YouTube"
-      - "F:/_Multimedia/metadata:/config"
-      - "F:/_Multimedia/cache:/cache"
-      - "F:/_Multimedia/transcodes:/transcode"
       - "E:/Peliculas:/media/Peliculas2"
       - "E:/Series:/media/Series2"
       - "E:/MiniSeries:/media/MiniSeries2"
-
+      - "E:/Docker_folders/jellifyn/metadata:/config"
+      - "E:/Docker_folders/jellifyn/cache:/cache"
+      - "E:/Docker_folders/jellifyn/transcodes:/transcode"
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://localhost:8096/health"]
@@ -153,8 +152,8 @@ services:
       HOST_UID: "1000"
       HOST_GID: "1000"
     volumes:
-      - "F:/_Multimedia/TA/media:/youtube"
-      - "F:/_Multimedia/TA/cache:/cache"
+      - "E:/Docker_folders/TubeArchivist/media:/youtube"
+      - "E:/Docker_folders/TubeArchivist/cache:/cache"
     restart: unless-stopped
     healthcheck:
       # dentro del contenedor es 8000, no 8001
@@ -169,7 +168,7 @@ services:
     container_name: archivist-redis
     expose: ["6379"]
     volumes:
-      - "F:/_Multimedia/TA/redis:/data"
+      - "E:/Docker_folders/TubeArchivist/redis:/data"
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "redis-cli -h 127.0.0.1 -p 6379 ping | grep PONG"]
@@ -188,7 +187,7 @@ services:
       - ES_SETTING_PATH_REPO=/usr/share/elasticsearch/data/snapshot
     expose: ["9200"]
     volumes:
-      - "F:/_Multimedia/TA/es:/usr/share/elasticsearch/data"
+      - "E:/Docker_folders/TubeArchivist/ElasticSearch:/usr/share/elasticsearch/data"
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS -u elastic:${TA_ES_PASSWORD} http://localhost:9200 >/dev/null"]
@@ -207,8 +206,8 @@ services:
       - TZ=Europe/Madrid
       - JELLYFIN_URL=http://jellyfin:8096
     volumes:
-      - "F:/_Multimedia/jfa-go:/data"
-      - "F:/_Multimedia/metadata:/jf:ro"
+      - "E:/Docker_folders/jfa-go:/data"
+      - "E:/Docker_folders/metadata:/jf:ro"
     restart: unless-stopped
 
   # --- Estadísticas avanzadas ----------------------------------------------
@@ -244,7 +243,7 @@ services:
       - POSTGRES_USER=jellystat
       - POSTGRES_PASSWORD=${JELLYSTAT_DB_PASS}
     volumes:
-      - "F:/_Multimedia/jellystat/postgres:/var/lib/postgresql/data"
+      - "E:/Docker_folders/jellystat/postgres:/var/lib/postgresql/data"
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U jellystat -d jellystat -h 127.0.0.1 -p 5432"]
@@ -260,7 +259,7 @@ services:
     environment:
       - TZ=Europe/Madrid
     volumes:
-      - "F:/_Multimedia/threadfin:/home/threadfin/.threadfin"
+      - "E:/Docker_folders/threadfin:/home/threadfin/.threadfin"
     restart: unless-stopped
 
   # --- Backend PVR completo (timeshift/DVR) --------------------------------
@@ -275,8 +274,8 @@ services:
       - PUID=1000
       - PGID=1000
     volumes:
-      - "F:/_Multimedia/tvheadend/config:/config"
-      - "F:/_Multimedia/tvheadend/recordings:/recordings"
+      - "E:/Docker_folders/tvheadend/config:/config"
+      - "E:/Docker_folders/tvheadend/recordings:/recordings"
     restart: unless-stopped
 
   heimdall:
@@ -290,7 +289,7 @@ services:
       - PGID=1000
       - TZ=Europe/Madrid
     volumes:
-      - heimdall_storage:/config
+      - "E:/Docker_folders/heimdall:/config"
 
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
@@ -306,8 +305,8 @@ services:
       - WEBUI_PORT=8080
       - TORRENTING_PORT=6881
     volumes:
-      - qbittorrent_data:/config
-      - media_data:/downloads
+      - "E:/Docker_folders/qbittorrent/qbittorrent_data:/config"
+      - "E:/Docker_folders/qbittorrent/media_data:/downloads"
     restart: unless-stopped
 
   sonarr:
@@ -320,8 +319,8 @@ services:
       - PGID=1000
       - TZ=Europe/Madrid
     volumes:
-      - sonarr_data:/config
-      - media_data:/downloads
+      - "E:/Docker_folders/sonarr/sonarr_data:/config"
+      - "E:/Docker_folders/sonarr/media_data:/downloads"
       - "F:/_Multimedia/Series:/tv"
     restart: unless-stopped
 
@@ -335,8 +334,8 @@ services:
       - PGID=1000
       - TZ=Europe/Madrid
     volumes:
-      - radarr_data:/config
-      - media_data:/downloads
+      - "E:/Docker_folders/radarr/radarr_data:/config"
+      - "E:/Docker_folders/radarr/media_data:/downloads"
       - "F:/_Multimedia/Peliculas:/movies"
     restart: unless-stopped
 
@@ -350,8 +349,8 @@ services:
       - PGID=1000
       - TZ=Europe/Madrid
     volumes:
-      - bazarr_data:/config
-      - media_data:/downloads
+      - "E:/Docker_folders/bazarr/bazarr_data:/config"
+      - "E:/Docker_folders/bazarr/media_data:/downloads"
       - "F:/_Multimedia/Peliculas:/movies:ro"
       - "F:/_Multimedia/Series:/tv:ro"
     restart: unless-stopped
@@ -366,8 +365,8 @@ services:
       - PGID=1000
       - TZ=Europe/Madrid
     volumes:
-      - lidarr_data:/config
-      - media_data:/downloads
+      - "E:/Docker_folders/lidarr/lidarr_data:/config"
+      - "E:/Docker_folders/lidarr/media_data:/downloads"
     restart: unless-stopped
 
   readarr:
@@ -380,8 +379,8 @@ services:
       - PGID=1000
       - TZ=Europe/Madrid
     volumes:
-      - readarr_data:/config
-      - "F:/_Multimedia/Libros/descargas:/downloads"
+      - "E:/Docker_folders/readarr/readarr_data:/config"
+      - "E:/Docker_folders/readarr/descargas:/downloads"
       - "F:/_Multimedia/Libros:/books"
     restart: unless-stopped
 
@@ -395,7 +394,7 @@ services:
       - PGID=1000
       - TZ=Europe/Madrid
     volumes:
-      - prowlarr_data:/config
+      - "E:/Docker_folders/prowlarr/prowlarr_data:/config"
     restart: unless-stopped
 
   jellyseerr:
@@ -406,7 +405,7 @@ services:
       - TZ=Europe/Madrid
       - LOG_LEVEL=info
     volumes:
-      - jellyseerr_data:/app/config
+      - "E:/Docker_folders/jellyseerr/jellyseerr_data:/app/config"
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS http://localhost:5055/api/v1/status >/dev/null || exit 1"]
@@ -438,11 +437,11 @@ services:
       - NVIDIA_DRIVER_CAPABILITIES=all
       - NVIDIA_VISIBLE_DEVICES=all
     volumes:
-      - tdarr_server:/app/server
-      - tdarr_configs:/app/configs
-      - tdarr_logs:/app/logs
-      - media_data:/media
-      - tdarr_cache:/temp
+      - "E:/Docker_folders/tdarr/tdarr_server:/app/server"
+      - "E:/Docker_folders/tdarr/tdarr_configs:/app/configs"
+      - "E:/Docker_folders/tdarr/tdarr_logs:/app/logs"
+      - "E:/Docker_folders/tdarr/media_data:/media"
+      - "E:/Docker_folders/tdarr/tdarr_cache:/temp"
     deploy:
       resources:
         reservations:
@@ -460,8 +459,8 @@ services:
     environment:
       - TZ=Europe/Madrid
     volumes:
-      - komga_config:/config
-      - komga_data:/data
+      - "E:/Docker_folders/komga/komga_config:/config"
+      - "E:/Docker_folders/komga/komga_data:/data"
     restart: unless-stopped
 
   # --- CALIBRE -------------------------------------------------------------
@@ -477,7 +476,7 @@ services:
       - PGID=1000
       - TZ=Europe/Madrid
     volumes:
-      - calibre_config:/config
+      - "E:/Docker_folders/calibre/calibre_config:/config"
     restart: unless-stopped
 
   # --- KAVITA --------------------------------------------------------------
@@ -490,8 +489,8 @@ services:
       - PGID=1000
       - TZ=Europe/Madrid
     volumes:
-      - kavita_config:/config
-      - kavita_data:/data
+      - "E:/Docker_folders/kavita/kavita_config:/config"
+      - "E:/Docker_folders/kavita/kavita_data:/data"
     restart: unless-stopped
 
   # --- Amule ---------------------------------------------------------------
@@ -503,7 +502,7 @@ services:
       - PGID=1000
       - TZ=Europe/Madrid
     volumes:
-      - "C:/amule/config:/config"
+      - "E:/Docker_folders/amule/config:/config"
       - "D:/Descargas/eMule/Incoming:/downloads/Incoming"
       - "D:/Descargas/eMule/Temp:/downloads/Temp"
     ports:
@@ -521,7 +520,7 @@ services:
       - "8000:8000"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - portainer_data:/data
+      - "E:/Docker_folders/portainer/portainer_data:/data"
     restart: unless-stopped
 
   dozzle:
@@ -549,9 +548,9 @@ services:
     environment:
       - TZ=Europe/Madrid
     volumes:
-      - netdata_config:/etc/netdata
-      - netdata_lib:/var/lib/netdata
-      - netdata_cache:/var/cache/netdata
+      - "E:/Docker_folders/netdata/netdata_config:/etc/netdata"
+      - "E:/Docker_folders/netdata/netdata_lib:/var/lib/netdata"
+      - "E:/Docker_folders/netdata/netdata_cache:/var/cache/netdata"
       - /etc/passwd:/host/etc/passwd:ro
       - /etc/group:/host/etc/group:ro
       - /proc:/host/proc:ro
@@ -567,8 +566,8 @@ services:
     environment:
       - TZ=Europe/Madrid
     volumes:
-      - audiobookshelf_config:/config
-      - audiobookshelf_metadata:/metadata
+      - "E:/Docker_folders/audiobookshelf/audiobookshelf_config:/config"
+      - "E:/Docker_folders/audiobookshelf/audiobookshelf_metadata:/metadata"
       - "F:/_Multimedia/Audiolibros:/audiobooks"
       - "F:/_Multimedia/Podcasts:/podcasts"
     restart: unless-stopped
@@ -585,8 +584,8 @@ services:
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=all
     volumes:
-      - unmanic_config:/config
-      - media_data:/watch
+      - "E:/Docker_folders/unmanic/unmanic_config:/config"
+      - "E:/Docker_folders/unmanic/media_data:/watch"
       - "F:/_Multimedia:/library"
     deploy:
       resources:
@@ -604,7 +603,7 @@ services:
       - TZ=Europe/Madrid
       - CRON_SCHEDULE=0 5 * * *
     volumes:
-      - recyclarr_config:/config
+      - "E:/Docker_folders/recyclarr/recyclarr_config:/config"
     restart: unless-stopped
 
   autobrr:
@@ -615,7 +614,7 @@ services:
     environment:
       - TZ=Europe/Madrid
     volumes:
-      - autobrr_config:/config
+      - "E:/Docker_folders/autoborr/autobrr_config:/config"
     restart: unless-stopped
 
   newtrackon:
@@ -636,7 +635,7 @@ services:
       - PUID=1000
       - PGID=1000
     volumes:
-      - notifiarr_config:/config
+      - "E:/Docker_folders/notifiarr/notifiarr_config:/config"
     restart: unless-stopped
 
   homarr:
@@ -647,7 +646,7 @@ services:
       - "7575:7575"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - F:/_Multimedia/homarr/appdata:/appdata
+      - "E:/Docker_folders/homarr/appdata:/appdata"
     environment:
       - SECRET_ENCRYPTION_KEY=e111e33c3056a58c37491e24fd3a90b087f906ab1468893544c23205dd10e96b
 
@@ -662,8 +661,8 @@ services:
       - TZ=Europe/Madrid
       - AUTO_UPDATE=true
     volumes:
-      - jackett_data:/config
-      - media_data:/downloads
+      - "E:/Docker_folders/jackett/jackett_data:/config"
+      - "E:/Docker_folders/jackett/media_data:/downloads"
     restart: unless-stopped
 
   organizr:
@@ -677,7 +676,7 @@ services:
       - PGID=1000
       - branch=v2-master
     volumes:
-      - organizr_config:/config
+      - "E:/Docker_folders/organizr/organizr_config:/config"
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS http://localhost/ > /dev/null || exit 1"]
@@ -696,7 +695,7 @@ services:
       - POSTGRES_PASSWORD
       - POSTGRES_DB
     volumes:
-      - postgres_storage:/var/lib/postgresql/data
+      - "E:/Docker_folders/postgres/postgres_storage:/var/lib/postgresql/data"
     healthcheck:
       test:
         [
@@ -714,7 +713,7 @@ services:
     ports:
       - "18978:8978"
     volumes:
-      - cloudbeaver_workspace:/opt/cloudbeaver/workspace
+      - "E:/Docker_folders/cloudbeaver/cloudbeaver_workspace:/opt/cloudbeaver/workspace"
     restart: unless-stopped
 
   n8n-import:
@@ -726,7 +725,7 @@ services:
       - "-c"
       - "n8n import:credentials --separate --input=/demo-data/credentials && n8n import:workflow --separate --input=/demo-data/workflows"
     volumes:
-      - ./n8n/demo-data:/demo-data
+      - "E:/Docker_folders/n8n/demo-data:/demo-data"
     depends_on:
       postgres:
         condition: service_healthy
@@ -739,9 +738,9 @@ services:
     ports:
       - 5678:5678
     volumes:
-      - n8n_storage:/home/node/.n8n
-      - ./n8n/demo-data:/demo-data
-      - ./shared:/data/shared
+      - "E:/Docker_folders/n8n/n8n_storage:/home/node/.n8n"
+      - "E:/Docker_folders/n8n/n8n/demo-data:/demo-data"
+      - "E:/Docker_folders/n8n/shared:/data/shared"
     depends_on:
       postgres:
         condition: service_healthy
@@ -798,7 +797,7 @@ services:
     ports:
       - 6333:6333
     volumes:
-      - qdrant_storage:/qdrant/storage
+      - "E:/Docker_folders/qdrant/qdrant_storage:/qdrant/storage"
 
   searxng:
     image: searxng/searxng:latest
@@ -810,8 +809,8 @@ services:
       - SEARXNG_BASE_URL=http://localhost:4080
       # - SEARXNG_SECRET=CAMBIA_ESTA_CLAVE_LARGA_Y_UNICA
     volumes:
-      - "F:/SearXNG/config:/etc/searxng"
-      - "F:/SearXNG/cache:/var/cache/searxng"
+      - "E:/Docker_folders/SearXNG/config:/etc/searxng"
+      - "E:/Docker_folders/SearXNG/cache:/var/cache/searxng"
 
   # --- NGINX PROXY MANAGER (HTTP/HTTPS + Panel) ----------------------------
   nginx-proxy-manager:
@@ -827,8 +826,8 @@ services:
       - INITIAL_ADMIN_EMAIL=admin@admin.com
       - INITIAL_ADMIN_PASSWORD=admin
     volumes:
-      - npm_data:/data
-      - npm_letsencrypt:/etc/letsencrypt
+      - "E:/Docker_folders/nginx/npm_data:/data"
+      - "E:/Docker_folders/nginx/npm_letsencrypt:/etc/letsencrypt"
 
   # --- KOMETA (ex Plex-Meta-Manager) ---------------------------------------
   kometa:
@@ -842,7 +841,7 @@ services:
       - KOMETA_CONFIG=/config/config.yml
       - KOMETA_TIME=05:00
     volumes:
-      - kometa_config:/config
+      - "E:/Docker_folders/kometa/kometa_config:/config"
 
   # --- CALIBRE-WEB (frontend para Calibre) ---------------------------------
   calibre-web:
@@ -856,7 +855,7 @@ services:
       - PGID=1000
       - TZ=Europe/Madrid
     volumes:
-      - calibre_web_config:/config
+      - "E:/Docker_folders/calibre_web/calibre_web_config:/config"
       - "F:/_Multimedia/Libros:/books"
 
   # --- NAVIDROME (servidor de música) --------------------------------------
@@ -871,7 +870,7 @@ services:
       - ND_LOGLEVEL=info
       - ND_SCANSCHEDULE=1h
     volumes:
-      - navidrome_data:/data
+      - "E:/Docker_folders/navidrome/navidrome_data:/data"
       - "F:/_Multimedia/Musica:/music:ro"
 
   # --- OPEN WEBUI (UI para Ollama/LLMs) ------------------------------------
@@ -887,7 +886,7 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     volumes:
-      - openwebui_data:/app/backend/data
+      - "E:/Docker_folders/openwebui/openwebui_data:/app/backend/data"
 
   # --- UPTIME KUMA (monitor de servicios) ----------------------------------
   uptime-kuma:
@@ -897,7 +896,7 @@ services:
     ports:
       - "3001:3001"
     volumes:
-      - uptime_kuma_data:/app/data
+      - "E:/Docker_folders/uptime_kuma/uptime_kuma_data:/app/data"
 
   # --- RomM (servidor de videojuegos via web) ----------------------------------
   romm-db:
@@ -910,7 +909,7 @@ services:
       - MARIADB_USER=admin
       - MARIADB_PASSWORD=${ROMM_DB_PASS}
     volumes:
-      - romm_mysql_data:/var/lib/mysql
+      - "E:/Docker_folders/romm_mysql/romm_mysql_data:/var/lib/mysql"
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       start_period: 240s   # antes 30s
@@ -938,11 +937,8 @@ services:
       - SCREENSCRAPER_USER=${SCREENSCRAPER_USER}
       - SCREENSCRAPER_PASSWORD=${SCREENSCRAPER_PASSWORD}
     volumes:
-      # Recursos descargados (covers, screenshots, etc.)
-      - romm_resources:/romm/resources
-      # Cache de tareas en background
-      - romm_redis_data:/redis-data
-      # Tu librería, assets y config.yml (en el host Windows)
+      - "E:/Docker_folders/romm/romm_resources:/romm/resources"
+      - "E:/Docker_folders/romm/romm_redis_data:/redis-data"
       - "E:/ROMM/library:/romm/library"
       - "E:/ROMM/assets:/romm/assets"
       - "E:/ROMM/config:/romm/config"
@@ -974,8 +970,8 @@ services:
       - TZ=Europe/Madrid
     volumes:
       - "F:/_Multimedia/Peliculas:/srv/Peliculas:ro"
-      - "F:/_Multimedia/Compartida:/srv/Compartida:rw"
-      - filebrowser_data:/database
+      - "E:/Compartida:/srv/Compartida:rw"
+      - "E:/Docker_folders/filebrowser/filebrowser_data:/database"
     ports:
       - "18080:80"
     restart: unless-stopped
