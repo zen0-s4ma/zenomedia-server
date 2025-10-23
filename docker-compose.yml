@@ -637,11 +637,15 @@ services:
       - DB_POSTGRESDB_HOST=postgres
       - DB_POSTGRESDB_USER=${POSTGRES_USER}
       - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}
+      - N8N_RUNNERS_ENABLED=true                # Activa task runners (evita problemas futuros)
+      - N8N_BLOCK_ENV_ACCESS_IN_NODE=true       # Más seguro por defecto (ver nota abajo)
+      - N8N_GIT_NODE_DISABLE_BARE_REPOS=true    # Desactiva repos bare en Git Node
       - N8N_DIAGNOSTICS_ENABLED=false
       - N8N_PERSONALIZATION_ENABLED=false
-      - N8N_ENCRYPTION_KEY
-      - N8N_USER_MANAGEMENT_JWT_SECRET
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+      - N8N_USER_MANAGEMENT_JWT_SECRET=${N8N_USER_MANAGEMENT_JWT_SECRET}
       - OLLAMA_HOST=${OLLAMA_HOST:-ollama:11434}
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
     env_file:
       - path: .env
         required: true
@@ -892,15 +896,15 @@ services:
     restart: unless-stopped
 
   # --- Prueba de GPU -------------------------------------------------------
-  test-gpu:
-    image: nvidia/cuda:12.9.0-base-ubuntu22.04
-    container_name: test-gpu
-    command: nvidia-smi
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
-    restart: "no"
+  #test-gpu:
+  #  image: nvidia/cuda:12.9.0-base-ubuntu22.04
+  #  container_name: test-gpu
+  #  command: nvidia-smi
+  #  deploy:
+  #    resources:
+  #      reservations:
+  #        devices:
+  #          - driver: nvidia
+  #            count: 1
+  #            capabilities: [gpu]
+  #  restart: "no"
