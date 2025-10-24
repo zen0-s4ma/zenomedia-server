@@ -1,4 +1,6 @@
 # ZENOMEDIA SERVER V0.1
+volumes:
+  romm_db_data:
 
 services:
   # --- JELLYFIN -------------------------------------------------------------
@@ -819,7 +821,7 @@ services:
       - MARIADB_USER=admin
       - MARIADB_PASSWORD=${ROMM_DB_PASS}
     volumes:
-      - "E:/Docker_folders/romm_mysql/romm_mysql_data:/var/lib/mysql"
+      - romm_db_data:/var/lib/mysql  # <-- volumen nombrado (NO ruta de Windows)
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       start_period: 240s   # antes 30s
