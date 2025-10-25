@@ -25,15 +25,20 @@ services:
               count: all
               capabilities: [gpu]
     volumes:
+      # UNIDAD DE ALMACENAMIENTO F (CONTENIDO MULTIMEDIA):
       - "F:/_Multimedia/Peliculas:/media/Peliculas"
       - "F:/_Multimedia/Documentales:/media/Documentales"
       - "F:/_Multimedia/Deportes:/media/Deportes"
       - "F:/_Multimedia/Series:/media/Series"
       - "F:/_Multimedia/MiniSeries:/media/MiniSeries"
-      - "F:/_Multimedia/TA/media:/media/YouTube"
+      - "F:/_Multimedia/Anime:/media/Anime"
+      # UNIDAD DE ALMACENAMIENTO E (CONTENIDO MULTIMEDIA):
       - "E:/Peliculas:/media/Peliculas2"
       - "E:/Series:/media/Series2"
       - "E:/MiniSeries:/media/MiniSeries2"
+      - "E:/YouTube:/media/YouTube"
+      - "E:/Anime:/media/Anime2"
+      # PATHS DE CONFIGURACION E:
       - "E:/Docker_folders/jellifyn/metadata:/config"
       - "E:/Docker_folders/jellifyn/cache:/cache"
       - "E:/Docker_folders/jellifyn/transcodes:/transcode"
