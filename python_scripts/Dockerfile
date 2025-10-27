@@ -17,7 +17,19 @@ RUN mkdir -p /etc/supervisor/conf.d /workspace /bootstrap
 COPY supervisord.conf.tpl /bootstrap/supervisord.conf.tpl
 COPY entrypoint.sh /entrypoint.sh
 COPY py-manager /usr/local/bin/py-manager
+COPY auto-register.sh /usr/local/bin/auto-register.sh
 
-RUN chmod +x /entrypoint.sh /usr/local/bin/py-manager
+RUN /opt/venv/bin/pip install --upgrade pip \
+ && /opt/venv/bin/pip install fastapi uvicorn jinja2 itsdangerous
+
+# copiar el UI
+COPY py_ui.py /py_ui.py
+
+# normalizar EOL (por si editas en Windows)
+RUN sed -i 's/\r$//' /entrypoint.sh /usr/local/bin/py-manager /usr/local/bin/auto-register.sh || true
+
+# Normaliza finales de línea y permisos (evita el 'bash\r')
+RUN sed -i 's/\r$//' /entrypoint.sh /usr/local/bin/py-manager /usr/local/bin/auto-register.sh \
+ && chmod +x /entrypoint.sh /usr/local/bin/py-manager /usr/local/bin/auto-register.sh
 
 ENTRYPOINT ["/usr/bin/tini","--","/entrypoint.sh"]

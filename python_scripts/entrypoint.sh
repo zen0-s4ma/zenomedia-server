@@ -21,6 +21,25 @@ if [ -f "$CRON_FILE" ]; then
   crontab "$CRON_FILE"
 fi
 
+# Programa auto-registrador (lo gestiona Supervisor)
+cat >/etc/supervisor/conf.d/py-autoreg.ini <<'EOF'
+[program:py-autoreg]
+command=/usr/local/bin/auto-register.sh
+autostart=true
+autorestart=true
+stdout_logfile=/var/log/py-autoreg.out.log
+stderr_logfile=/var/log/py-autoreg.err.log
+EOF
+
+cat >/etc/supervisor/conf.d/py-ui.ini <<'EOF'
+[program:py-ui]
+command=/opt/venv/bin/uvicorn py_ui:app --host 0.0.0.0 --port 8000
+autostart=true
+autorestart=true
+stdout_logfile=/var/log/py-ui.out.log
+stderr_logfile=/var/log/py-ui.err.log
+EOF
+
 echo "-----------------------------------------------------------"
 echo "PY-RUNNER listo"
 echo "Scripts dir: $SCRIPTS_DIR"

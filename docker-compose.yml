@@ -970,13 +970,16 @@ services:
       - LOGS_DIR=/workspace/logs
       - REQUIREMENTS_FILE=/workspace/requirements.txt
       - CRON_FILE=/workspace/schedule.cron
+      - AUTO_REGISTER_INTERVAL=5   # opcional (segundos)
     ports:
-      - "9013:9001"   # UI web de Supervisor
+      - "9012:9001"   # UI web de Supervisor
+      - "9013:9001"   # Supervisor (backend)
+      - "9014:8000"   # UI moderno (FastAPI)
     volumes:
       - "E:/Docker_folders/python_scripts:/workspace"
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "curl -fsS http://localhost:9013 >/dev/null || exit 1"]
+      test: ["CMD-SHELL", "curl -fsS http://localhost:9001 >/dev/null || exit 1"]
       interval: 30s
       timeout: 5s
       retries: 5
