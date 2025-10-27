@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
-import os, html, io, itertools
+import os, html
 from collections import deque
 from xmlrpc.client import ServerProxy, Fault, ProtocolError
-from fastapi import FastAPI, Request, Form, HTTPException, Depends
-from fastapi.responses import HTMLResponse, RedirectResponse, PlainTextResponse
-from fastapi.staticfiles import StaticFiles
+from fastapi import FastAPI, Form, HTTPException, Depends
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
-from starlette.middleware.sessions import SessionMiddleware
 
 APP_TITLE = "Py Runner"
 security = HTTPBasic()
@@ -17,7 +15,6 @@ SUP_URL  = os.environ.get("SUPERVISOR_URL", "http://127.0.0.1:9001/RPC2")
 LOGS_DIR = os.environ.get("LOGS_DIR", "/workspace/logs")
 
 def get_rpc():
-    # auth embebida en la URL
     from urllib.parse import urlparse, urlunparse
     u = urlparse(SUP_URL)
     netloc = f"{SUP_USER}:{SUP_PASS}@{u.hostname}:{u.port or 9001}"
@@ -49,19 +46,17 @@ def tail_file(path: str, max_lines: int = 200) -> str:
     return "\n".join(dq)
 
 app = FastAPI(title=APP_TITLE)
-app.add_middleware(SessionMiddleware, secret_key="not-used")  # habilita formularios
 
-# ---- HTML base (Tailwind via CDN)
-HTML_HEAD = """<!doctype html>
+HTML_HEAD = f"""<!doctype html>
 <html lang="es"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Py Runner</title>
 <script src="https://cdn.tailwindcss.com"></script>
 </head><body class="bg-slate-50 text-slate-900">
 <div class="max-w-6xl mx-auto p-6">
-<h1 class="text-2xl font-semibold mb-4">Python Scripts <span class="text-sm text-slate-500">(bonito)</span></h1>
-<div class="mb-4 text-sm text-slate-600">Backend: Supervisor via XML-RPC • Logs en <code>{logs_dir}</code></div>
-""".format(logs_dir=html.escape(LOGS_DIR))
+<h1 class="text-2xl font-semibold mb-4">Python Scripts <span class="text-sm text-slate-500">(UI)</span></h1>
+<div class="mb-4 text-sm text-slate-600">Backend: Supervisor RPC • Logs en <code>{html.escape(LOGS_DIR)}</code></div>
+"""
 HTML_FOOT = """</div></body></html>"""
 
 @app.get("/", response_class=HTMLResponse)
@@ -72,14 +67,12 @@ def home(_: bool = Depends(auth)):
     except (Fault, ProtocolError) as e:
         raise HTTPException(500, f"Supervisor RPC error: {e}")
 
-    # Orden por nombre; oculta servicios internos
     def is_user_proc(p): return p["name"] not in ("cron", "py-autoreg", "py-ui")
     procs = sorted(filter(is_user_proc, procs), key=lambda p: p["name"].lower())
 
     rows = []
     for p in procs:
-        name = p["name"]
-        state = p["statename"]
+        name = p["name"]; state = p["statename"]
         desc = html.escape(p.get("description",""))
         rows.append(f"""
 <tr class="hover:bg-slate-50">
@@ -124,17 +117,13 @@ def refresh(_: bool = Depends(auth)):
 def _rpc_action(name: str, op: str):
     rpc = get_rpc()
     try:
-        if op == "start":
-            rpc.supervisor.startProcess(name)
-        elif op == "stop":
-            rpc.supervisor.stopProcess(name)
+        if op == "start":   rpc.supervisor.startProcess(name)
+        elif op == "stop":  rpc.supervisor.stopProcess(name)
         elif op == "restart":
             try: rpc.supervisor.stopProcess(name)
             finally: rpc.supervisor.startProcess(name)
-        else:
-            raise HTTPException(400, "Operación no válida")
+        else: raise HTTPException(400, "Operación no válida")
     except Fault as e:
-        # ejemplo: BAD_NAME, ALREADY_STARTED, etc.
         raise HTTPException(400, f"RPC error: {e.faultString}")
 
 @app.post("/action/start")
