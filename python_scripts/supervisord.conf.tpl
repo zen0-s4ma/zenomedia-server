@@ -27,3 +27,14 @@ stderr_logfile=/var/log/cron.stderr.log
 
 [include]
 files=/etc/supervisor/conf.d/*.ini
+
+[supervisord]
+nodaemon=true
+logfile=/var/log/supervisord.log
+pidfile=/var/run/supervisord.pid
+childlogdir=/var/log
+user=root
+
+[unix_http_server]
+file=/var/run/supervisor.sock
+chmod=0700

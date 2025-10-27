@@ -2,8 +2,8 @@
 import os, html
 from collections import deque
 from xmlrpc.client import ServerProxy, Fault, ProtocolError
-from fastapi import FastAPI, Form, HTTPException, Depends
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi import FastAPI, HTTPException, Depends, Query
+from fastapi.responses import HTMLResponse, RedirectResponse, PlainTextResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
 APP_TITLE = "Py Runner"
@@ -38,7 +38,7 @@ def badge(state: str) -> str:
     }
     return f'<span class="px-2 py-0.5 rounded text-xs {colors.get(state, colors["UNKNOWN"])}">{state}</span>'
 
-def tail_file(path: str, max_lines: int = 200) -> str:
+def tail_file(path: str, max_lines: int = 400) -> str:
     if not os.path.exists(path): return "(archivo no existe)"
     dq = deque(maxlen=max_lines)
     with open(path, "r", encoding="utf-8", errors="replace") as f:
@@ -58,6 +58,10 @@ HTML_HEAD = f"""<!doctype html>
 <div class="mb-4 text-sm text-slate-600">Backend: Supervisor RPC • Logs en <code>{html.escape(LOGS_DIR)}</code></div>
 """
 HTML_FOOT = """</div></body></html>"""
+
+@app.get("/__health", response_class=PlainTextResponse)
+def health():
+    return "ok"
 
 @app.get("/", response_class=HTMLResponse)
 def home(_: bool = Depends(auth)):
@@ -80,15 +84,9 @@ def home(_: bool = Depends(auth)):
   <td class="py-2 px-3">{badge(state)}</td>
   <td class="py-2 px-3 text-xs text-slate-500">{desc}</td>
   <td class="py-2 px-3 flex gap-2">
-    <form method="post" action="/action/start"><input type="hidden" name="name" value="{html.escape(name)}">
-      <button class="px-3 py-1 rounded bg-emerald-600 text-white disabled:opacity-40" {"disabled" if state=="RUNNING" else ""}>Start</button>
-    </form>
-    <form method="post" action="/action/stop"><input type="hidden" name="name" value="{html.escape(name)}">
-      <button class="px-3 py-1 rounded bg-rose-600 text-white disabled:opacity-40" {"disabled" if state!="RUNNING" else ""}>Stop</button>
-    </form>
-    <form method="post" action="/action/restart"><input type="hidden" name="name" value="{html.escape(name)}">
-      <button class="px-3 py-1 rounded bg-indigo-600 text-white">Restart</button>
-    </form>
+    <a class="px-3 py-1 rounded bg-emerald-600 text-white {"pointer-events-none opacity-40" if state=="RUNNING" else ""}" href="/action/start?name={html.escape(name)}">Start</a>
+    <a class="px-3 py-1 rounded bg-rose-600 text-white {"pointer-events-none opacity-40" if state!="RUNNING" else ""}" href="/action/stop?name={html.escape(name)}">Stop</a>
+    <a class="px-3 py-1 rounded bg-indigo-600 text-white" href="/action/restart?name={html.escape(name)}">Restart</a>
     <a class="px-3 py-1 rounded bg-slate-200" href="/logs/{html.escape(name)}?stream=stdout">Logs</a>
   </td>
 </tr>""")
@@ -103,16 +101,10 @@ def home(_: bool = Depends(auth)):
 </table>
 </div>
 <div class="mt-4 text-right">
-  <form method="post" action="/refresh">
-    <button class="px-3 py-1 rounded bg-slate-800 text-white">Refrescar</button>
-  </form>
+  <a class="px-3 py-1 rounded bg-slate-800 text-white" href="/">Refrescar</a>
 </div>
 """
     return HTML_HEAD + table + HTML_FOOT
-
-@app.post("/refresh")
-def refresh(_: bool = Depends(auth)):
-    return RedirectResponse("/", status_code=303)
 
 def _rpc_action(name: str, op: str):
     rpc = get_rpc()
@@ -126,16 +118,16 @@ def _rpc_action(name: str, op: str):
     except Fault as e:
         raise HTTPException(400, f"RPC error: {e.faultString}")
 
-@app.post("/action/start")
-def do_start(name: str = Form(...), _: bool = Depends(auth)):
+@app.get("/action/start")
+def do_start(name: str = Query(..., min_length=1), _: bool = Depends(auth)):
     _rpc_action(name, "start"); return RedirectResponse("/", status_code=303)
 
-@app.post("/action/stop")
-def do_stop(name: str = Form(...), _: bool = Depends(auth)):
+@app.get("/action/stop")
+def do_stop(name: str = Query(..., min_length=1), _: bool = Depends(auth)):
     _rpc_action(name, "stop"); return RedirectResponse("/", status_code=303)
 
-@app.post("/action/restart")
-def do_restart(name: str = Form(...), _: bool = Depends(auth)):
+@app.get("/action/restart")
+def do_restart(name: str = Query(..., min_length=1), _: bool = Depends(auth)):
     _rpc_action(name, "restart"); return RedirectResponse("/", status_code=303)
 
 @app.get("/logs/{name}", response_class=HTMLResponse)
