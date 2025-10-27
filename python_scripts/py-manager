@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPTS_DIR="${SCRIPTS_DIR:-/workspace/scripts}"
+LOGS_DIR="${LOGS_DIR:-/workspace/logs}"
+CONF_DIR="/etc/supervisor/conf.d"
+
+ensure_name() {
+  local name="$1"
+  name="${name%.py}"
+  echo "$name"
+}
+
+cmd_add() {
+  local script="$1"; shift || true
+  local autostart="false"
+  if [[ "${1:-}" == "--autostart" ]]; then autostart="true"; fi
+  if [[ ! -f "$SCRIPTS_DIR/$script" ]]; then
+    echo "ERROR: no existe $SCRIPTS_DIR/$script"; exit 1
+  fi
+  local name; name=$(ensure_name "$script")
+  cat > "$CONF_DIR/$name.ini" <<EOF
+[program:$name]
+command=/opt/venv/bin/python -u $SCRIPTS_DIR/$script
+directory=$SCRIPTS_DIR
+autostart=$autostart
+autorestart=true
+stopsignal=INT
+stdout_logfile=$LOGS_DIR/$name.out.log
+stdout_logfile_maxbytes=20MB
+stdout_logfile_backups=10
+stderr_logfile=$LOGS_DIR/$name.err.log
+stderr_logfile_maxbytes=20MB
+stderr_logfile_backups=10
+environment=PYTHONUNBUFFERED="1"
+EOF
+  supervisorctl reread
+  supervisorctl update
+  echo "Añadido '$name'. Usa: supervisorctl start $name (o vía UI)."
+}
+
+cmd_remove() {
+  local name; name=$(ensure_name "$1")
+  supervisorctl stop "$name" || true
+  rm -f "$CONF_DIR/$name.ini"
+  supervisorctl reread
+  supervisorctl update
+  echo "Eliminado '$name'."
+}
+
+cmd_start(){ supervisorctl start "$(ensure_name "$1")"; }
+cmd_stop(){ supervisorctl stop "$(ensure_name "$1")"; }
+cmd_restart(){ supervisorctl restart "$(ensure_name "$1")"; }
+cmd_status(){ supervisorctl status; }
+cmd_list(){ ls -1 "$SCRIPTS_DIR" | grep -E '\.py$' || true; }
+cmd_logs(){
+  local name; name=$(ensure_name "$1")
+  echo "STDOUT: $LOGS_DIR/$name.out.log"
+  echo "STDERR: $LOGS_DIR/$name.err.log"
+}
+
+case "${1:-}" in
+  add) shift; cmd_add "$@";;
+  remove) shift; cmd_remove "$@";;
+  start) shift; cmd_start "$@";;
+  stop) shift; cmd_stop "$@";;
+  restart) shift; cmd_restart "$@";;
+  status) cmd_status;;
+  list) cmd_list;;
+  logs) shift; cmd_logs "$@";;
+  *) echo "Comandos: add|remove|start|stop|restart|status|list|logs"; exit 1;;
+esac

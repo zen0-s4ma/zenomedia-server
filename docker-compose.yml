@@ -33,6 +33,7 @@ services:
       - "F:/_Multimedia/MiniSeries:/media/MiniSeries"
       - "F:/_Multimedia/Anime:/media/Anime"
       # UNIDAD DE ALMACENAMIENTO E (CONTENIDO MULTIMEDIA):
+      - "E:/Infantil:/media/Infantil"
       - "E:/Peliculas:/media/Peliculas2"
       - "E:/Series:/media/Series2"
       - "E:/MiniSeries:/media/MiniSeries2"
@@ -901,6 +902,85 @@ services:
       - SUBDOMAINS=maripiflix
       - TOKEN=453c480f-666f-42b0-96a3-e1f2ab1f7048
     restart: unless-stopped
+
+
+  kali:
+    build: ./kali/kali-custom
+    container_name: kali
+    hostname: kali
+    tty: true
+    stdin_open: true
+    privileged: true
+    gpus: all
+    environment:
+      - DISPLAY=${DISPLAY:-host.docker.internal:0.0}
+      - DOCKER_HOST=${DOCKER_HOST:-unix:///var/run/docker.sock}
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility,graphics
+    volumes:
+      - "E:/Docker_folders/kali:/home/kali"
+      - ./kali/entrypoint_kali.sh:/entrypoint_kali.sh
+      - ./kali/kali_scripts:/custom_scripts
+      - ./kali/id_rsa_n8n_kali.pub:/root/.ssh/authorized_keys
+      - '/sys/fs/cgroup:/sys/fs/cgroup:rw'
+      - /var/run/docker.sock:/var/run/docker.sock
+    entrypoint: ["/bin/bash", "/entrypoint_kali.sh"]
+    ports:
+      - "38081:80"
+      - "44443:443"
+      - "22222:22"
+    restart: unless-stopped
+
+  pihole:
+    image: pihole/pihole:latest
+    container_name: pihole
+    hostname: pihole
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "8090:80"          # Panel web (NPM ya usa 80/443)
+    environment:
+      - TZ=Europe/Madrid
+      - WEBPASSWORD=${PIHOLE_WEBPASSWORD:-admin}   # cámbialo en .env
+      - DNSMASQ_LISTENING=all
+      # Si usas Unbound, configúralo luego en la UI a 127.0.0.1#5335
+    volumes:
+      - "E:/Docker_folders/pihole/etc-pihole:/etc/pihole"
+      - "E:/Docker_folders/pihole/dnsmasq.d:/etc/dnsmasq.d"
+    restart: unless-stopped
+
+  clamav:
+    image: mkodockx/docker-clamav:latest
+    container_name: clamav
+    ports:
+      - "33049:3310"
+    volumes:
+      - "E:/Docker_folders/clamav:/var/lib/clamav"
+
+  py-runner:
+    build:
+      context: ./python_scripts
+      dockerfile: Dockerfile
+    container_name: py-runner
+    environment:
+      - TZ=Europe/Madrid
+      - SUPERVISOR_USER=admin
+      - SUPERVISOR_PASSWORD=CambiaEsto123
+      - SCRIPTS_DIR=/workspace/scripts
+      - LOGS_DIR=/workspace/logs
+      - REQUIREMENTS_FILE=/workspace/requirements.txt
+      - CRON_FILE=/workspace/schedule.cron
+    ports:
+      - "9013:9001"   # UI web de Supervisor
+    volumes:
+      - "E:/Docker_folders/python_scripts:/workspace"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:9013 >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
   # --- Prueba de GPU -------------------------------------------------------
   #test-gpu:
