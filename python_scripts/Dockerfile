@@ -7,7 +7,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
 
 # Paquetes base
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    supervisor cron tini bash tzdata gcc build-essential gettext-base curl \
+    supervisor cron tini bash tzdata gcc build-essential gettext-base curl inotify-tools \
  && rm -rf /var/lib/apt/lists/*
 
 # venv

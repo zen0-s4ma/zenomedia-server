@@ -60,6 +60,36 @@ cmd_logs(){
   echo "STDERR: $LOGS_DIR/$name.err.log"
 }
 
+cmd_clearlog(){
+  local name; name=$(ensure_name "$1")
+  if supervisorctl clear "$name"; then
+    echo "Logs de '$name' limpiados vía supervisorctl."
+  else
+    echo "Aviso: fallo supervisorctl clear; usando fallback local."
+    : > "$LOGS_DIR/$name.out.log" 2>/dev/null || true
+    : > "$LOGS_DIR/$name.err.log" 2>/dev/null || true
+  fi
+}
+
+cmd_set_autostart() {
+  local name; name=$(ensure_name "$1")
+  local val="${2:-}"
+  case "${val,,}" in
+    true|false|1|0|yes|no|on|off) ;;
+    *) echo "Uso: py-manager set-autostart <script|name> <true|false>"; exit 1;;
+  esac
+  local ini="$CONF_DIR/$name.ini"
+  [ -f "$ini" ] || { echo "No existe $ini"; exit 1; }
+  if grep -q '^autostart=' "$ini"; then
+    sed -i "s/^autostart=.*/autostart=${val}/" "$ini"
+  else
+    printf "\nautostart=%s\n" "$val" >> "$ini"
+  fi
+  supervisorctl reread >/dev/null 2>&1 || true
+  supervisorctl update  >/dev/null 2>&1 || true
+  echo "autostart de '$name' => $val"
+}
+
 case "${1:-}" in
   add) shift; cmd_add "$@";;
   remove) shift; cmd_remove "$@";;
@@ -69,5 +99,6 @@ case "${1:-}" in
   status) cmd_status;;
   list) cmd_list;;
   logs) shift; cmd_logs "$@";;
+  clearlog) shift; cmd_clearlog "$@";;
   *) echo "Comandos: add|remove|start|stop|restart|status|list|logs"; exit 1;;
 esac
