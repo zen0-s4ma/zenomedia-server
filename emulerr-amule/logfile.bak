@@ -1,0 +1,106 @@
+ 2025-10-30 18:32:27: Logging to stdout enabled
+ 2025-10-30 18:32:27: Initialising aMuleD 2.3.3 compiled with wxBase(GTK2) v3.2.4 and Boost 1.84
+ 2025-10-30 18:32:27: Checking if there is an instance already running...
+ 2025-10-30 18:32:27: No other instances are running.
+ 2025-10-30 18:32:27: *** TCP socket (ECServer) listening on 0.0.0.0:4712
+ 2025-10-30 18:32:27: Created Server UDP-Socket at port 39065
+ 2025-10-30 18:32:27: ListenSocket: Ok.
+ 2025-10-30 18:32:27: Created Client UDP-Socket at port 39062
+ 2025-10-30 18:32:27: Loading server.met file: /home/amule/.aMule/server.met
+!2025-10-30 18:32:28: 3 servers in server.met found
+!2025-10-30 18:32:28: No server list address entry in 'addresses.dat' found. Please paste a valid server list address into this file in order to auto-update your server list
+ 2025-10-30 18:32:28: Loading temp files from /downloads/incomplete.
+ 2025-10-30 18:32:28: All PartFiles Loaded.
+ 2025-10-30 18:32:28: No part files found
+ 2025-10-30 18:32:28: No shareable files found in directory: /downloads/complete
+ 2025-10-30 18:32:28: No shareable files found in directory: /incoming
+ 2025-10-30 18:32:28: No shareable files found in directory: /shared
+ 2025-10-30 18:32:28: Found 0 known shared files
+!2025-10-30 18:32:28: web server running on pid 66
+ 2025-10-30 18:32:28: amuled: OnInit - starting timer
+ 2025-10-30 18:32:28: Asio thread 1 started
+ 2025-10-30 18:32:28: Asio thread 2 started
+ 2025-10-30 18:32:28: Asio thread 3 started
+ 2025-10-30 18:32:28: Asio thread 4 started
+ 2025-10-30 18:32:28: Loading IP filters 'ipfilter.dat' and 'ipfilter_static.dat'.
+ 2025-10-30 18:32:28: Loaded 0 IP-ranges from '/home/amule/.aMule/ipfilter.dat'.
+ 2025-10-30 18:32:28: Loaded 0 IP-ranges from '/home/amule/.aMule/ipfilter_static.dat'.
+ 2025-10-30 18:32:28: IP filter is ready
+!2025-10-30 18:32:28: Connecting
+ 2025-10-30 18:32:28: Connecting to eMule Security (45.82.80.155 - 45.82.80.155:5687) using protocol obfuscation.
+ 2025-10-30 18:32:28: New external connection accepted
+ 2025-10-30 18:32:28: Connecting client: aMuleweb 2.3.3
+ 2025-10-30 18:32:28: Access granted.
+ 2025-10-30 18:32:28: Connected to eMule Security (45.82.80.155:5687)
+ 2025-10-30 18:32:54: Connection attempt to eMule Security (45.82.80.155:5687) timed out.
+ 2025-10-30 18:32:54: Connecting to GrupoTS Server (145.239.2.134 - 145.239.2.134:4661) using protocol obfuscation.
+ 2025-10-30 18:32:54: Connected to GrupoTS Server (145.239.2.134:4661)
+ 2025-10-30 18:33:19: Connection attempt to GrupoTS Server (145.239.2.134:4661) timed out.
+ 2025-10-30 18:33:19: Connecting to eMule Sunrise (176.123.5.89 - 176.123.5.89:4725) using protocol obfuscation.
+ 2025-10-30 18:33:19: Connected to eMule Sunrise (176.123.5.89:4725)
+ 2025-10-30 18:33:20: WARNING: eMule Sunrise (176.123.5.89:4725) - NG : You have a lowid. Please review your network config and/or your settings.
+ 2025-10-30 18:33:20: ServerMessage: server version 17.15 (lugdunum)
+ 2025-10-30 18:33:20: ServerMessage: Welcome to eMule Sunrise!
+ 2025-10-30 18:33:20: ServerMessage: Disclaimer: This server is indexing file-hashes only, does not contains any files and
+ 2025-10-30 18:33:20: ServerMessage: it is not directly involved in the exchange of files between users of P2P network.
+ 2025-10-30 18:33:20: ServerMessage: Administration of server is not responsible for the contents of files
+ 2025-10-30 18:33:20: ServerMessage: shared by users connected to the server. Please do not share
+ 2025-10-30 18:33:20: ServerMessage: copyrighted material, DRM protected media, viruses or other harmful files!
+ 2025-10-30 18:33:44: Connection attempt to eMule Sunrise (176.123.5.89:4725) timed out.
+!2025-10-30 18:33:44: Failed to connect to all servers listed. Making another pass.
+!2025-10-30 18:33:44: Asio Sockets: Destroy() already dying socket 0x00007f06edfd3ac0 0x00007f06ee0eb620 176.123.5.89
+ 2025-10-30 18:33:45: Connecting to eMule Security (45.82.80.155 - 45.82.80.155:5687) using protocol obfuscation.
+ 2025-10-30 18:33:45: Connected to eMule Security (45.82.80.155:5687)
+ 2025-10-30 18:33:47: WARNING: eMule Security (45.82.80.155:5687) - NG : You have a lowid. Please review your network config and/or your settings.
+ 2025-10-30 18:33:47: ServerMessage: server version 17.15 (lugdunum)
+ 2025-10-30 18:33:47: ServerMessage: Welcome to eMule Security! <> www.emule-security.org
+ 2025-10-30 18:33:47: ServerMessage: Download Safe Serverlist > http://www.emule-security.org/serverlist/
+ 2025-10-30 18:33:47: ServerMessage: IP-filter > http://www.emule-security.org/e107_plugins/faq/faq.php?0.cat.2.1
+ 2025-10-30 18:33:47: ServerMessage: nodes.dat > http://www.emule-security.org/e107_plugins/faq/faq.php?0.cat.6.6
+ 2025-10-30 18:33:47: ServerMessage: Ip-To-Country database> http://www.emule-security.org/e107_plugins/faq/faq.php?0.cat.7.10
+ 2025-10-30 18:33:47: ServerMessage: eMule MODs > http://www.emule-security.org/modb/
+ 2025-10-30 18:33:47: ServerMessage: VPN with port forwarding (for High ID) > https://bit.ly/4hpqBCI
+ 2025-10-30 18:33:47: ServerMessage: Disclaimer: This server is only indexing file-hashes, and no contains any files,
+ 2025-10-30 18:33:47: ServerMessage: not directly involved in the exchange of files between users of p2p-network.
+ 2025-10-30 18:33:47: ServerMessage: Administration of server is not responsible for the contents of files
+ 2025-10-30 18:33:47: ServerMessage: shared by connected to the server users. Please do not share
+ 2025-10-30 18:33:47: ServerMessage: copyrighted material, DRM protected media, viruses or other harmful files!
+ 2025-10-30 18:34:10: Connection attempt to eMule Security (45.82.80.155:5687) timed out.
+ 2025-10-30 18:34:10: Connecting to GrupoTS Server (145.239.2.134 - 145.239.2.134:4661) using protocol obfuscation.
+ 2025-10-30 18:34:10: Connected to GrupoTS Server (145.239.2.134:4661)
+ 2025-10-30 18:34:36: Connection attempt to GrupoTS Server (145.239.2.134:4661) timed out.
+ 2025-10-30 18:34:36: Connecting to eMule Sunrise (176.123.5.89 - 176.123.5.89:4725) using protocol obfuscation.
+ 2025-10-30 18:34:36: Connected to eMule Sunrise (176.123.5.89:4725)
+ 2025-10-30 18:34:36: WARNING: eMule Sunrise (176.123.5.89:4725) - NG : You have a lowid. Please review your network config and/or your settings.
+ 2025-10-30 18:34:36: ServerMessage: server version 17.15 (lugdunum)
+ 2025-10-30 18:34:36: ServerMessage: Welcome to eMule Sunrise!
+ 2025-10-30 18:34:36: ServerMessage: Disclaimer: This server is indexing file-hashes only, does not contains any files and
+ 2025-10-30 18:34:36: ServerMessage: it is not directly involved in the exchange of files between users of P2P network.
+ 2025-10-30 18:34:36: ServerMessage: Administration of server is not responsible for the contents of files
+ 2025-10-30 18:34:36: ServerMessage: shared by users connected to the server. Please do not share
+ 2025-10-30 18:34:36: ServerMessage: copyrighted material, DRM protected media, viruses or other harmful files!
+ 2025-10-30 18:35:01: Connection attempt to eMule Sunrise (176.123.5.89:4725) timed out.
+!2025-10-30 18:35:01: Failed to connect to all servers listed. Making another pass.
+!2025-10-30 18:35:01: Asio Sockets: Destroy() already dying socket 0x00007f06edfd7aa0 0x00007f06ee0eabf0 176.123.5.89
+ 2025-10-30 18:35:02: Connecting to eMule Security (45.82.80.155 - 45.82.80.155:5687) using protocol obfuscation.
+ 2025-10-30 18:35:02: Connected to eMule Security (45.82.80.155:5687)
+ 2025-10-30 18:35:03: WARNING: eMule Security (45.82.80.155:5687) - NG : You have a lowid. Please review your network config and/or your settings.
+!2025-10-30 18:35:03: Connection established on: eMule Security
+!2025-10-30 18:35:03: Connected to eMule Security with LowID
+ 2025-10-30 18:35:03: New clientid is 8715032
+!2025-10-30 18:35:03: WARNING: You have received Low-ID!
+ 2025-10-30 18:35:03: 	Most likely this is because you're behind a firewall or router.
+ 2025-10-30 18:35:03: 	For more information, please refer to http://wiki.amule.org
+ 2025-10-30 18:35:03: ServerMessage: server version 17.15 (lugdunum)
+ 2025-10-30 18:35:03: ServerMessage: Welcome to eMule Security! <> www.emule-security.org
+ 2025-10-30 18:35:03: ServerMessage: Download Safe Serverlist > http://www.emule-security.org/serverlist/
+ 2025-10-30 18:35:03: ServerMessage: IP-filter > http://www.emule-security.org/e107_plugins/faq/faq.php?0.cat.2.1
+ 2025-10-30 18:35:03: ServerMessage: nodes.dat > http://www.emule-security.org/e107_plugins/faq/faq.php?0.cat.6.6
+ 2025-10-30 18:35:03: ServerMessage: Ip-To-Country database> http://www.emule-security.org/e107_plugins/faq/faq.php?0.cat.7.10
+ 2025-10-30 18:35:03: ServerMessage: eMule MODs > http://www.emule-security.org/modb/
+ 2025-10-30 18:35:03: ServerMessage: VPN with port forwarding (for High ID) > https://bit.ly/4hpqBCI
+ 2025-10-30 18:35:03: ServerMessage: Disclaimer: This server is only indexing file-hashes, and no contains any files,
+ 2025-10-30 18:35:03: ServerMessage: not directly involved in the exchange of files between users of p2p-network.
+ 2025-10-30 18:35:03: ServerMessage: Administration of server is not responsible for the contents of files
+ 2025-10-30 18:35:03: ServerMessage: shared by connected to the server users. Please do not share
+ 2025-10-30 18:35:03: ServerMessage: copyrighted material, DRM protected media, viruses or other harmful files!

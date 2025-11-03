@@ -25,6 +25,9 @@ services:
               count: all
               capabilities: [gpu]
     volumes:
+      # CONFIG
+      - "E:/Docker_folders/jellifyn/web-avatars:/usr/share/jellyfin/web/avatars"
+      - "E:/Docker_folders/jellifyn/web-ui:/usr/share/jellyfin/web/UI"
       # UNIDAD DE ALMACENAMIENTO F (CONTENIDO MULTIMEDIA):
       - "F:/_Multimedia/Peliculas:/media/Peliculas"
       - "F:/_Multimedia/Documentales:/media/Documentales"
@@ -33,7 +36,6 @@ services:
       - "F:/_Multimedia/MiniSeries:/media/MiniSeries"
       - "F:/_Multimedia/Anime:/media/Anime"
       # UNIDAD DE ALMACENAMIENTO E (CONTENIDO MULTIMEDIA):
-      - "E:/Infantil:/media/Infantil"
       - "E:/Peliculas:/media/Peliculas2"
       - "E:/Series:/media/Series2"
       - "E:/MiniSeries:/media/MiniSeries2"
@@ -325,6 +327,7 @@ services:
       - LOG_LEVEL=info
     volumes:
       - "E:/Docker_folders/jellyseerr/jellyseerr_data:/app/config"
+      - "E:/Docker_folders/jellyseerr/raiz:/raiz"
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS http://localhost:5055/api/v1/status >/dev/null || exit 1"]
@@ -410,25 +413,6 @@ services:
     volumes:
       - "E:/Docker_folders/kavita/kavita_config:/config"
       - "E:/Docker_folders/kavita/kavita_data:/data"
-    restart: unless-stopped
-
-  # --- Amule ---------------------------------------------------------------
-  amule:
-    image: ghcr.io/ngosang/amule
-    container_name: amule
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Madrid
-    volumes:
-      - "E:/Docker_folders/amule/config:/config"
-      - "D:/Descargas/eMule/Incoming:/downloads/Incoming"
-      - "D:/Descargas/eMule/Temp:/downloads/Temp"
-    ports:
-      - "4711:4711"
-      - "4712:4712"
-      - "4662:4662/tcp"
-      - "4672:4672/udp"
     restart: unless-stopped
 
   portainer:
@@ -949,13 +933,14 @@ services:
       - "E:/Docker_folders/pihole/dnsmasq.d:/etc/dnsmasq.d"
     restart: unless-stopped
 
-  clamav:
-    image: mkodockx/docker-clamav:latest
-    container_name: clamav
-    ports:
-      - "33049:3310"
-    volumes:
-      - "E:/Docker_folders/clamav:/var/lib/clamav"
+#  clamav:
+#    image: mkodockx/docker-clamav:latest
+#    container_name: clamav
+#    ports:
+#      - "33049:3310"
+#    volumes:
+#      - "E:/Docker_folders/clamav:/var/lib/clamav"
+#    restart: unless-stopped
 
   py-runner:
     build:
@@ -965,7 +950,7 @@ services:
     environment:
       - TZ=Europe/Madrid
       - SUPERVISOR_USER=admin
-      - SUPERVISOR_PASSWORD=CambiaEsto123
+      - SUPERVISOR_PASSWORD=admin
       - SCRIPTS_DIR=/workspace/scripts
       - LOGS_DIR=/workspace/logs
       - REQUIREMENTS_FILE=/workspace/requirements.txt
@@ -984,6 +969,77 @@ services:
       timeout: 5s
       retries: 5
       start_period: 20s
+
+  #emulerr:
+  #  image: isc30/emulerr:latest
+  #  container_name: emulerr
+  #  restart: unless-stopped
+  #  tty: true
+  #  environment:
+  #    - TZ=Europe/Madrid
+  #    - PASSWORD=admin
+  #    - LOG_LEVEL=debug
+  #  ports:
+  #    - "39000:3000"          # UI eMulerr
+  #    - "39062:39062/tcp"     # eD2K TCP
+  #    - "39062:39062/udp"     # Kad/Cliente UDP 
+  #    - "39065:39065/udp"     # Server UDP
+  #    - "39011:39011/tcp"     # amuleweb 
+  #    - "39012:39012/tcp"     # EC/Remote 
+  #  volumes:
+  #    - "D:/Descargas/eMule:/downloads"
+  #    - "./emulerr-amule:/home/amule/.aMule"
+  #    # - "./emulerr-amule/server.met:/config/amule/server.met"
+  #    # - "./emulerr-amule/amule.overrides.conf:/config/amule/amule.overrides.conf"
+
+  amule:
+    image: ghcr.io/ngosang/amule:latest   # alternativa: ngosang/amule
+    container_name: amule
+    ports:
+      - "4711:4711"          # WebUI
+      - "4712:4712"          # EC/Remote GUI (amulecmd/amarr)
+      - "4662:4662"          # ED2K TCP
+      - "4665:4665/udp"      # ED2K global search UDP (TCP+3)
+      - "4672:4672/udp"      # ED2K Kad UDP
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+      - GUI_PWD=${AMULE_GUI_PWD:-amuleadmin}     # misma pass que usará Amarr
+      - WEBUI_PWD=${AMULE_WEBUI_PWD:-amuleadmin}
+      # Mods útiles y seguros
+      - MOD_AUTO_RESTART_ENABLED=true
+      - MOD_AUTO_RESTART_CRON=0 6 * * *
+      - MOD_FIX_KAD_GRAPH_ENABLED=true
+      - MOD_FIX_KAD_BOOTSTRAP_ENABLED=true
+    volumes:
+      - "E:/Docker_folders/amule/config:/home/amule/.aMule"
+      - "D:/Descargas/eMule/complete:/incoming"
+      - "D:/Descargas/eMule/incomplete:/temp"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:4711/ >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 10
+      start_period: 120s
+
+  amarr:
+    image: vexdev/amarr:latest
+    container_name: amarr
+    depends_on:
+      - amule
+    ports:
+      - "33120:8080"   # UI/endpoint Torznab y cliente simulado
+    environment:
+      - AMULE_HOST=amule
+      - AMULE_PORT=4712
+      - AMULE_PASSWORD=${AMULE_GUI_PWD:-amuleadmin}  # coincide con GUI_PWD de aMule
+      - AMARR_LOG_LEVEL=INFO
+      - AMULE_FINISHED_PATH=/incoming                 # coincide con aMule
+    volumes:
+      - "E:/Docker_folders/amarr:/config"
+    restart: unless-stopped
 
   # --- Prueba de GPU -------------------------------------------------------
   #test-gpu:
