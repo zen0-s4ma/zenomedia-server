@@ -29,12 +29,12 @@ services:
       - "E:/Docker_folders/jellifyn/web-avatars:/usr/share/jellyfin/web/avatars"
       - "E:/Docker_folders/jellifyn/web-ui:/usr/share/jellyfin/web/UI"
       # UNIDAD DE ALMACENAMIENTO F (CONTENIDO MULTIMEDIA):
-      - "F:/_Multimedia/Peliculas:/media/Peliculas"
-      - "F:/_Multimedia/Documentales:/media/Documentales"
-      - "F:/_Multimedia/Deportes:/media/Deportes"
-      - "F:/_Multimedia/Series:/media/Series"
-      - "F:/_Multimedia/MiniSeries:/media/MiniSeries"
-      - "F:/_Multimedia/Anime:/media/Anime"
+      - "F:/Peliculas:/media/Peliculas"
+      - "F:/Documentales:/media/Documentales"
+      - "F:/Deportes:/media/Deportes"
+      - "F:/Series:/media/Series"
+      - "F:/MiniSeries:/media/MiniSeries"
+      - "F:/Anime:/media/Anime"
       # UNIDAD DE ALMACENAMIENTO E (CONTENIDO MULTIMEDIA):
       - "E:/Peliculas:/media/Peliculas2"
       - "E:/Series:/media/Series2"
@@ -242,7 +242,7 @@ services:
     volumes:
       - "E:/Docker_folders/sonarr/sonarr_data:/config"
       - "E:/Docker_folders/sonarr/media_data:/downloads"
-      - "F:/_Multimedia/Series:/tv"
+      - "F:/Series:/tv"
     restart: unless-stopped
 
   radarr:
@@ -257,7 +257,7 @@ services:
     volumes:
       - "E:/Docker_folders/radarr/radarr_data:/config"
       - "E:/Docker_folders/radarr/media_data:/downloads"
-      - "F:/_Multimedia/Peliculas:/movies"
+      - "F:/Peliculas:/movies"
     restart: unless-stopped
 
   bazarr:
@@ -272,8 +272,8 @@ services:
     volumes:
       - "E:/Docker_folders/bazarr/bazarr_data:/config"
       - "E:/Docker_folders/bazarr/media_data:/downloads"
-      - "F:/_Multimedia/Peliculas:/movies:ro"
-      - "F:/_Multimedia/Series:/tv:ro"
+      - "F:/Peliculas:/movies:ro"
+      - "F:/Series:/tv:ro"
     restart: unless-stopped
 
   lidarr:
@@ -302,7 +302,7 @@ services:
     volumes:
       - "E:/Docker_folders/readarr/readarr_data:/config"
       - "E:/Docker_folders/readarr/descargas:/downloads"
-      - "F:/_Multimedia/Libros:/books"
+      - "F:/Libros:/books"
     restart: unless-stopped
 
   prowlarr:
@@ -471,8 +471,8 @@ services:
     volumes:
       - "E:/Docker_folders/audiobookshelf/audiobookshelf_config:/config"
       - "E:/Docker_folders/audiobookshelf/audiobookshelf_metadata:/metadata"
-      - "F:/_Multimedia/Audiolibros:/audiobooks"
-      - "F:/_Multimedia/Podcasts:/podcasts"
+      - "F:/Audiolibros:/audiobooks"
+      - "F:/Podcasts:/podcasts"
     restart: unless-stopped
 
   unmanic:
@@ -758,7 +758,7 @@ services:
       - TZ=Europe/Madrid
     volumes:
       - "E:/Docker_folders/calibre_web/calibre_web_config:/config"
-      - "F:/_Multimedia/Libros:/books"
+      - "F:/Libros:/books"
 
   # --- NAVIDROME (servidor de música) --------------------------------------
   navidrome:
@@ -773,7 +773,7 @@ services:
       - ND_SCANSCHEDULE=1h
     volumes:
       - "E:/Docker_folders/navidrome/navidrome_data:/data"
-      - "F:/_Multimedia/Musica:/music:ro"
+      - "F:/Musica:/music:ro"
 
   # --- OPEN WEBUI (UI para Ollama/LLMs) ------------------------------------
   open-webui:
@@ -871,7 +871,7 @@ services:
     environment:
       - TZ=Europe/Madrid
     volumes:
-      - "F:/_Multimedia/Peliculas:/srv/Peliculas:ro"
+      - "F:/Peliculas:/srv/Peliculas:ro"
       - "E:/Compartida:/srv/Compartida:rw"
       - "E:/Docker_folders/filebrowser/filebrowser_data:/database"
     ports:
@@ -1040,6 +1040,21 @@ services:
     volumes:
       - "E:/Docker_folders/amarr:/config"
     restart: unless-stopped
+
+  metube:
+    image: ghcr.io/alexta69/metube:latest
+    container_name: metube
+    restart: unless-stopped
+    ports:
+      - "8081:8081"          # UI web de MeTube
+    environment:
+      - TZ=Europe/Madrid
+      # Opcional: explícito, pero por defecto ya usan /downloads
+      - DOWNLOAD_DIR=/downloads
+      - AUDIO_DOWNLOAD_DIR=/downloads
+    volumes:
+      # Carpeta de descargas en el host -> carpeta interna de MeTube
+      - "E:/YouTube:/downloads"
 
   # --- Prueba de GPU -------------------------------------------------------
   #test-gpu:
