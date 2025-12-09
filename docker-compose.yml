@@ -17,6 +17,7 @@ services:
       JELLYFIN_PublishedServerUrl: "${JELLYFIN_PUBLISHED_URL}"
       NVIDIA_VISIBLE_DEVICES: all
       NVIDIA_DRIVER_CAPABILITIES: compute,video,utility
+      LOG_LEVEL: debug
     deploy:
       resources:
         reservations:
@@ -26,25 +27,105 @@ services:
               capabilities: [gpu]
     volumes:
       # CONFIG
-      - "E:/Docker_folders/jellifyn/web-avatars:/usr/share/jellyfin/web/avatars"
-      - "E:/Docker_folders/jellifyn/web-ui:/usr/share/jellyfin/web/UI"
+      - "E:/Docker_folders/jellifyn/custom-logos:/jellyfin/jellyfin-web/custom-logos:ro"
+      # Sobrescribir logos internos de Jellyfin (splash, cabecera, etc.)
+      - "E:/Docker_folders/jellifyn/custom-logos/banner-light.png:/jellyfin/jellyfin-web/assets/img/banner-light.png:ro"
+      - "E:/Docker_folders/jellifyn/custom-logos/banner-dark.png:/jellyfin/jellyfin-web/assets/img/banner-dark.png:ro"
+      - "E:/Docker_folders/jellifyn/custom-logos/icon-transparent.png:/jellyfin/jellyfin-web/assets/img/icon-transparent.png:ro"
+      # Favicons clásicos – por si tu versión aún los usa sin hash
+      - "E:/Docker_folders/jellifyn/custom-logos/favicon.ico:/jellyfin/jellyfin-web/favicon.ico:ro"
+      - "E:/Docker_folders/jellifyn/custom-logos/favicon.png:/jellyfin/jellyfin-web/favicon.png:ro"
       # UNIDAD DE ALMACENAMIENTO F (CONTENIDO MULTIMEDIA):
       - "F:/Peliculas:/media/Peliculas"
       - "F:/Documentales:/media/Documentales"
-      - "F:/Deportes:/media/Deportes"
       - "F:/Series:/media/Series"
       - "F:/MiniSeries:/media/MiniSeries"
       - "F:/Anime:/media/Anime"
+      - "F:/Futbol:/media/Futbol"
+      - "F:/Baloncesto:/media/Baloncesto"
+      - "F:/NFL:/media/NFL"
+      - "F:/Combates:/media/Combates"
+      - "F:/LoL:/media/LoL"
+      - "F:/Olimpiadas:/media/Olimpiadas"
       # UNIDAD DE ALMACENAMIENTO E (CONTENIDO MULTIMEDIA):
       - "E:/Peliculas:/media/Peliculas2"
       - "E:/Series:/media/Series2"
       - "E:/MiniSeries:/media/MiniSeries2"
-      - "E:/YouTube:/media/YouTube"
+      - "E:/YouTube:/media/YouTube2"
       - "E:/Anime:/media/Anime2"
+      - "E:/Documentales:/media/Documentales2"
+      - "E:/Futbol:/media/Futbol2"
+      - "E:/Baloncesto:/media/Baloncesto2"
+      - "E:/NFL:/media/NFL2"
+      - "E:/Combates:/media/Combates2"
+      - "E:/LoL:/media/LoL2"
+      - "E:/Olimpiadas:/media/Olimpiadas2"
       # PATHS DE CONFIGURACION E:
       - "E:/Docker_folders/jellifyn/metadata:/config"
       - "E:/Docker_folders/jellifyn/cache:/cache"
       - "E:/Docker_folders/jellifyn/transcodes:/transcode"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8096/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+
+  jellyfin-old:
+    image: jellyfin/jellyfin:10.10.7
+    container_name: jellyfin-old
+    ports:
+      - "8096:8096"
+      - "8920:8920"
+      - "7359:7359/udp"
+    environment:
+      TZ: Europe/Madrid
+      UMASK: "022"
+      JELLYFIN_PublishedServerUrl: "${JELLYFIN_PUBLISHED_URL}"
+      NVIDIA_VISIBLE_DEVICES: all
+      NVIDIA_DRIVER_CAPABILITIES: compute,video,utility
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    volumes:
+      # CONFIG
+      #
+      # ---
+      #
+      # UNIDAD DE ALMACENAMIENTO F (CONTENIDO MULTIMEDIA):
+      - "F:/Peliculas:/media/Peliculas"
+      - "F:/Documentales:/media/Documentales"
+      - "F:/Series:/media/Series"
+      - "F:/MiniSeries:/media/MiniSeries"
+      - "F:/Anime:/media/Anime"
+      - "F:/Futbol:/media/Futbol"
+      - "F:/Baloncesto:/media/Baloncesto"
+      - "F:/NFL:/media/NFL"
+      - "F:/Combates:/media/Combates"
+      - "F:/LoL:/media/LoL"
+      - "F:/Olimpiadas:/media/Olimpiadas"
+      # UNIDAD DE ALMACENAMIENTO E (CONTENIDO MULTIMEDIA):
+      - "E:/Peliculas:/media/Peliculas2"
+      - "E:/Series:/media/Series2"
+      - "E:/MiniSeries:/media/MiniSeries2"
+      - "E:/YouTube:/media/YouTube2"
+      - "E:/Anime:/media/Anime2"
+      - "E:/Documentales:/media/Documentales2"
+      - "E:/Futbol:/media/Futbol2"
+      - "E:/Baloncesto:/media/Baloncesto2"
+      - "E:/NFL:/media/NFL2"
+      - "E:/Combates:/media/Combates2"
+      - "E:/LoL:/media/LoL2"
+      - "E:/Olimpiadas:/media/Olimpiadas2"
+      # PATHS DE CONFIGURACION E:
+      - "E:/Docker_folders/jellifyn-old/metadata:/config"
+      - "E:/Docker_folders/jellifyn-old/cache:/cache"
+      - "E:/Docker_folders/jellifyn-old/transcodes:/transcode"
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://localhost:8096/health"]
@@ -552,6 +633,7 @@ services:
       - "E:/Docker_folders/homarr/appdata:/appdata"
     environment:
       - SECRET_ENCRYPTION_KEY=e111e33c3056a58c37491e24fd3a90b087f906ab1468893544c23205dd10e96b
+      - LOG_LEVEL=debug
 
   jackett:
     image: lscr.io/linuxserver/jackett:latest

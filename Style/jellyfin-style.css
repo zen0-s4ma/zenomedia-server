@@ -1,0 +1,190 @@
+@import url("https://cdn.jsdelivr.net/gh/lscambo13/ElegantFin@main/Theme/ElegantFin-jellyfin-theme-build-latest-minified.css");
+
+@import url("https://cdn.jsdelivr.net/gh/lscambo13/ElegantFin@main/Theme/assets/add-ons/media-bar-plugin-support-latest-min.css");
+
+:root{
+  --extraCardButtonsVisibility: block;
+}
+
+:root{
+  --overlayPlayButtonPosition: 50%;
+}
+
+:root {
+  /* Fondo azul muy oscuro */
+  --darkerGradientPoint: #020617;   /* azul-neón muy oscuro */
+  --lighterGradientPoint: #0f172a;  /* azul grisáceo */
+  --tableBodyColor: #020617;
+
+  /* Acento azul */
+  --uiAccentColor: rgb(59, 130, 246);             /* tipo Tailwind blue-500 */
+  --activeColor: var(--uiAccentColor);
+  --activeColorAlpha: rgba(59, 130, 246, 0.35);
+}
+
+
+/* === quita carrusel de mis contenidos en el home === */
+
+@media (min-width:100em){
+  /* SOLO "Mis contenidos" (primera sección) */
+  .homePage .section0 .emby-scroller{ margin-right:0; }
+  .homePage .section0 .emby-scrollbuttons{ display:none; }
+  .homePage .section0 .itemsContainer{
+    display:flex; 
+    flex-wrap:wrap; 
+    gap:1rem;
+  }
+
+  /* 6 por fila en "Mis contenidos" */
+  .homePage .section0 .overflowBackdropCard,
+  .homePage .section0 .card.backdropCard{
+    flex: 0 0 calc((100% - 4rem)/6.5);
+    max-width: calc((100% - 4rem)/6.5);
+  }
+  .homePage .section0 .cardBox,
+  .homePage .section0 .cardScalable,
+  .homePage .section0 .cardImageContainer{
+    width:100% !important;
+  }
+}
+
+.homePage .section0 .emby-scroller{
+  padding: 0 !important;
+  margin: 0 !important;
+}
+.homePage .section0 .emby-scrollbuttons{ /* opcional: quita flechas */
+  display: none !important;
+}
+.homePage .section0 .itemsContainer{
+  display: flex !important;
+  justify-content: center !important; /* <- clave para centrar */
+}
+#indexPage .section0 .sectionTitleContainer,
+#indexPage .section0 .sectionTitle {
+  display: none !important;
+}
+
+
+/* ↓↓↓ INICIO: todas las secciones MENOS "Mis contenidos" (section0) ↓↓↓ */
+@media (min-width:50em){
+  /* 0) Por si ElegantFin aplica escalado a las cards, lo anulamos */
+  #indexPage [class^="section"] .card,
+  #indexPage [class^="section"] .cardScalable{
+    transform: none !important;
+    scale: 1 !important;
+  }
+
+  /* 1) Forzar ancho de póster en filas del Inicio (carrusel) */
+  #indexPage [class^="section"]:not(.section0) .portraitCard,
+  #indexPage [class^="section"]:not(.section0) .posterCard,
+  #indexPage [class^="section"]:not(.section0) .overflowPortraitCard,
+  #indexPage [class^="section"]:not(.section0) .smallPortraitCard{
+    --homePosterW: 15rem;                  /* <- ajusta a tu gusto: 10–12.5rem */
+    width: var(--homePosterW) !important;
+    max-width: var(--homePosterW) !important;
+    flex: 0 0 var(--homePosterW) !important;
+  }
+
+  /* 2) Mantener proporción 2:3 y que todo se adapte al nuevo ancho */
+  #indexPage [class^="section"]:not(.section0) .portraitCard .cardBox,
+  #indexPage [class^="section"]:not(.section0) .portraitCard .cardScalable,
+  #indexPage [class^="section"]:not(.section0) .portraitCard .cardImageContainer{
+    width: 100% !important;
+    height: calc(var(--homePosterW) * 1.5) !important; /* 2:3 */
+  }
+
+  /* 3) Textos un poco más compactos bajo las carátulas (opcional) */
+  #indexPage [class^="section"]:not(.section0) .cardText,
+  #indexPage [class^="section"]:not(.section0) .cardText-secondary{
+    font-size: .9rem !important;
+    line-height: 1.15 !important;
+  }
+}
+
+
+/* === LOGIN === */
+
+#loginPage {
+  background: var(--loginPageBgUrl) center/auto no-repeat !important;
+}
+
+/* Formulario a la izquierda en escritorio  */
+@media (min-width: 900px) {
+  #loginPage {
+    justify-content: flex-start !important;
+    padding-left: 5vw;
+    padding-right: 0 !important;
+  }
+
+  #loginPage .padded-left.padded-right.padded-bottom-page {
+    margin-left: 0 !important;
+    margin-right: auto !important;
+  }
+}
+
+/* Quitar puntos suspensivos en TODO Jellyfin */
+.cardText,
+.primaryText,
+.itemName,
+.listItemBodyText,
+.listItemBody .secondary,
+.emby-text-ellipsis,
+.text-overflow {
+  white-space: normal !important;    /* Permite varias líneas */
+  overflow: visible !important;      /* Que no recorte el texto */
+  text-overflow: unset !important;   /* Quita los "..." */
+}
+
+/* Centrar los títulos debajo de las carátulas (home y bibliotecas) */
+.itemsContainer .cardText,
+.itemsContainer .primaryText,
+.itemsContainer .itemName {
+  text-align: center !important;
+}
+
+
+
+
+
+
+/* 1) Importar ElegantFin */
+@import url("https://cdn.jsdelivr.net/gh/lscambo13/ElegantFin@main/Theme/ElegantFin-jellyfin-theme-build-latest-minified.css");
+
+/* 2) Overrides para quitar blur y degradado del fondo (en todo Jellyfin) */
+
+/* Quitar blur de la imagen de fondo que mete ElegantFin */
+.backdropImage:before {
+    filter: none !important;
+    transform: none !important;
+}
+
+/* Quitar el velo oscuro sobre la imagen de fondo */
+.backdropImage:after {
+    display: none !important;
+}
+
+/* Quitar gradientes oscuros de los contenedores de fondo */
+.backgroundContainer.withBackdrop {
+    opacity: 1 !important;
+    background: transparent !important;
+}
+
+.layout-desktop .backgroundContainer.withBackdrop,
+.layout-tv .backgroundContainer.withBackdrop {
+    background: transparent !important;
+}
+
+.layout-mobile .backgroundContainer.withBackdrop,
+.withSectionTabs .backgroundContainer.withBackdrop {
+    opacity: 1 !important;
+    background: transparent !important;
+}
+
+/* Mantener la imagen de fondo limpia y visible */
+.backdropContainer {
+    background: transparent !important;
+}
+
+.backdropImage {
+    opacity: 1 !important;
+}
