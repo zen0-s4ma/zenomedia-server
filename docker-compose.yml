@@ -670,6 +670,15 @@ services:
       retries: 5
       start_period: 30s
 
+  cloudbeaver:
+    image: dbeaver/cloudbeaver:latest
+    container_name: cloudbeaver
+    ports:
+      - "18978:8978"
+    volumes:
+      - "E:/Docker_folders/cloudbeaver/cloudbeaver_workspace:/opt/cloudbeaver/workspace"
+    restart: unless-stopped
+
   postgres:
     image: postgres:16-alpine
     container_name: postgres
@@ -692,14 +701,27 @@ services:
       retries: 10
       start_period: 240s
 
-  cloudbeaver:
-    image: dbeaver/cloudbeaver:latest
-    container_name: cloudbeaver
-    ports:
-      - "18978:8978"
-    volumes:
-      - "E:/Docker_folders/cloudbeaver/cloudbeaver_workspace:/opt/cloudbeaver/workspace"
+  postgresn8n:
+    image: postgres:16-alpine
+    container_name: postgresn8n
+    hostname: postgresn8n
     restart: unless-stopped
+    environment:
+      - POSTGRES_N8N_USER
+      - POSTGRES_N8N_PASSWORD
+      - POSTGRES_N8N_DB
+    volumes:
+      - "E:/Docker_folders/postgres/postgres_storage:/var/lib/postgresql/data"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -h 127.0.0.1 -p 5432 -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
+        ]
+      interval: 20s
+      timeout: 10s
+      retries: 10
+      start_period: 240s
 
   n8n:
     hostname: n8n
@@ -708,9 +730,9 @@ services:
     image: n8nio/n8n:latest
     environment:
       - DB_TYPE=postgresdb
-      - DB_POSTGRESDB_HOST=postgres
-      - DB_POSTGRESDB_USER=${POSTGRES_USER}
-      - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}
+      - DB_POSTGRESDB_HOST=postgresn8n
+      - DB_POSTGRESDB_USER=${POSTGRES_N8N_USER}
+      - DB_POSTGRESDB_PASSWORD=${POSTGRES_N8N_PASSWORD}
       - N8N_RUNNERS_ENABLED=true                # Activa task runners (evita problemas futuros)
       - N8N_BLOCK_ENV_ACCESS_IN_NODE=true       # Más seguro por defecto (ver nota abajo)
       - N8N_GIT_NODE_DISABLE_BARE_REPOS=true    # Desactiva repos bare en Git Node
@@ -730,7 +752,7 @@ services:
       - "E:/Docker_folders/n8n/n8n/demo-data:/demo-data"
       - "E:/Docker_folders/n8n/shared:/data/shared"
     depends_on:
-      postgres:
+      postgresn8n:
         condition: service_healthy
 
   ollama-cpu:
