@@ -641,7 +641,6 @@ services:
     ports:
       - "7575:7575"
     volumes:
-      # OJO: ya NO montamos el socket aquí
       - E:/Docker_folders/homarr/appdata:/appdata
     environment:
       - SECRET_ENCRYPTION_KEY=e111e33c3056a58c37491e24fd3a90b087f906ab1468893544c23205dd10e96b
