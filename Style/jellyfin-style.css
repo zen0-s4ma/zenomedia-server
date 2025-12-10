@@ -1,75 +1,153 @@
-@import url("https://cdn.jsdelivr.net/gh/lscambo13/ElegantFin@main/Theme/ElegantFin-jellyfin-theme-build-latest-minified.css");
+/* ============================================================
+   TEMA PERSONALIZADO PARA JELLYFIN + ELEGANTFIN
+   ============================================================ */
 
+
+/* ------------------------------------------------------------
+   1. IMPORTS DEL TEMA BASE (NO TOCAR)
+   ------------------------------------------------------------ */
+
+@import url("https://cdn.jsdelivr.net/gh/lscambo13/ElegantFin@main/Theme/ElegantFin-jellyfin-theme-build-latest-minified.css");
 @import url("https://cdn.jsdelivr.net/gh/lscambo13/ElegantFin@main/Theme/assets/add-ons/media-bar-plugin-support-latest-min.css");
 
-:root{
-  --extraCardButtonsVisibility: block;
-}
 
-:root{
-  --overlayPlayButtonPosition: 50%;
-}
+/* ------------------------------------------------------------
+   2. VARIABLES GLOBALES (:root)
+   ------------------------------------------------------------ */
 
 :root {
-  /* Fondo azul muy oscuro */
-  --darkerGradientPoint: #020617;   /* azul-neón muy oscuro */
-  --lighterGradientPoint: #0f172a;  /* azul grisáceo */
-  --tableBodyColor: #020617;
+  /* ---------- Comportamiento general de ElegantFin ---------- */
+  --extraCardButtonsVisibility: block;  /* Botones extra en las cards */
+  --overlayPlayButtonPosition: 50%;     /* Posición del botón de play */
 
-  /* Acento azul */
-  --uiAccentColor: rgb(59, 130, 246);             /* tipo Tailwind blue-500 */
+  /* ---------- Fondo general oscuro (coherente con login) ---- */
+  --darkerGradientPoint: #0b0204;   /* casi negro, con toque vino */
+  --lighterGradientPoint: #22050a;  /* rojo vino suave */
+  --tableBodyColor: #0b0204;
+
+  /* ---------- Acentos de color globales --------------------- */
+  /* Paleta rojiza tipo “Netflix”, respetando tu estilo actual */
+  --uiAccentColor: #e50914;
   --activeColor: var(--uiAccentColor);
-  --activeColorAlpha: rgba(59, 130, 246, 0.35);
+  --activeColorAlpha: rgba(229, 9, 20, 0.35);
+
+  /* Texto del login de ElegantFin (lo dejas vacío a propósito) */
+  --loginPageText: " ";
+
+  /* Botones importantes (login, guardar, etc.) */
+  --btnSubmitColor: #95040b;
+  --btnSubmitBorderColor: #fca5a5;
+
+  /* Checkbox y contornos de foco */
+  --checkboxCheckedBgColor: #e11d48;
+  --highlightOutlineColor: #fecaca;
+
+  /* ---------- Barra lateral y cabecera superior ------------- */
+  /* Barra lateral (drawer) en vino oscuro */
+  --drawerColor: rgba(24, 6, 8, 0.97);
+
+  /* Cabecera superior en la misma gama */
+  --headerColor: rgba(24, 6, 8, 0.97);
+
+  /* De rojizo oscuro a casi negro (usado por ElegantFin) */
+  --headerColorGradient: linear-gradient(
+    180deg,
+    #4b0b12 0%,
+    #050000 75%,
+    transparent 100%
+  );
+  --headerColorGradientAlt: linear-gradient(
+    180deg,
+    #4b0b12 0%,
+    #050000 85%,
+    transparent 100%
+  );
+
+  /* ---------- Logo personalizado ---------------------------- */
+  /* Ruta relativa a /web/, coincide con el bind:
+     /jellyfin/jellyfin-web/custom-logos/gato-silueta.png */
+  --custom-logo-path: url("custom-logos/gato-silueta.png");
 }
 
 
-/* === quita carrusel de mis contenidos en el home === */
 
-@media (min-width:100em){
+/* ============================================================
+   3. HOME / PÁGINA DE INICIO
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   3.1. Sección 0 ("Mis contenidos") – quitar carrusel y maquetar en grid
+   ------------------------------------------------------------ */
+
+/* En pantallas muy grandes: convertir el carrusel en una cuadrícula */
+@media (min-width: 100em) {
   /* SOLO "Mis contenidos" (primera sección) */
-  .homePage .section0 .emby-scroller{ margin-right:0; }
-  .homePage .section0 .emby-scrollbuttons{ display:none; }
-  .homePage .section0 .itemsContainer{
-    display:flex; 
-    flex-wrap:wrap; 
-    gap:1rem;
+  .homePage .section0 .emby-scroller {
+    margin-right: 0;
   }
 
-  /* 6 por fila en "Mis contenidos" */
-  .homePage .section0 .overflowBackdropCard,
-  .homePage .section0 .card.backdropCard{
-    flex: 0 0 calc((100% - 4rem)/6.5);
-    max-width: calc((100% - 4rem)/6.5);
+  .homePage .section0 .emby-scrollbuttons {
+    display: none;
   }
+
+  .homePage .section0 .itemsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  /* 6 por fila en "Mis contenidos" (aprox.) */
+  .homePage .section0 .overflowBackdropCard,
+  .homePage .section0 .card.backdropCard {
+    flex: 0 0 calc((100% - 4rem) / 6.5);
+    max-width: calc((100% - 4rem) / 6.5);
+  }
+
   .homePage .section0 .cardBox,
   .homePage .section0 .cardScalable,
-  .homePage .section0 .cardImageContainer{
-    width:100% !important;
+  .homePage .section0 .cardImageContainer {
+    width: 100% !important;
   }
 }
 
-.homePage .section0 .emby-scroller{
+/* Quitar padding/margin y flechas incluso en tamaños menores */
+.homePage .section0 .emby-scroller {
   padding: 0 !important;
   margin: 0 !important;
 }
-.homePage .section0 .emby-scrollbuttons{ /* opcional: quita flechas */
+
+/* Opcional: quita flechas del carrusel */
+.homePage .section0 .emby-scrollbuttons {
   display: none !important;
 }
-.homePage .section0 .itemsContainer{
+
+/* Centrar las cards horizontalmente en "Mis contenidos" */
+.homePage .section0 .itemsContainer {
   display: flex !important;
   justify-content: center !important; /* <- clave para centrar */
 }
+
+/* Ocultar título de la sección "Mis contenidos" */
 #indexPage .section0 .sectionTitleContainer,
 #indexPage .section0 .sectionTitle {
   display: none !important;
 }
 
+/* Elevar ligeramente la zona de secciones del home (todo el bloque) */
+#homeTab .homeSectionsContainer {
+  margin-top: 2em !important;
+}
 
-/* ↓↓↓ INICIO: todas las secciones MENOS "Mis contenidos" (section0) ↓↓↓ */
-@media (min-width:50em){
+
+
+/* ------------------------------------------------------------
+   3.2. Resto de secciones de inicio (todas menos section0)
+   ------------------------------------------------------------ */
+
+@media (min-width: 50em) {
   /* 0) Por si ElegantFin aplica escalado a las cards, lo anulamos */
   #indexPage [class^="section"] .card,
-  #indexPage [class^="section"] .cardScalable{
+  #indexPage [class^="section"] .cardScalable {
     transform: none !important;
     scale: 1 !important;
   }
@@ -78,8 +156,8 @@
   #indexPage [class^="section"]:not(.section0) .portraitCard,
   #indexPage [class^="section"]:not(.section0) .posterCard,
   #indexPage [class^="section"]:not(.section0) .overflowPortraitCard,
-  #indexPage [class^="section"]:not(.section0) .smallPortraitCard{
-    --homePosterW: 15rem;                  /* <- ajusta a tu gusto: 10–12.5rem */
+  #indexPage [class^="section"]:not(.section0) .smallPortraitCard {
+    --homePosterW: 12.5rem;  /* <- ajusta a tu gusto: 10–12.5rem */
     width: var(--homePosterW) !important;
     max-width: var(--homePosterW) !important;
     flex: 0 0 var(--homePosterW) !important;
@@ -88,27 +166,136 @@
   /* 2) Mantener proporción 2:3 y que todo se adapte al nuevo ancho */
   #indexPage [class^="section"]:not(.section0) .portraitCard .cardBox,
   #indexPage [class^="section"]:not(.section0) .portraitCard .cardScalable,
-  #indexPage [class^="section"]:not(.section0) .portraitCard .cardImageContainer{
+  #indexPage [class^="section"]:not(.section0) .portraitCard .cardImageContainer {
     width: 100% !important;
     height: calc(var(--homePosterW) * 1.5) !important; /* 2:3 */
   }
 
   /* 3) Textos un poco más compactos bajo las carátulas (opcional) */
   #indexPage [class^="section"]:not(.section0) .cardText,
-  #indexPage [class^="section"]:not(.section0) .cardText-secondary{
+  #indexPage [class^="section"]:not(.section0) .cardText-secondary {
     font-size: .9rem !important;
     line-height: 1.15 !important;
   }
 }
 
 
-/* === LOGIN === */
 
+/* ============================================================
+   4. TIPOGRAFÍA Y TEXTOS DE LAS CARDS
+   ============================================================ */
+
+/* Quitar puntos suspensivos / truncado de texto en TODO Jellyfin */
+.cardText,
+.primaryText,
+.itemName,
+.listItemBodyText,
+.listItemBody .secondary,
+.emby-text-ellipsis,
+.text-overflow {
+  white-space: normal !important;   /* Permite varias líneas */
+  overflow: visible !important;     /* Que no recorte el texto */
+  text-overflow: unset !important;  /* Quita los "..." */
+}
+
+/* Centrar los títulos debajo de las carátulas (home y bibliotecas) */
+.itemsContainer .cardText,
+.itemsContainer .primaryText,
+.itemsContainer .itemName {
+  text-align: center !important;
+}
+
+
+
+/* ============================================================
+   5. FONDO / BACKDROP GLOBAL (QUITAR BLUR Y VELOS)
+   ============================================================ */
+
+/* Quitar blur de la imagen de fondo que mete ElegantFin */
+.backdropImage:before {
+  filter: none !important;
+  transform: none !important;
+}
+
+/* Quitar el velo oscuro sobre la imagen de fondo */
+.backdropImage:after {
+  display: none !important;
+}
+
+/* Quitar gradientes oscuros de los contenedores de fondo */
+.backgroundContainer.withBackdrop {
+  opacity: 1 !important;
+  background: transparent !important;
+}
+
+.layout-desktop .backgroundContainer.withBackdrop,
+.layout-tv .backgroundContainer.withBackdrop {
+  background: transparent !important;
+}
+
+.layout-mobile .backgroundContainer.withBackdrop,
+.withSectionTabs .backgroundContainer.withBackdrop {
+  opacity: 1 !important;
+  background: transparent !important;
+}
+
+/* Mantener la imagen de fondo limpia y visible */
+.backdropContainer {
+  background: transparent !important;
+}
+
+.backdropImage {
+  opacity: 1 !important;
+}
+
+
+
+/* ============================================================
+   6. LOGO PERSONALIZADO
+   ============================================================ */
+
+/* 1. Logo en la página de login */
+.imgLogoIcon {
+  content: var(--custom-logo-path) !important;
+}
+
+/* 2. Logo en el menú lateral / drawer */
+.adminDrawerLogo img {
+  content: var(--custom-logo-path) !important;
+}
+
+/* 3. Logo en la cabecera / home / splash */
+.pageTitleWithLogo,
+.pageTitleWithDefaultLogo,
+.splashLogo {
+  background-image: var(--custom-logo-path) !important;
+  background-repeat: no-repeat !important;
+  background-position: center left !important;
+  background-size: contain !important;
+}
+
+/* Opcional: ajustar alto de la cabecera para que el logo respire un poco */
+.pageTitleWithLogo,
+.pageTitleWithDefaultLogo {
+  min-height: 3em;
+}
+
+
+
+/* ============================================================
+   7. PÁGINA DE LOGIN
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   7.1. Fondo y layout general
+   ------------------------------------------------------------ */
+
+/* Imagen de fondo definida por ElegantFin */
 #loginPage {
   background: var(--loginPageBgUrl) center/auto no-repeat !important;
 }
 
-/* Formulario a la izquierda en escritorio  */
+/* Formulario alineado a la izquierda en escritorio */
 @media (min-width: 900px) {
   #loginPage {
     justify-content: flex-start !important;
@@ -122,69 +309,140 @@
   }
 }
 
-/* Quitar puntos suspensivos en TODO Jellyfin */
-.cardText,
-.primaryText,
-.itemName,
-.listItemBodyText,
-.listItemBody .secondary,
-.emby-text-ellipsis,
-.text-overflow {
-  white-space: normal !important;    /* Permite varias líneas */
-  overflow: visible !important;      /* Que no recorte el texto */
-  text-overflow: unset !important;   /* Quita los "..." */
+/* ------------------------------------------------------------
+   7.2. Caja / panel del formulario de login
+   ------------------------------------------------------------ */
+
+/* Panel central de login (tamaño + aspecto rojizo oscuro) */
+#loginPage .padded-left.padded-right.padded-bottom-page {
+  width: 100%;
+  max-width: 19rem;              /* ancho del panel */
+  padding-top: 5em !important;   /* separación superior */
+  padding-bottom: 0em !important;
+
+  background: radial-gradient(
+                circle at top left,
+                #4b0b12 0%,
+                #26040a 45%,
+                #150104 100%
+              );
+  border-radius: 1.25rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(248, 113, 113, 0.5);
+  color: #fee2e2;
 }
 
-/* Centrar los títulos debajo de las carátulas (home y bibliotecas) */
-.itemsContainer .cardText,
-.itemsContainer .primaryText,
-.itemsContainer .itemName {
-  text-align: center !important;
+/* ------------------------------------------------------------
+   7.3. Inputs, textos y checkbox
+   ------------------------------------------------------------ */
+
+/* Inputs del login */
+#loginPage .emby-input,
+#loginPage .emby-select-withcolor,
+#loginPage .emby-textarea {
+  background: rgba(15, 4, 6, 0.96);
+  border-color: rgba(248, 113, 113, 0.45);
+  color: #fef2f2;
+}
+
+#loginPage .emby-input:focus,
+#loginPage .emby-select-withcolor:focus,
+#loginPage .emby-textarea:focus {
+  border-color: #fca5a5;
+  box-shadow: 0 0 0 1px rgba(248, 113, 113, 0.65);
+}
+
+/* Textos del formulario */
+#loginPage .inputLabel,
+#loginPage .checkboxLabel,
+#loginPage .checkboxLabelText {
+  color: #fee2e2;
+}
+
+/* Checkbox “Recuérdame” en rojo oscuro */
+#loginPage .checkboxOutline:not(.multiSelectCheckboxOutline) {
+  background-color: rgba(34, 5, 10, 0.95); /* base oscura similar al fondo */
+  border: 1px solid rgba(122, 26, 44, 0.6); /* borde rojizo suave */
+}
+
+#loginPage .emby-checkbox:checked + span + .checkboxOutline:not(.multiSelectCheckboxOutline) {
+  background: linear-gradient(135deg, #550c19, #3d0912); /* mismo degradado que el botón */
+  border-color: #7a1a2c; /* mismo borde que el botón */
+}
+
+#loginPage .emby-checkbox:focus + span + .checkboxOutline {
+  outline-color: #7a1a2c; /* resalte discreto en foco */
+}
+
+/* ------------------------------------------------------------
+   7.4. Botones de login
+   ------------------------------------------------------------ */
+
+/* Botón principal: “Iniciar sesión” */
+#loginPage .button-submit {
+  background: linear-gradient(135deg, #550c19, #3d0912) !important;
+  border-color: #7a1a2c !important;
+  color: #fef2f2 !important;
+}
+
+/* Botones secundarios (inicio rápido, contraseña olvidada, etc.) */
+#loginPage .emby-button.block:not(.button-submit) {
+  background: rgba(18, 5, 7, 0.96);
+  border-color: rgba(248, 113, 113, 0.35);
+  color: #e5e7eb;
+}
+
+#loginPage .emby-button.block:not(.button-submit):hover {
+  background: rgba(27, 8, 11, 0.98);
+  filter: brightness(1.08) !important;
 }
 
 
 
+/* ============================================================
+   8. BARRA LATERAL Y CABECERA
+   ============================================================ */
 
-
-
-/* 1) Importar ElegantFin */
-@import url("https://cdn.jsdelivr.net/gh/lscambo13/ElegantFin@main/Theme/ElegantFin-jellyfin-theme-build-latest-minified.css");
-
-/* 2) Overrides para quitar blur y degradado del fondo (en todo Jellyfin) */
-
-/* Quitar blur de la imagen de fondo que mete ElegantFin */
-.backdropImage:before {
-    filter: none !important;
-    transform: none !important;
+/* 1) Barra lateral: usa nuestra gama rojiza oscura */
+.mainDrawer,
+.drawer-open {
+  background-color: var(--drawerColor) !important;
 }
 
-/* Quitar el velo oscuro sobre la imagen de fondo */
-.backdropImage:after {
-    display: none !important;
+/* 2) Cabecera superior: degradado rojizo/negro personalizado
+      (sobrescribe el background que pone ElegantFin) */
+.skinHeader-withBackground:not(.osdHeader),
+.skinHeader:not(.osdHeader) {
+  background: linear-gradient(
+    to bottom,
+    #050000 0%,   /* negro arriba */
+    #150104 40%,  /* muy oscuro en medio */
+    #1E0409 100%  /* rojizo acorde con el fondo */
+  ) !important;
 }
 
-/* Quitar gradientes oscuros de los contenedores de fondo */
-.backgroundContainer.withBackdrop {
-    opacity: 1 !important;
-    background: transparent !important;
+/* ============================================================
+   9. APLICACION MOVIL
+   ============================================================ */
+
+/* === Cabecera más compacta en móviles === */
+@media (max-width: 900px) {
+  /* Menos padding vertical en la barra superior */
+  .layout-mobile .skinHeader {
+    padding-top: 0.2rem !important;
+    padding-bottom: 0.2rem !important;
+  }
+
+  /* Tabs (Inicio / Favoritos) un poco más bajas */
+  .layout-mobile .headerTabs.sectionTabs {
+    height: 3.2rem !important;
+    margin-top: 0.2rem !important;
+  }
+
+  .layout-mobile .headerTabs.sectionTabs .emby-tab-button {
+    height: 1.8rem !important;
+    margin-block: 0.1rem !important;
+  }
 }
 
-.layout-desktop .backgroundContainer.withBackdrop,
-.layout-tv .backgroundContainer.withBackdrop {
-    background: transparent !important;
-}
 
-.layout-mobile .backgroundContainer.withBackdrop,
-.withSectionTabs .backgroundContainer.withBackdrop {
-    opacity: 1 !important;
-    background: transparent !important;
-}
-
-/* Mantener la imagen de fondo limpia y visible */
-.backdropContainer {
-    background: transparent !important;
-}
-
-.backdropImage {
-    opacity: 1 !important;
-}

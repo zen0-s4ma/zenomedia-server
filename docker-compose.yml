@@ -27,14 +27,10 @@ services:
               capabilities: [gpu]
     volumes:
       # CONFIG
+      # Carpeta completa del cliente web
+      - "E:/Docker_folders/jellifyn/jellyfin-web:/jellyfin/jellyfin-web"
+      # Logos extra para CSS
       - "E:/Docker_folders/jellifyn/custom-logos:/jellyfin/jellyfin-web/custom-logos:ro"
-      # Sobrescribir logos internos de Jellyfin (splash, cabecera, etc.)
-      - "E:/Docker_folders/jellifyn/custom-logos/banner-light.png:/jellyfin/jellyfin-web/assets/img/banner-light.png:ro"
-      - "E:/Docker_folders/jellifyn/custom-logos/banner-dark.png:/jellyfin/jellyfin-web/assets/img/banner-dark.png:ro"
-      - "E:/Docker_folders/jellifyn/custom-logos/icon-transparent.png:/jellyfin/jellyfin-web/assets/img/icon-transparent.png:ro"
-      # Favicons clásicos – por si tu versión aún los usa sin hash
-      - "E:/Docker_folders/jellifyn/custom-logos/favicon.ico:/jellyfin/jellyfin-web/favicon.ico:ro"
-      - "E:/Docker_folders/jellifyn/custom-logos/favicon.png:/jellyfin/jellyfin-web/favicon.png:ro"
       # UNIDAD DE ALMACENAMIENTO F (CONTENIDO MULTIMEDIA):
       - "F:/Peliculas:/media/Peliculas"
       - "F:/Documentales:/media/Documentales"
@@ -601,14 +597,6 @@ services:
       - "E:/Docker_folders/autoborr/autobrr_config:/config"
     restart: unless-stopped
 
-  newtrackon:
-    image: corralpeltzer/newtrackon:latest
-    container_name: newtrackon
-    ports:
-      - "33101:8080"
-    command: ["--address=0.0.0.0", "--ignore-ipv6"]
-    restart: unless-stopped
-
   notifiarr:
     image: golift/notifiarr:latest
     container_name: notifiarr
@@ -622,18 +610,44 @@ services:
       - "E:/Docker_folders/notifiarr/notifiarr_config:/config"
     restart: unless-stopped
 
+  docker-socket-proxy:
+    image: tecnativa/docker-socket-proxy
+    container_name: docker-socket-proxy
+    restart: unless-stopped
+    environment:
+      - CONTAINERS=1     # /containers/*
+      - IMAGES=1         # /images/*
+      - POST=1           # operaciones POST (start/stop, etc.)
+      - INFO=1           # /info (por si Homarr lo usa)
+      - SYSTEM=1         # /system/* (stats globales, df, etc.)
+      # - NETWORKS=1     # solo si algún día lo necesitas
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    expose:
+      - "2375"
+    healthcheck:
+      test: ["CMD", "wget", "-qO", "-", "http://localhost:2375/_ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
   homarr:
     container_name: homarr
-    image: ghcr.io/homarr-labs/homarr:latest
+    image: ghcr.io/homarr-labs/homarr:v1.35.1
     restart: unless-stopped
+    depends_on:
+      docker-socket-proxy:
+        condition: service_healthy
     ports:
       - "7575:7575"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - "E:/Docker_folders/homarr/appdata:/appdata"
+      # OJO: ya NO montamos el socket aquí
+      - E:/Docker_folders/homarr/appdata:/appdata
     environment:
       - SECRET_ENCRYPTION_KEY=e111e33c3056a58c37491e24fd3a90b087f906ab1468893544c23205dd10e96b
-      - LOG_LEVEL=debug
+      - DOCKER_HOSTNAMES=docker-socket-proxy
+      - DOCKER_PORTS=2375
+      # - LOG_LEVEL=debug
 
   jackett:
     image: lscr.io/linuxserver/jackett:latest
