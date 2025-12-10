@@ -23,7 +23,7 @@
   /* ---------- Fondo general oscuro (coherente con login) ---- */
   --darkerGradientPoint: #0b0204;   /* casi negro, con toque vino */
   --lighterGradientPoint: #22050a;  /* rojo vino suave */
-  --tableBodyColor: #0b0204;
+  --tableBodyColor: #0b0204;        /* casi negro, con toque vino */
 
   /* ---------- Acentos de color globales --------------------- */
   /* Paleta rojiza tipo “Netflix”, respetando tu estilo actual */
