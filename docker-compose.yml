@@ -30,7 +30,7 @@ services:
       # Carpeta completa del cliente web
       - "E:/Docker_folders/jellifyn/jellyfin-web:/jellyfin/jellyfin-web"
       # Logos extra para CSS
-      - "E:/Docker_folders/jellifyn/custom-logos:/jellyfin/jellyfin-web/custom-logos:ro"
+      # - "E:/Docker_folders/jellifyn/custom-logos:/jellyfin/jellyfin-web/custom-logos:ro"
       # UNIDAD DE ALMACENAMIENTO F (CONTENIDO MULTIMEDIA):
       - "F:/Peliculas:/media/Peliculas"
       - "F:/Documentales:/media/Documentales"
@@ -1172,6 +1172,21 @@ services:
     volumes:
       # Carpeta de descargas en el host -> carpeta interna de MeTube
       - "E:/YouTube:/downloads"
+
+  kanboard:
+    image: kanboard/kanboard:v1.2.45
+    container_name: kanboard
+    ports:
+      - "8811:80"          # UI web Kanboard -> http://HOST:8811
+      # - "8443:443"       # (opcional) si algún día configuras SSL dentro del contenedor
+    environment:
+      - TZ=Europe/Madrid
+      - PLUGIN_INSTALLER=true    # permite instalar plugins desde la interfaz
+    volumes:
+      - "E:/Docker_folders/kanboard/data:/var/www/app/data"
+      - "E:/Docker_folders/kanboard/plugins:/var/www/app/plugins"
+      - "E:/Docker_folders/kanboard/ssl:/etc/nginx/ssl"
+    restart: unless-stopped
 
   # --- Prueba de GPU -------------------------------------------------------
   #test-gpu:
