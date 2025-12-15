@@ -30,7 +30,7 @@ services:
       # Carpeta completa del cliente web
       - "E:/Docker_folders/jellifyn/jellyfin-web:/jellyfin/jellyfin-web"
       # Logos extra para CSS
-      # - "E:/Docker_folders/jellifyn/custom-logos:/jellyfin/jellyfin-web/custom-logos:ro"
+      # -"E:/Docker_folders/jellifyn/custom-logos:/jellyfin/jellyfin-web/custom-logos:ro"
       # UNIDAD DE ALMACENAMIENTO F (CONTENIDO MULTIMEDIA):
       - "F:/Peliculas:/media/Peliculas"
       - "F:/Documentales:/media/Documentales"
@@ -60,68 +60,6 @@ services:
       - "E:/Docker_folders/jellifyn/metadata:/config"
       - "C:/Docker_folders/jellifyn/cache:/cache"
       - "C:/Docker_folders/jellifyn/transcodes:/transcode"
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-fsS", "http://localhost:8096/health"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 60s
-
-  jellyfin-old:
-    image: jellyfin/jellyfin:10.10.7
-    container_name: jellyfin-old
-    ports:
-      - "8096:8096"
-      - "8920:8920"
-      - "7359:7359/udp"
-    environment:
-      TZ: Europe/Madrid
-      UMASK: "022"
-      JELLYFIN_PublishedServerUrl: "${JELLYFIN_PUBLISHED_URL}"
-      NVIDIA_VISIBLE_DEVICES: all
-      NVIDIA_DRIVER_CAPABILITIES: compute,video,utility
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
-    volumes:
-      # CONFIG
-      #
-      # ---
-      #
-      # UNIDAD DE ALMACENAMIENTO F (CONTENIDO MULTIMEDIA):
-      - "F:/Peliculas:/media/Peliculas"
-      - "F:/Documentales:/media/Documentales"
-      - "F:/Series:/media/Series"
-      - "F:/MiniSeries:/media/MiniSeries"
-      - "F:/Anime:/media/Anime"
-      - "F:/Futbol:/media/Futbol"
-      - "F:/Baloncesto:/media/Baloncesto"
-      - "F:/NFL:/media/NFL"
-      - "F:/Combates:/media/Combates"
-      - "F:/LoL:/media/LoL"
-      - "F:/Olimpiadas:/media/Olimpiadas"
-      # UNIDAD DE ALMACENAMIENTO E (CONTENIDO MULTIMEDIA):
-      - "E:/Peliculas:/media/Peliculas2"
-      - "E:/Series:/media/Series2"
-      - "E:/MiniSeries:/media/MiniSeries2"
-      - "E:/YouTube:/media/YouTube2"
-      - "E:/Anime:/media/Anime2"
-      - "E:/Documentales:/media/Documentales2"
-      - "E:/Futbol:/media/Futbol2"
-      - "E:/Baloncesto:/media/Baloncesto2"
-      - "E:/NFL:/media/NFL2"
-      - "E:/Combates:/media/Combates2"
-      - "E:/LoL:/media/LoL2"
-      - "E:/Olimpiadas:/media/Olimpiadas2"
-      # PATHS DE CONFIGURACION E:
-      - "E:/Docker_folders/jellifyn-old/metadata:/config"
-      - "E:/Docker_folders/jellifyn-old/cache:/cache"
-      - "E:/Docker_folders/jellifyn-old/transcodes:/transcode"
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://localhost:8096/health"]
@@ -439,7 +377,7 @@ services:
       - "E:/Docker_folders/tdarr/tdarr_server:/app/server"
       - "E:/Docker_folders/tdarr/tdarr_configs:/app/configs"
       - "E:/Docker_folders/tdarr/tdarr_logs:/app/logs"
-      - "E:/Docker_folders/tdarr/tdarr_cache:/temp"
+      - "C:/Docker_folders/tdarr/tdarr_cache:/temp"
       # UNIDAD DE ALMACENAMIENTO F (CONTENIDO MULTIMEDIA):
       - "F:/Peliculas:/media/Peliculas"
       - "F:/Documentales:/media/Documentales"
