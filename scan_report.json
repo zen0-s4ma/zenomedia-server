@@ -1,0 +1,4268 @@
+{
+  "needs": [
+    {
+      "file": "F:\\Peliculas\\1993 - Dragon Ball Z Especial 5 - El Plan para Erradicar a los Saiyans (Remasterizado).mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\2022 - Dragon Ball Super 4 - Super hero.mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\A Fuego Lento - La passion de Dodin Bouffant.mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 1040,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\A todo gas (2001).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 324,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\A todo gas 2 (2003).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 324,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\A todo gas Tokyo Drift (2006).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 672,
+      "height": 288,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Agarralo como puedas (2025).mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Ag\u00e1rralo como puedas (1988).mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Ag\u00e1rralo como puedas 33 1-3 (1994).mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Airbag (1997).mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 818,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\al filo de la navaja.avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 524,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Alicia En El Pais De Las Maravillas - Disney.avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 576,
+      "height": 416,
+      "pix_fmt": "yuv420p",
+      "profile": "",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Amateur.mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\American Beauty.mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 816,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\American History X.avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 400,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Ant-Man (2015).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 384,
+      "pix_fmt": "yuv420p",
+      "profile": "simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Ant-Man y la Avispa (2018).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Asesinato en el Orient Express (1974).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Ast\u00e9rix el galo (1967).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 608,
+      "height": 464,
+      "pix_fmt": "yuv420p",
+      "profile": "",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Ast\u00e9rix en Am\u00e9rica (1994).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 512,
+      "height": 368,
+      "pix_fmt": "yuv420p",
+      "profile": "simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Ast\u00e9rix en Breta\u00f1a (1987).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 576,
+      "height": 432,
+      "pix_fmt": "yuv420p",
+      "profile": "",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Ast\u00e9rix y Cleopatra (1968).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 576,
+      "height": 432,
+      "pix_fmt": "yuv420p",
+      "profile": "",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Ast\u00e9rix y la sorpresa del C\u00e9sar (1985).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 544,
+      "height": 400,
+      "pix_fmt": "yuv420p",
+      "profile": "",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Ast\u00e9rix y los vikingos (2006).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 640,
+      "height": 352,
+      "pix_fmt": "yuv420p",
+      "profile": "simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Aterriza como puedas (1980).mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8",
+        "HDR_CONTENT_REVIEW"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": true
+    },
+    {
+      "file": "F:\\Peliculas\\Bambi.avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 608,
+      "height": 448,
+      "pix_fmt": "yuv420p",
+      "profile": "simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Batman - El Caballero Oscuro.mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8",
+        "HDR_CONTENT_REVIEW"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": true
+    },
+    {
+      "file": "F:\\Peliculas\\Batman Begins.avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Batman El Caballero Oscuro -3- La leyenda renace.HDrip.avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Black Hawk derribado.mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8",
+        "HDR_CONTENT_REVIEW"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": true
+    },
+    {
+      "file": "F:\\Peliculas\\Black Panther (2018).mkv",
+      "reasons": [
+        "RESOLUTION_GT_1080P"
+      ],
+      "video_codec": "h264",
+      "width": 1936,
+      "height": 804,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Blackhat Amenaza en la red (2015).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Buscando a Nemo.avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 520,
+      "height": 288,
+      "pix_fmt": "yuv420p",
+      "profile": "",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Cadena perpetua.avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 640,
+      "height": 352,
+      "pix_fmt": "yuv420p",
+      "profile": "simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Capitana Marvel (2019).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Capit\u00e1n Am\u00e9rica Brave New World (2025).mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Capit\u00e1n Am\u00e9rica El soldado de invierno (2014).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Ciudad de Dios.avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 400,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Come, reza, ama.avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 384,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Con la muerte en los talones (1959).mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Contratiempo.avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Del rev\u00e9s 2 Inside Out 2 (2024).mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8",
+        "HDR_CONTENT_REVIEW"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 804,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": true
+    },
+    {
+      "file": "F:\\Peliculas\\Dentro del laberinto (1986).mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8",
+        "HDR_CONTENT_REVIEW"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": true
+    },
+    {
+      "file": "F:\\Peliculas\\Desayuno con diamantes.avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 404,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Detective Conan Pel\u00edcula 23 El pu\u00f1o de zafiro azul (2019).mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Disney - El Libro De La Selva 1.avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 512,
+      "height": 384,
+      "pix_fmt": "yuv420p",
+      "profile": "",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Disney - Shrek 2.avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 608,
+      "height": 320,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Django Desencadenado.avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Doce hombres sin piedad.avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 432,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Doctor Strange (2016).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Doctor Strange en el multiverso de la locura (2022).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Durante la tormenta.avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\El caso Bourne (2002).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 704,
+      "height": 288,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\El castillo ambulante.mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 1040,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\El contable 2 (2025).mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\El golpe de menhir (1989).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 544,
+      "height": 400,
+      "pix_fmt": "yuv420p",
+      "profile": "",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\El Hobbit 2 - La desolacion de Smaug.avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\El hombre bicentenario.avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 400,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\El hundimiento (2004).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 528,
+      "height": 288,
+      "pix_fmt": "yuv420p",
+      "profile": "simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\El legado de Bourne (2012).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\El mito de Bourne (2004).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 696,
+      "height": 288,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\El Padrino II.mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 400,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\El Padrino III.mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1912,
+      "height": 1080,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\El Reino De Los Cielos (2005).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 688,
+      "height": 288,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\El reino.mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 856,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\El sexto sentido.mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "RESOLUTION_GT_1080P",
+        "BIT_DEPTH_GT_8",
+        "HDR_CONTENT_REVIEW"
+      ],
+      "video_codec": "hevc",
+      "width": 2560,
+      "height": 1392,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": true
+    },
+    {
+      "file": "F:\\Peliculas\\El Se\u00f1or de los Anillos El retorno del rey (2003) [Versi\u00f3n extendida].avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\El Se\u00f1or de los Anillos La Comunidad del Anillo (2001) [Versi\u00f3n extendida].avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 576,
+      "height": 232,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\El Se\u00f1or de los Anillos Las dos torres (2002) [Versi\u00f3n extendida].avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 512,
+      "height": 208,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\El ultim\u00e1tum de Bourne (2007).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 576,
+      "height": 240,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\El vicio del poder (2018).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\En tierra hostil.avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 400,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Esencia de mujer (1992).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 688,
+      "height": 368,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Esp\u00edas desde el cielo (2015).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\EuroTrip (2004).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 512,
+      "height": 264,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Exam (2009).mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 816,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\F1 - La pelicula.mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Fast & Furious (2009).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Fast & Furious - Hobbs & Shaw (2019).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Fast & Furious 5 (2011).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Fast & Furious 6 (2013).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Fast & Furious 7 (2015).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Fast & Furious 9 (2021).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Friday Night Lights (2004).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 608,
+      "height": 256,
+      "pix_fmt": "yuv420p",
+      "profile": "simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Gladiator II (2024).mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Golpe de suerte.mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 958,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Gran Torino.mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Guardianes de la galaxia Vol 2 (2017).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Harry Potter y el c\u00e1liz de fuego (2005).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 704,
+      "height": 288,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Harry Potter y el misterio del pr\u00edncipe (2009).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 576,
+      "height": 240,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Harry Potter y el prisionero de Azkaban (2004).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 704,
+      "height": 288,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Harry Potter y la c\u00e1mara secreta (2002).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 672,
+      "height": 272,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Harry Potter y la Orden del F\u00e9nix (2007).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 712,
+      "height": 288,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Harry Potter y la piedra filosofal (2001).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 624,
+      "height": 256,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Harry Potter y las Reliquias de la Muerte Parte 1 (2010).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Heroes del Cielo (2005).mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Ice Age La Edad De Hielo.avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 608,
+      "height": 320,
+      "pix_fmt": "yuv420p",
+      "profile": "",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Independence Day - version extendida.mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8",
+        "HDR_CONTENT_REVIEW"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": true
+    },
+    {
+      "file": "F:\\Peliculas\\Indiana Jones En busca del arca perdida (1981).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 704,
+      "height": 296,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Indiana Jones y el reino de la calavera de cristal (2008).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 576,
+      "height": 240,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Indiana Jones y el templo maldito (1984).mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8",
+        "HDR_CONTENT_REVIEW"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": true
+    },
+    {
+      "file": "F:\\Peliculas\\Indiana Jones y la \u00faltima cruzada (1989).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Infiltrados.mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 796,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Iron Man 2 (2010).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 672,
+      "height": 288,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Jason Bourne (2016).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Jerry Maguire.avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 704,
+      "height": 384,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Jurado N\u00ba2.mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Jurassic World - El renacer.mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 804,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Jurassic World Dominion (2022).mkv",
+      "reasons": [
+        "HDR_CONTENT_REVIEW"
+      ],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 960,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": true
+    },
+    {
+      "file": "F:\\Peliculas\\Jurassic World El reino ca\u00eddo (2018).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Kingsman 3 La primera mision.mkv",
+      "reasons": [
+        "HDR_CONTENT_REVIEW"
+      ],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 804,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": true
+    },
+    {
+      "file": "F:\\Peliculas\\La caza del octubre rojo.mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8",
+        "HDR_CONTENT_REVIEW"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": true
+    },
+    {
+      "file": "F:\\Peliculas\\La chaqueta metalica.avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 604,
+      "height": 444,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\La chica del drag\u00f3n tatuado (2011).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\La chica que so\u00f1aba con una cerilla y un bid\u00f3n de gasolina (2009).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 404,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\La gran apuesta.mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\La historia interminable (1984).mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8",
+        "HDR_CONTENT_REVIEW"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": true
+    },
+    {
+      "file": "F:\\Peliculas\\La Liga de la Justicia de Zack Snyder (2021).mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "RESOLUTION_GT_1080P",
+        "BIT_DEPTH_GT_8",
+        "HDR_CONTENT_REVIEW"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 1440,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": true
+    },
+    {
+      "file": "F:\\Peliculas\\La novia cadaver.avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 384,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\La reina del palacio de las corrientes de aire (2009).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 400,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Las doce pruebas de Ast\u00e9rix (1976).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 576,
+      "height": 432,
+      "pix_fmt": "yuv420p",
+      "profile": "",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Lincoln (2012).mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Lobezno inmortal (2013).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 640,
+      "height": 272,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Los aristogatos (1970).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 432,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Los hombres que no amaban a las mujeres (2009).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 608,
+      "height": 256,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Malas Noticias.avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 400,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Mary Poppins - Edicion especial 40 aniversario.avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 640,
+      "height": 384,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Master and Commander Al otro lado del mundo (2003).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 640,
+      "height": 272,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Me llaman Radio.mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 1038,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Misi\u00f3n imposible Fallout (2018).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 384,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Misi\u00f3n imposible Naci\u00f3n secreta (2015).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Misi\u00f3n imposible Protocolo Fantasma (2011).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 300,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Misi\u00f3n imposible Sentencia mortal Parte 1 (2023).mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Mufasa el rey le\u00f3n (2024).mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 1036,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\No es otra estupida historia americana.avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 388,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Ocean's Eleven (2001).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 1280,
+      "height": 528,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Ocean's Thirteen (2007).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 1280,
+      "height": 536,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Ocean's Twelve (2004).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 1280,
+      "height": 528,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Oppenheimer (2023).mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Parthenope (2024).mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 804,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Philadelphia (1993).mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 1040,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Pinocho.avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "msmpeg4v3",
+      "width": 720,
+      "height": 576,
+      "pix_fmt": "yuv420p",
+      "profile": "",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Piratas del Caribe El cofre del hombre muerto (2006).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 656,
+      "height": 272,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Piratas del Caribe En el fin del mundo (2007).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 592,
+      "height": 240,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Piratas del Caribe En mareas misteriosas (2011).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Piratas del Caribe La maldici\u00f3n de la Perla Negra (2003).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 640,
+      "height": 272,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Piratas del Caribe La venganza de Salazar (2017).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Plan de vuelo desaparecida.avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Platoon.mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 1036,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Pulp Fiction.avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 648,
+      "height": 268,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Pu\u00f1ales Por La Espalda.avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 384,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Reservoir dogs.mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 816,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Rocky 2.mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 1040,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Rocky 3.avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 380,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Rogue One Una historia de Star Wars (2016).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Saltburn (2023).mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1440,
+      "height": 1080,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Snowden.avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Spider-Man No Way Home (2021).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Star Wars Episodio VI El retorno del Jedi (1983).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 704,
+      "height": 288,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Su juego favorito (1964).mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 1032,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Sully (2016).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Testigo de Cargo (1957).mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1776,
+      "height": 1072,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\The Batman.mkv",
+      "reasons": [
+        "HDR_CONTENT_REVIEW"
+      ],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 804,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": true
+    },
+    {
+      "file": "F:\\Peliculas\\The Guardian (2006).mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 1036,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\The Marvels (2023).mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 804,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\The Master (2012).mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 1036,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Thor Love and Thunder (2022).mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 804,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Thor Ragnarok (2017).mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 804,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Trece d\u00edas (2000).mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 1040,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Un ciudadano ejemplar.mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Un plan brillante.avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 640,
+      "height": 272,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\V de Vendetta (2005).mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1916,
+      "height": 800,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Vaya un fugitivo (1998).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 400,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Vengadores La era de Ultr\u00f3n (2015).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Viaje a Agartha (2011).mkv",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264",
+        "BIT_DEPTH_GT_8"
+      ],
+      "video_codec": "hevc",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p10le",
+      "profile": "main 10",
+      "bit_depth": 10,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Viuda Negra (2021).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\X-Men 2 (2003).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 1280,
+      "height": 536,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\X-Men D\u00edas del futuro pasado (2014).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\X-Men F\u00e9nix Oscura (2019).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 720,
+      "height": 304,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\X-Men Primera generaci\u00f3n (2011).avi",
+      "reasons": [
+        "VIDEO_CODEC_NOT_H264"
+      ],
+      "video_codec": "mpeg4",
+      "width": 640,
+      "height": 272,
+      "pix_fmt": "yuv420p",
+      "profile": "advanced simple profile",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    }
+  ],
+  "ok": [
+    {
+      "file": "F:\\Peliculas\\13 Horas - Los soldados secretos de Bengasi.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1280,
+      "height": 536,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\1993 - Dragon Ball Z 09 - Los guerreros de plata.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\1993 - Dragon Ball Z Especial 2 - Los Dos Guerreros Del Futuro! Gohan y Trunks 1080p.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\1994 - Dragon Ball Z 10 -  El Regreso del Guerrero Legendario 1080p.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\1994 - Dragon Ball Z 11 - El Combate Final 1080p.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\1995 - Dragon Ball Z 12 - La Fusion De Goku y Vegeta 1080p.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\1995 - Dragon Ball Z 13 - El Ataque Del Dragon Bluray 1080p.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\1996 - Dragon Ball 4 - El Camino Hacia el Poder.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\1997 - Dragon Ball GT 100 a\u00f1os despues.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1280,
+      "height": 960,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\2000 - Dragon Ball Z Especial 0 - The World of Dragon Ball Z.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\2008 - Dragon Ball Z Especial 4 - \u00a1Hey! Goku y sus Amigos Regresan.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\2011 - Dragon Ball Z Especial 3 - Episodio de Bardock.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\2013 - Dragon Ball Super 1 - La Batalla De Los Dioses.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\2015 - Dragon Ball Super 2 - La Resurrecci\u00f3n De Freezer.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\2018 - Dragon Ball Super 3 - Broly.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1280,
+      "height": 720,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\300.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\36 Horas (1964).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 816,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Ag\u00e1rralo como puedas 2 y 1-2 (1991).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Algo pasa con Mary.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1024,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Algunos hombres buenos (1992).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 816,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Alicia en el pa\u00eds de las maravillas.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Am\u00e9lie (2001).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 816,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Ant-Man y la Avispa Quantumania (2023).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 804,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Apocalypse now.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 816,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Argo (Version Extendida).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Ballerina.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Batman Ninja vs La Liga Yakuza.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Batman y Superman. La batalla de los Super hijos.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Black Panther Wakanda Forever (2022).avi",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 804,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Blancanieves (Snow White) (2025).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1918,
+      "height": 802,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Born to Fly (2023).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 804,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Bullet Train (2022).mp4",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Capit\u00e1n Am\u00e9rica Civil War (2016).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Capit\u00e1n Am\u00e9rica El primer vengador (2011).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1280,
+      "height": 544,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Casino (1995).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 816,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Casper (1995).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1036,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Cero en conducta.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Coherence (2013).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1916,
+      "height": 816,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Conspiraci\u00f3n en la red (2001).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 816,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Cuando Harry encontro a Sally (1989).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1908,
+      "height": 1040,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Deadpool (2016).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Deadpool 2 (2018).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1280,
+      "height": 536,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Deadpool y Lobezno (2024).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 804,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Del rev\u00e9s Inside Out (2015).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1280,
+      "height": 720,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Dragones del aire.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Dumbo.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1440,
+      "height": 1080,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\El caso Slevin (2006).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\El chico y la garza.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1040,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\El contable (2016).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\El cristal oscuro (1982).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 816,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\El c\u00f3nclave (2006).avi",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\El Hobbit 1 - Un viaje inesperado.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\El Hobbit 3 -La Batalla De Los Cinco Ejercitos.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1280,
+      "height": 536,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\El incre\u00edble Hulk (2008).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 816,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\El lobo de Wall Street.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\El mundo perdido Jurassic Park (1997).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1040,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\El padrino.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1072,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\El quinto poder (2013).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\El viaje de Chihiro.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1040,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\El vuelo del intruder (1991).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 816,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\El \u00faltimo gran h\u00e9roe (1993).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Enemigo a las puertas (2001).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1280,
+      "height": 544,
+      "pix_fmt": "yuvj420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Eternals (2021).mp4",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 804,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Fast & Furious 10 (2023).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 840,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Fast & Furious 8 (2017).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1280,
+      "height": 536,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Frost contra Nixon (2008).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1280,
+      "height": 544,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Funny Games (1997).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 720,
+      "height": 412,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Gladiator (Versi\u00f3n extendida).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 816,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Goofy e hijo (1995).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1040,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Grease (1978) (Remasterizada 40.Aniversario).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Guardianes de la galaxia (2014).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Guardianes de la galaxia Vol 3 (2023).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1038,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Hackers Piratas inform\u00e1ticos (1995).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 820,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Han Solo Una historia de Star Wars (2018).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Harry Potter y las Reliquias de la Muerte Parte 2 (2011).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1280,
+      "height": 528,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Invictus (2009).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Iron Man (2008).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Iron Man 3 (2013).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\JFK Caso abierto.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1918,
+      "height": 798,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\John Wick (2014).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\John Wick 2 (2017).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\John Wick 3 Parabellum (2019).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\John Wick 4 (2023).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1248,
+      "height": 520,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Jurassic Park (1993).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1040,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Jurassic Park III (2001).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1040,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Jurassic World (2015).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 960,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Kingsman 1 Servicio Secreto.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Kingsman 2 El Circulo De Oro.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\L.A. Confidential (1997).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1728,
+      "height": 720,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\La chica en la telara\u00f1a (2018).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\La gu\u00eda del autoestopista gal\u00e1ctico (2005).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\La hora decisiva (2016).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1280,
+      "height": 534,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\La jungla 2 Alerta roja (1990).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\La jungla 4.0 (2007).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1904,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\La jungla de cristal (1988).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1904,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\La jungla de cristal La venganza (1995).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 816,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\La Milla Verde.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1072,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\La pasi\u00f3n de Cristo (2004).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1280,
+      "height": 544,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\La Princesa Mononoke.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1024,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\La princesa prometida (1987).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1040,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\La Roca.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 816,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\La vida es bella.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1040,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Logan (2017).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Los misiles de octubre (1974) Part 1.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 720,
+      "height": 576,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Los misiles de octubre (1974) Part 2.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 720,
+      "height": 576,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Los Nuevos Mutantes (2020).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1280,
+      "height": 688,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Los Vengadores (2012).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1072,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Love actually.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1280,
+      "height": 560,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Manifesto - Julian Rosefeldt.mp4",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1280,
+      "height": 720,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Marea negra (2016).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Matrix (1999).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 784,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Matrix Reloaded (2003).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 784,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Matrix Resurrections (2021).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 804,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Matrix Revolutions (2003).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 784,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Mejor imposible (1997).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1904,
+      "height": 1040,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Mercato (2025).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Mision Imposible - Sentencia Final.mp4",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 822,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Misi\u00f3n imposible (1996).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1904,
+      "height": 784,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Misi\u00f3n imposible 2 (2000).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1904,
+      "height": 784,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Misi\u00f3n imposible 3 (2006).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 816,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Mystic River.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Notting Hill.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 816,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Operaci\u00f3n Takedown (2000).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Padre P\u00edo (2023).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 960,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Panna a netvor (1978).mp4",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 986,
+      "height": 720,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Pesadilla.Antes.De.Navidad.(Henry.Selick.1993).(Spanish.English.Subs).HD.1080p.x264-AC3.by.Geot.(emulesonic.com).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1800,
+      "height": 1080,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Plan Oculto.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1280,
+      "height": 544,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Pu\u00f1ales Por La Espalda 2 - El misterio de glass onion.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1036,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Regreso al futuro 1.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1040,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Regreso al futuro 2.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1040,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Regreso al futuro 3.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1040,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Rocky 1.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 720,
+      "height": 390,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Rocky 4.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1040,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Rocky 5.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1024,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Seven.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Shang-Chi y la leyenda de los Diez Anillos (2021).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 804,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Shrek 3.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1072,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Shrek 4.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 816,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Shrek.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1072,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Shutter island.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 816,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Spider-Man Homecoming (2017).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Spider-Man Lejos de casa (2019).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 804,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Star Wars Episodio I La amenaza fantasma (1999).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 816,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Star Wars Episodio II El ataque de los clones (2002).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 816,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Star Wars Episodio III La venganza de los Sith (2005).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 816,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Star Wars Episodio IV Una nueva esperanza (1977).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1280,
+      "height": 540,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Star Wars Episodio IX El ascenso de Skywalker (2019).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Star Wars Episodio V El Imperio contraataca (1980).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 816,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Star Wars Episodio VII El despertar de la Fuerza (2015).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1280,
+      "height": 528,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Star Wars Episodio VIII Los \u00faltimos Jedi (2017).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1280,
+      "height": 536,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Super Xuxa contra el Bajo Astral (1988).mp4",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 480,
+      "height": 360,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Superman (2025).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1008,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\The Flash.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\The Report.mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Thor (2011).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1280,
+      "height": 544,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Thor El mundo oscuro (2013).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 784,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Titanic(1997).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1904,
+      "height": 816,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Top Gun (1986).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Top Gun Maverick (2022).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Un novio para mi mujer (arg 2008).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Una cuestion de tiempo (2013).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Vengadores Endgame (2019).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 808,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Vengadores Infinity War (2018).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Who Am I Ning\u00fan sistema es seguro (2014).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\Willow (1988).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\X-Men (2000).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 816,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\X-Men Apocalipsis (2016).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\X-Men La decisi\u00f3n final (2006).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 800,
+      "pix_fmt": "yuv420p",
+      "profile": "high",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    },
+    {
+      "file": "F:\\Peliculas\\X-Men Or\u00edgenes Lobezno (2009).mkv",
+      "reasons": [],
+      "video_codec": "h264",
+      "width": 1920,
+      "height": 816,
+      "pix_fmt": "yuv420p",
+      "profile": "main",
+      "bit_depth": 8,
+      "is_hdr_guess": false
+    }
+  ],
+  "errors": []
+}

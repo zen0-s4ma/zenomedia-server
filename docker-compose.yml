@@ -379,6 +379,7 @@ services:
       - "E:/Docker_folders/tdarr/tdarr_logs:/app/logs"
       - "C:/Docker_folders/tdarr/tdarr_cache:/temp"
       # UNIDAD DE ALMACENAMIENTO F (CONTENIDO MULTIMEDIA):
+      - "F:/tdarr-test:/media/tdarr-test"
       - "F:/Peliculas:/media/Peliculas"
       - "F:/Documentales:/media/Documentales"
       - "F:/Series:/media/Series"
