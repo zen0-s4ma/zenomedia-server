@@ -23,7 +23,7 @@
   /* ---------- Fondo general oscuro (coherente con login) ---- */
   --darkerGradientPoint: #0b0204;   /* casi negro, con toque vino */
   --lighterGradientPoint: #22050a;  /* rojo vino suave */
-  --tableBodyColor: #0b0204;        /* casi negro, con toque vino */
+  --tableBodyColor: #0b0204;
 
   /* ---------- Acentos de color globales --------------------- */
   /* Paleta rojiza tipo “Netflix”, respetando tu estilo actual */
@@ -68,6 +68,7 @@
      /jellyfin/jellyfin-web/custom-logos/gato-silueta.png */
   --custom-logo-path: url("custom-logos/gato-silueta.png");
 }
+
 
 
 /* ============================================================
@@ -280,7 +281,6 @@
 }
 
 
-
 /* ============================================================
    7. PÁGINA DE LOGIN
    ============================================================ */
@@ -402,13 +402,13 @@
    8. BARRA LATERAL Y CABECERA
    ============================================================ */
 
-/* 1) Barra lateral: usa nuestra gama rojiza oscura */
+/* Barra lateral: usa nuestra gama rojiza oscura */
 .mainDrawer,
 .drawer-open {
   background-color: var(--drawerColor) !important;
 }
 
-/* 2) Cabecera superior: degradado rojizo/negro personalizado
+/* Cabecera superior: degradado rojizo/negro personalizado
       (sobrescribe el background que pone ElegantFin) */
 .skinHeader-withBackground:not(.osdHeader),
 .skinHeader:not(.osdHeader) {
@@ -424,7 +424,7 @@
    9. APLICACION MOVIL
    ============================================================ */
 
-/* === Cabecera más compacta en móviles === */
+/* Cabecera más compacta en móviles */
 @media (max-width: 900px) {
   /* Menos padding vertical en la barra superior */
   .layout-mobile .skinHeader {
@@ -443,3 +443,44 @@
     margin-block: 0.1rem !important;
   }
 }
+
+/* LOGIN EN MÓVIL SIN IMAGEN DE FONDO */
+@media (max-width: 900px) {
+  /* Jellyfin añade .layout-mobile en móviles, la usamos para asegurarnos */
+  .layout-mobile #loginPage {
+    /* Sin imagen, solo color liso */
+    background: #0b0204 !important;       /* o el color que quieras */
+    background-image: none !important;
+    background-color: #0b0204 !important;
+  }
+}
+
+
+/* ============================================================
+   10. COLECCIONES (BoxSet) – aumentar tamaño de las cards
+   ============================================================ */
+
+/* Ajusta aquí el tamaño (sube/baja un poco a tu gusto) */
+:root {
+  --boxSetCardW: clamp(18rem, 20vw, 23rem); /* prueba 17–25rem */
+}
+
+@media (min-width: 50em) {
+  /* Colecciones = data-type="BoxSet" */
+  .itemsContainer [data-type="BoxSet"].card,
+  .itemsContainer [data-type="BoxSet"].overflowBackdropCard,
+  .itemsContainer [data-type="BoxSet"].backdropCard {
+    flex: 0 0 var(--boxSetCardW) !important;
+    width: var(--boxSetCardW) !important;
+    max-width: var(--boxSetCardW) !important;
+  }
+
+  /* Asegurar que la imagen y el contenedor escalen con el nuevo ancho */
+  .itemsContainer [data-type="BoxSet"] .cardBox,
+  .itemsContainer [data-type="BoxSet"] .cardScalable,
+  .itemsContainer [data-type="BoxSet"] .cardImageContainer {
+    width: 100% !important;
+  }
+}
+
+
