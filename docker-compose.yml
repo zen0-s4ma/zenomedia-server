@@ -32,6 +32,7 @@ services:
       # Logos extra para CSS
       # -"E:/Docker_folders/jellifyn/custom-logos:/jellyfin/jellyfin-web/custom-logos:ro"
       # UNIDAD DE ALMACENAMIENTO F (CONTENIDO MULTIMEDIA):
+      - "F:/Animacion:/media/Animacion"
       - "F:/Infantil:/media/Infantil"
       - "F:/Peliculas:/media/Peliculas"
       - "F:/Documentales:/media/Documentales"
@@ -45,6 +46,7 @@ services:
       - "F:/LoL:/media/LoL"
       - "F:/Olimpiadas:/media/Olimpiadas"
       # UNIDAD DE ALMACENAMIENTO E (CONTENIDO MULTIMEDIA):
+      - "E:/Animacion:/media/Animacion2"
       - "E:/Infantil:/media/Infantil2"
       - "E:/Peliculas:/media/Peliculas2"
       - "E:/Series:/media/Series2"
@@ -214,6 +216,7 @@ services:
     volumes:
       - "E:/Docker_folders/tvheadend/config:/config"
       - "E:/Docker_folders/tvheadend/recordings:/recordings"
+      - "E:/Docker_folders/tvheadend/iptv:/iptv:ro"
     restart: unless-stopped
 
   heimdall:
