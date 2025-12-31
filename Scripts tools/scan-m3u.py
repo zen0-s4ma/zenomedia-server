@@ -1,105 +1,217 @@
-import csv
 import os
 import re
+import csv
+import unicodedata
+from typing import List, Dict, Any
 
 # =========================
 # CONFIG
 # =========================
-FILE_PATH = r"E:\Docker_folders\tvheadend\iptv\peliculas_series.txt"
-OUTPUT_CSV = os.path.splitext(FILE_PATH)[0] + "_listado.csv"
+INPUT_M3U = r"E:\Docker_folders\_iptv\solo_canales_filtrado_por_urls.m3u"
 
-ATTR_RE = re.compile(r'([\w-]+)="([^"]*)"')
-SE_RE = re.compile(r'\bS(\d{1,2})\s*E(\d{1,2})\b', re.IGNORECASE)
-SE_RE2 = re.compile(r'\bS(\d{1,2})E(\d{1,2})\b', re.IGNORECASE)
+# Si True: ignora TODOS los filtros y saca el CSV del M3U completo (y el M3U ordenado)
+EXPORT_ALL = False
+
+# Coletilla/sufijo para los ficheros resultantes
+SUFFIX = "_REVIEW"  # ej: "_ES", "_PPV", "_TODO", "_CUSTOM"
+
+# 1) Prefijos permitidos (si [] -> NO filtra por prefijo)
+INCLUDE_PREFIXES: List[str] = []  # ej: ["ES", "PPV"] o [] para dejar pasar todos
+
+# 2) Debe contener (opcional). Se busca en tvg-name Y group-title
+INCLUDE_KEYWORDS: List[str] = []
+
+# 3) NO debe contener (prioridad máxima). Se busca en tvg-name Y group-title
+EXCLUDE_KEYWORDS: List[str] = [] # ej: ["FHD", "HEVC", "4K", "✦"]
+
+# Outputs (misma ruta)
+BASE = os.path.splitext(INPUT_M3U)[0]
+OUTPUT_M3U = BASE + f"{SUFFIX}.m3u"
+OUTPUT_CSV = BASE + f"{SUFFIX}.csv"
+
+# =========================
+# REGEX
+# =========================
+ATTR_RE = re.compile(r'([\w-]+)="([^"]*)"')  # tvg-name="..." group-title="..." etc.
 
 
-def parse_extinf_line(line: str):
-    left, sep, right = line.partition(",")
+def norm(s: str) -> str:
+    """Normaliza unicode (4Ｋ -> 4K, ｜ -> |, NBSP -> espacio, etc.) y casefold."""
+    if not s:
+        return ""
+    s = unicodedata.normalize("NFKC", s)
+    s = s.replace("\u00A0", " ")  # NBSP
+    return s.casefold()
+
+
+def parse_extinf(extinf_line: str) -> Dict[str, str]:
+    left, sep, right = extinf_line.partition(",")
     display_name = right.strip() if sep else ""
     attrs = dict(ATTR_RE.findall(left))
-    return attrs, display_name
+    return {
+        "tvg_name": attrs.get("tvg-name", "").strip(),
+        "group_title": attrs.get("group-title", "").strip(),
+        "display_name": display_name,
+    }
 
 
-def detect_type_from_url(url: str, group_title: str = "") -> str:
-    u = url.lower()
-    g = (group_title or "").lower()
-
-    if "/series/" in u:
-        return "series"
-    if "/movie/" in u:
-        return "movie"
-
-    # fallback por group-title si la URL no ayuda
-    if "series" in g:
-        return "series"
-    if "movie" in g or "movies" in g:
-        return "movie"
-
-    return "unknown"
+# Pre-normalizamos listas de filtros
+INCLUDE_PREFIXES_N = [norm(p).strip() for p in INCLUDE_PREFIXES if p and p.strip()]
+INCLUDE_KEYWORDS_N = [norm(k).strip() for k in INCLUDE_KEYWORDS if k and k.strip()]
+EXCLUDE_KEYWORDS_N = [norm(k).strip() for k in EXCLUDE_KEYWORDS if k and k.strip()]
 
 
-def extract_season_episode(text: str):
-    if not text:
-        return "", ""
-    m = SE_RE.search(text) or SE_RE2.search(text)
-    if not m:
-        return "", ""
-    return m.group(1).zfill(2), m.group(2).zfill(2)
+def has_allowed_prefix(name: str) -> bool:
+    """
+    Comprueba prefijo tipo ES|..., PPV|..., ES ... con texto ya normalizado.
+    Si INCLUDE_PREFIXES está vacío -> no filtra por prefijo (pasa todo).
+    """
+    if not INCLUDE_PREFIXES_N:
+        return True
+
+    n = norm(name).strip()
+    for p in INCLUDE_PREFIXES_N:
+        if n == p or n.startswith(p + "|") or n.startswith(p + " "):
+            return True
+    return False
+
+
+def should_keep(extinf_line: str) -> bool:
+    if EXPORT_ALL:
+        return True
+
+    info = parse_extinf(extinf_line)
+    tvg_name = info["tvg_name"]
+    group_title = info["group_title"]
+    display_name = info["display_name"]
+
+    # Prefijo lo validamos contra tvg-name (o display_name si falta)
+    name_for_prefix = tvg_name or display_name
+    if not name_for_prefix:
+        return False
+
+    # A) Prefijo (si la lista no está vacía)
+    if not has_allowed_prefix(name_for_prefix):
+        return False
+
+    # B) Include/exclude se miran en tvg-name + group-title
+    hay = norm(f"{tvg_name} {group_title}")
+
+    # INCLUDE: si hay lista, debe contener AL MENOS UNA
+    if INCLUDE_KEYWORDS_N and not any(k in hay for k in INCLUDE_KEYWORDS_N):
+        return False
+
+    # EXCLUDE: prioridad máxima (si contiene cualquiera, fuera)
+    if EXCLUDE_KEYWORDS_N and any(k in hay for k in EXCLUDE_KEYWORDS_N):
+        return False
+
+    return True
+
+
+def split_pipe(s: str) -> List[str]:
+    """
+    Parte por '|' de forma robusta (normaliza unicode y quita espacios).
+    Ej: 'ES| CANAL ODISEA 4K' -> ['ES', 'CANAL ODISEA 4K']
+    """
+    s_nfkc = unicodedata.normalize("NFKC", s or "").replace("\u00A0", " ")
+    return [p.strip() for p in s_nfkc.split("|")]
 
 
 def main():
-    rows = []
-    pending = None
+    with open(INPUT_M3U, "r", encoding="utf-8", errors="ignore") as f:
+        lines = f.readlines()
 
-    with open(FILE_PATH, "r", encoding="utf-8", errors="ignore") as f:
-        for raw in f:
-            line = raw.strip()
-            if not line:
-                continue
+    header: List[str] = []
+    kept_blocks: List[Dict[str, Any]] = []
 
-            if line.startswith("#EXTINF:"):
-                attrs, display_name = parse_extinf_line(line)
-                pending = {
-                    "tvg_id": attrs.get("tvg-id", ""),
-                    "tvg_name": attrs.get("tvg-name", ""),
-                    "tvg_logo": attrs.get("tvg-logo", ""),
-                    "group_title": attrs.get("group-title", ""),
-                    "display_name": display_name,
-                }
-                continue
+    current_lines: List[str] = []
+    current_keep = False
+    current_sort_name = ""
+    current_group_title = ""
+    current_url = ""
+    in_entries = False
 
-            # La URL suele venir justo después del EXTINF
-            if pending and not line.startswith("#"):
-                url = line
-                content_type = detect_type_from_url(url, pending.get("group_title", ""))
+    def flush_block():
+        nonlocal current_lines, current_keep, current_sort_name, current_group_title, current_url
+        if current_lines and current_keep:
+            kept_blocks.append({
+                "sort_name": current_sort_name,
+                "group_title": current_group_title,
+                "url": current_url,
+                "lines": current_lines
+            })
+        current_lines = []
+        current_keep = False
+        current_sort_name = ""
+        current_group_title = ""
+        current_url = ""
 
-                name = pending["display_name"] or pending["tvg_name"]
+    for line in lines:
+        stripped = line.strip()
 
-                season, episode = ("", "")
-                if content_type == "series":
-                    season, episode = extract_season_episode(pending["tvg_name"] or name)
+        if line.startswith("#EXTINF:"):
+            in_entries = True
+            flush_block()
 
-                rows.append({
-                    "type": content_type,
-                    "name": name,
-                    "season": season,
-                    "episode": episode,
-                    "group_title": pending["group_title"],
-                    "tvg_name": pending["tvg_name"],
-                    "tvg_logo": pending["tvg_logo"],
-                    "url": url,
-                })
+            current_lines = [line]
+            info = parse_extinf(line)
+            current_sort_name = (info["tvg_name"] or info["display_name"]).strip()
+            current_group_title = info["group_title"].strip()
+            current_keep = should_keep(line)
+            current_url = ""  # se rellenará cuando aparezca la URL
+        else:
+            if not in_entries:
+                header.append(line)
+            else:
+                current_lines.append(line)
+                # Capturamos la primera línea "no comentario" como URL del stream
+                if current_keep and not current_url and stripped and not stripped.startswith("#"):
+                    current_url = stripped
 
-                pending = None
+    flush_block()
 
-    fieldnames = ["type", "name", "season", "episode", "group_title", "tvg_name", "tvg_logo", "url"]
-    with open(OUTPUT_CSV, "w", newline="", encoding="utf-8-sig") as out:
-        writer = csv.DictWriter(out, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerows(rows)
+    # ORDENAR por tvg-name (case-insensitive) usando normalización robusta
+    kept_blocks.sort(key=lambda b: (norm(b["sort_name"]), b["sort_name"]))
 
-    print(f"OK: {len(rows)} entradas exportadas a:\n{OUTPUT_CSV}")
+    # 1) Guardar M3U ordenado (si EXPORT_ALL=True será el M3U completo pero ordenado)
+    with open(OUTPUT_M3U, "w", encoding="utf-8", newline="") as out:
+        out.writelines(header)
+        for block in kept_blocks:
+            out.writelines(block["lines"])
 
+    # ===== CSV: columnas partidas por "|" =====
+    # Calculamos cuántas columnas máximas necesitaremos para tvg-name y group-title
+    max_tvg_parts = 0
+    max_group_parts = 0
+    for block in kept_blocks:
+        max_tvg_parts = max(max_tvg_parts, len(split_pipe(block["sort_name"])))
+        max_group_parts = max(max_group_parts, len(split_pipe(block["group_title"])))
+
+    tvg_headers = [f"tvg_part_{i+1}" for i in range(max_tvg_parts)]
+    group_headers = [f"group_part_{i+1}" for i in range(max_group_parts)]
+
+    # 2) CSV (ordenado por tvg-name): tvg_part_* ; group_part_* ; url
+    with open(OUTPUT_CSV, "w", newline="", encoding="utf-8-sig") as out_csv:
+        writer = csv.writer(out_csv, delimiter=";")
+        writer.writerow(tvg_headers + group_headers + ["url"])
+
+        for block in kept_blocks:
+            tvg_parts = split_pipe(block["sort_name"])
+            group_parts = split_pipe(block["group_title"])
+
+            # Rellenar con "" hasta el tamaño máximo para mantener columnas fijas
+            tvg_parts += [""] * (max_tvg_parts - len(tvg_parts))
+            group_parts += [""] * (max_group_parts - len(group_parts))
+
+            writer.writerow(tvg_parts + group_parts + [block["url"]])
+
+    print(
+        "OK: generado\n"
+        f"{OUTPUT_M3U}\n"
+        f"{OUTPUT_CSV}\n"
+        f"Entradas: {len(kept_blocks)}\n"
+        f"EXPORT_ALL={EXPORT_ALL} | SUFFIX={SUFFIX}"
+    )
 
 if __name__ == "__main__":
     main()

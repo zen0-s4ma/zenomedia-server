@@ -217,6 +217,21 @@ services:
       - "E:/Docker_folders/tvheadend/config:/config"
       - "E:/Docker_folders/tvheadend/recordings:/recordings"
       - "E:/Docker_folders/tvheadend/iptv:/iptv:ro"
+      - "E:/Docker_folders/tvheadend/config/data:/data"
+    restart: unless-stopped
+
+  webgrabplus:
+    image: lscr.io/linuxserver/webgrabplus:latest
+    container_name: webgrabplus
+    hostname: webgrabplus
+    mac_address: "4C-CC-6A-B5-C5-6B"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    volumes:
+      - "E:/Docker_folders/webgrabplus/config:/config"
+      - "E:/Docker_folders/webgrabplus/data:/data"
     restart: unless-stopped
 
   heimdall:
