@@ -217,7 +217,7 @@ services:
       - "E:/Docker_folders/tvheadend/config:/config"
       - "E:/Docker_folders/tvheadend/recordings:/recordings"
       - "E:/Docker_folders/tvheadend/iptv:/iptv:ro"
-      - "E:/Docker_folders/tvheadend/config/data:/data"
+      - "E:/Docker_folders/epg:/config/data:ro"
     restart: unless-stopped
 
   webgrabplus:
@@ -231,7 +231,7 @@ services:
       - TZ=Europe/Madrid
     volumes:
       - "E:/Docker_folders/webgrabplus/config:/config"
-      - "E:/Docker_folders/webgrabplus/data:/data"
+      - "E:/Docker_folders/epg:/data"
     restart: unless-stopped
 
   heimdall:
