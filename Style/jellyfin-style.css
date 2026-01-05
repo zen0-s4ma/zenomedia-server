@@ -8,8 +8,8 @@
    ------------------------------------------------------------ */
 
 @import url("https://cdn.jsdelivr.net/gh/lscambo13/ElegantFin@main/Theme/ElegantFin-jellyfin-theme-build-latest-minified.css");
-@import url("https://cdn.jsdelivr.net/gh/lscambo13/ElegantFin@main/Theme/assets/add-ons/media-bar-plugin-support-latest-min.css");
 
+@import url("https://cdn.jsdelivr.net/gh/lscambo13/ElegantFin@main/Theme/assets/add-ons/media-bar-plugin-support-latest-min.css");
 
 /* ------------------------------------------------------------
    2. VARIABLES GLOBALES (:root)
@@ -99,8 +99,8 @@
   /* 6 por fila en "Mis contenidos" (aprox.) */
   .homePage .section0 .overflowBackdropCard,
   .homePage .section0 .card.backdropCard {
-    flex: 0 0 calc((100% - 4rem) / 6.5);
-    max-width: calc((100% - 4rem) / 6.5);
+    flex: 0 0 calc((100% - 4rem) / 7.5);
+    max-width: calc((100% - 4rem) / 7.5);
   }
 
   .homePage .section0 .cardBox,
