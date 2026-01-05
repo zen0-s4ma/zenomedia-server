@@ -206,13 +206,16 @@ services:
   tvheadend:
     image: lscr.io/linuxserver/tvheadend:latest
     container_name: tvheadend
-    ports:
-      - "9981:9981"
-      - "9982:9982"
+    network_mode: "service:gluetun"
+    depends_on:
+      - gluetun
     environment:
       - TZ=Europe/Madrid
       - PUID=1000
-      - PGID=1000
+      - PGID=
+    # ports:
+    #   - "9981:9981"
+    #   - "9982:9982"
     volumes:
       - "E:/Docker_folders/tvheadend/config:/config"
       - "E:/Docker_folders/tvheadend/recordings:/recordings"
@@ -1172,6 +1175,53 @@ services:
       - "E:/Docker_folders/kanboard/plugins:/var/www/app/plugins"
       - "E:/Docker_folders/kanboard/ssl:/etc/nginx/ssl"
     restart: unless-stopped
+
+  gluetun:
+    image: qmcgaw/gluetun:latest
+    container_name: gluetun
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - TZ=Europe/Madrid
+      # --- Mullvad WireGuard ---
+      - VPN_SERVICE_PROVIDER=mullvad
+      - VPN_TYPE=wireguard
+      - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
+      - WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESSES}
+      # --- Forzar salida ---
+      - SERVER_COUNTRIES=Finland
+      - SERVER_CITIES=Helsinki
+      # Usar el DNS que te dio Mullvad en el .conf
+      - DNS_ADDRESS=${DNS_ADDRESS}
+      # Firewall
+      - FIREWALL_INPUT_PORTS=9981,9982
+    ports:
+      - "127.0.0.1:31377:8000"
+      - "9981:9981"
+      - "9982:9982"
+    restart: unless-stopped
+
+  vpn-ip-check:
+    image: alpine:3.20
+    container_name: vpn-ip-check
+    network_mode: "service:gluetun"
+    depends_on:
+      - gluetun
+    command: >
+      sh -c "apk add --no-cache curl >/dev/null
+      && while true; do
+           echo '============================='
+           date
+           echo '[Mullvad check]'
+           curl -s https://am.i.mullvad.net/json || true
+           echo
+           echo '[Public IP]'
+           curl -s https://ipinfo.io/ip || true
+           echo
+           sleep 30
+         done"
+    restart: unless-stopped
+
 
   # --- Prueba de GPU -------------------------------------------------------
   #test-gpu:
