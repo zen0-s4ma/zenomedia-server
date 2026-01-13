@@ -195,11 +195,16 @@ services:
   threadfin:
     image: fyb3roptik/threadfin:latest
     container_name: threadfin
-    ports: ["34400:34400"]
+    ports:
+      - "34400:34400"
     environment:
       - TZ=Europe/Madrid
+      - PUID=1000
+      - PGID=1000
     volumes:
-      - "E:/Docker_folders/threadfin:/home/threadfin/.threadfin"
+      - "E:/Docker_folders/threadfin/conf:/home/threadfin/conf"
+      - "E:/Docker_folders/threadfin/playlists:/playlists:ro"
+      - "C:/Docker_folders/threadfin/tmp:/tmp/threadfin:rw"
     restart: unless-stopped
 
   # --- Backend PVR completo (timeshift/DVR) --------------------------------
@@ -218,9 +223,8 @@ services:
     #   - "9982:9982"
     volumes:
       - "E:/Docker_folders/tvheadend/config:/config"
-      - "E:/Docker_folders/tvheadend/recordings:/recordings"
-      - "E:/Docker_folders/tvheadend/iptv:/iptv:ro"
-      - "E:/Docker_folders/epg:/config/data:ro"
+      - "E:/Docker_folders/tvheadend/tvheadend/recordings:/recordings"
+      - "E:/Docker_folders/tvheadend/iptv:/iptv"
     restart: unless-stopped
 
   webgrabplus:
@@ -1194,11 +1198,12 @@ services:
       # Usar el DNS que te dio Mullvad en el .conf
       - DNS_ADDRESS=${DNS_ADDRESS}
       # Firewall
-      - FIREWALL_INPUT_PORTS=9981,9982
+      - FIREWALL_INPUT_PORTS=9981,9982,9191
     ports:
       - "127.0.0.1:31377:8000"
       - "9981:9981"
       - "9982:9982"
+      - "9191:9191"
     restart: unless-stopped
 
   vpn-ip-check:
@@ -1222,6 +1227,19 @@ services:
          done"
     restart: unless-stopped
 
+  dispatcharr:
+    image: ghcr.io/dispatcharr/dispatcharr:latest
+    container_name: dispatcharr
+    network_mode: "service:gluetun"
+    environment:
+      - TZ=Europe/Madrid
+      - DISPATCHARR_ENV=aio
+      - DISPATCHARR_LOG_LEVEL=info
+    volumes:
+      - "E:/Docker_folders/dispatcharr/data:/data"
+      - "E:/Docker_folders/dispatcharr/iptv:/data/m3us"
+      - "E:/Docker_folders/epg:/data/epgs:ro"
+    restart: unless-stopped
 
   # --- Prueba de GPU -------------------------------------------------------
   #test-gpu:
