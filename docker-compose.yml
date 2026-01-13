@@ -64,6 +64,10 @@ services:
       - "E:/Docker_folders/jellifyn/metadata:/config"
       - "C:/Docker_folders/jellifyn/cache:/cache"
       - "C:/Docker_folders/jellifyn/transcodes:/transcode"
+      # GRABACIONES:
+      - "E:/Docker_folders/jellyfin/recordings:/recordings"
+      # SCRIPTS
+      - "E:/Docker_folders/jellyfin/scripts:/scripts"
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://localhost:8096/health"]
@@ -239,6 +243,24 @@ services:
     volumes:
       - "E:/Docker_folders/webgrabplus/config:/config"
       - "E:/Docker_folders/epg:/data"
+    restart: unless-stopped
+
+  nextpvr:
+    image: nextpvr/nextpvr_amd64:latest
+    container_name: nextpvr
+    depends_on:
+      - gluetun
+      - dispatcharr
+    environment:
+      - TZ=Europe/Madrid
+    ports:
+      - "8866:8866"
+      - "16891:16891/udp"
+      - "8026:8026/udp"
+    volumes:
+      - "E:/Docker_folders/nextpvr/config:/config"
+      - "E:/Docker_folders/nextpvr/recordings:/recordings"
+      - "E:/Docker_folders/nextpvr/buffer:/buffer"
     restart: unless-stopped
 
   heimdall:
