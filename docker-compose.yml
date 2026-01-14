@@ -66,6 +66,7 @@ services:
       - "C:/Docker_folders/jellifyn/transcodes:/transcode"
       # GRABACIONES:
       - "E:/Docker_folders/jellyfin/recordings:/recordings"
+      - "E:/Docker_folders/nextpvr/recordings:/recordingsPVR"
       # SCRIPTS
       - "E:/Docker_folders/jellyfin/scripts:/scripts"
     restart: unless-stopped
@@ -145,13 +146,14 @@ services:
     image: hrfee/jfa-go:latest
     container_name: jfa-go
     depends_on: [jellyfin]
-    ports: ["8056:8056"]
+    ports:
+      - "8056:8056"
     environment:
       - TZ=Europe/Madrid
       - JELLYFIN_URL=http://jellyfin:8096
     volumes:
       - "E:/Docker_folders/jfa-go:/data"
-      - "E:/Docker_folders/metadata:/jf:ro"
+      - "E:/Docker_folders/jellifyn/metadata:/jf:ro"
     restart: unless-stopped
 
   # --- Estadísticas avanzadas ----------------------------------------------
@@ -858,7 +860,8 @@ services:
     environment:
       - TZ=Europe/Madrid
       - INITIAL_ADMIN_EMAIL=admin@admin.com
-      - INITIAL_ADMIN_PASSWORD=admin
+      - INITIAL_ADMIN_PASSWORD=admin123
+      - DISABLE_IPV6=true
     volumes:
       - "E:/Docker_folders/nginx/npm_data:/data"
       - "E:/Docker_folders/nginx/npm_letsencrypt:/etc/letsencrypt"
@@ -1263,6 +1266,39 @@ services:
       - "E:/Docker_folders/dispatcharr/iptv:/data/m3us"
       - "E:/Docker_folders/epg:/data/epgs:ro"
     restart: unless-stopped
+
+  cronicle:
+    image: bluet/cronicle-docker:latest
+    container_name: cronicle
+    environment:
+      - TZ=Europe/Madrid
+      # (opcional) útil si lo expones por NPM o quieres URLs “bonitas” en la UI
+      - CRONICLE_base_app_url=http://localhost:3012
+      # el docker CLI dentro del contenedor usará el socket montado
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    ports:
+      - "3012:3012"
+    volumes:
+      # Persistencia de Cronicle
+      - "E:/Docker_folders/cronicle/data:/opt/cronicle/data"
+      - "E:/Docker_folders/cronicle/logs:/opt/cronicle/logs"
+      - "E:/Docker_folders/cronicle/plugins:/opt/cronicle/plugins"
+      # Tus scripts (sh, wrappers para python, etc.)
+      - "E:/Docker_folders/cronicle/scripts:/scripts"
+      # Acceso directo al Docker daemon (sin proxy)
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
+  cloudflare-ddns:
+    image: favonia/cloudflare-ddns:latest
+    container_name: cloudflare-ddns
+    restart: unless-stopped
+    environment:
+      - CLOUDFLARE_API_TOKEN=${CF_DDNS_TOKEN}
+      - DOMAINS=maripiflix.xyz
+      - PROXIED=false
+      - IP6_PROVIDER=none
+      - UPDATE_CRON=@every 5m
 
   # --- Prueba de GPU -------------------------------------------------------
   #test-gpu:

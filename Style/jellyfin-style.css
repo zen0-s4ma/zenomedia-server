@@ -135,7 +135,7 @@
 
 /* Elevar ligeramente la zona de secciones del home (todo el bloque) */
 #homeTab .homeSectionsContainer {
-  margin-top: 2em !important;
+  margin-top: 1em !important;
 }
 
 
@@ -418,6 +418,8 @@
     #150104 40%,  /* muy oscuro en medio */
     #1E0409 100%  /* rojizo acorde con el fondo */
   ) !important;
+  padding-top: 0.1rem !important;
+  padding-bottom: 0.1rem !important;
 }
 
 /* ============================================================
@@ -483,4 +485,43 @@
   }
 }
 
+/* ============================================================
+   FIX: Media Bar demasiado abajo / solapado con cabecera
+   ============================================================ */
 
+
+:root{
+  --mediaBarGapDesktop: 2rem;    /* lo que te iba bien en PC */
+  --mediaBarGapMobile: 2.5rem;   /* en móvil suele necesitar menos */
+  --headerTabsH: 0rem;           /* desktop: normalmente 0 */
+}
+
+/* En móvil: tus tabs miden ~3.2rem según tu propio CSS */
+@media (max-width: 900px){
+  :root{
+    --headerTabsH: 3.2rem;
+  }
+}
+
+/* Regla base */
+#slides-container{
+  top: calc(
+    var(--appBarHeight, 5.5rem)
+    + var(--headerTabsH)
+    + var(--mediaBarGapDesktop)
+  ) !important;
+}
+
+/* Móvil: fuerza el ajuste y añade safe-area (notch) */
+@media (max-width: 900px){
+  body.layout-mobile #slides-container,
+  .layout-mobile #slides-container,
+  #slides-container{
+    top: calc(
+      var(--appBarHeight, 5.5rem)
+      + var(--headerTabsH)
+      + var(--mediaBarGapMobile)
+      + env(safe-area-inset-top)
+    ) !important;
+  }
+}
