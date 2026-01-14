@@ -45,6 +45,7 @@ services:
       - "F:/Combates:/media/Combates"
       - "F:/LoL:/media/LoL"
       - "F:/Olimpiadas:/media/Olimpiadas"
+      - "F:/Podcasts:/media/Podcast"
       # UNIDAD DE ALMACENAMIENTO E (CONTENIDO MULTIMEDIA):
       - "E:/Animacion:/media/Animacion2"
       - "E:/Infantil:/media/Infantil2"
@@ -60,6 +61,7 @@ services:
       - "E:/Combates:/media/Combates2"
       - "E:/LoL:/media/LoL2"
       - "E:/Olimpiadas:/media/Olimpiadas2"
+      - "E:/Podcasts:/media/Podcast2"
       # PATHS DE CONFIGURACION E:
       - "E:/Docker_folders/jellifyn/metadata:/config"
       - "C:/Docker_folders/jellifyn/cache:/cache"
@@ -76,6 +78,20 @@ services:
       timeout: 5s
       retries: 5
       start_period: 60s
+
+  podgrab:
+    image: akhilrex/podgrab:latest
+    container_name: podgrab
+    environment:
+      - TZ=Europe/Madrid
+      - CHECK_FREQUENCY=60
+      - PASSWORD=admin
+    volumes:
+      - "E:/Docker_folders/podgrab/config:/config"
+      - "F:/Podcasts:/assets"
+    ports:
+      - "33130:8080"
+    restart: unless-stopped
 
   # --- TUBEARCHIVIST (UI :8000) --------------------------------------------
   tubearchivist:
@@ -562,11 +578,21 @@ services:
       - "13378:80"
     environment:
       - TZ=Europe/Madrid
+      - DISABLE_SSRF_REQUEST_FILTER=1
     volumes:
       - "E:/Docker_folders/audiobookshelf/audiobookshelf_config:/config"
       - "E:/Docker_folders/audiobookshelf/audiobookshelf_metadata:/metadata"
       - "F:/Audiolibros:/audiobooks"
       - "F:/Podcasts:/podcasts"
+    restart: unless-stopped
+
+  rss-bridge:
+    image: rssbridge/rss-bridge:latest
+    container_name: rss-bridge
+    ports:
+      - "33137:80"
+    volumes:
+      - "E:/Docker_folders/rss-bridge:/config"
     restart: unless-stopped
 
   unmanic:
