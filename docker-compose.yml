@@ -240,6 +240,7 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Madrid
+      - DOCKER_MODS=linuxserver/mods:universal-cron
     volumes:
       - "E:/Docker_folders/webgrabplus/config:/config"
       - "E:/Docker_folders/epg:/data"
