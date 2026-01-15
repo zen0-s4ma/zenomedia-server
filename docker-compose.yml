@@ -1326,6 +1326,23 @@ services:
       - IP6_PROVIDER=none
       - UPDATE_CRON=@every 5m
 
+  gpodder:
+    image: xthursdayx/gpodder-docker:latest
+    container_name: gpodder
+    environment:
+      - TZ=Europe/Madrid
+      - PUID=1000
+      - PGID=1000
+      # - PASSWORD=pon_un_password_si_quieres   # opcional (login usuario abc)
+    ports:
+      - "33131:3000"     # tú ya lo tienes en 33131
+    volumes:
+      - "E:/Docker_folders/gpodder/config:/config"
+      - "E:/Docker_folders/gpodder/downloads:/downloads"     # caché de gPodder (NO jellyfin)
+      - "F:/Podcasts:/jellyfin_podcasts"                     # salida para Jellyfin
+    restart: unless-stopped
+
+
   # --- Prueba de GPU -------------------------------------------------------
   #test-gpu:
   #  image: nvidia/cuda:12.9.0-base-ubuntu22.04
