@@ -1333,7 +1333,7 @@ services:
       - TZ=Europe/Madrid
       - PUID=1000
       - PGID=1000
-      # - PASSWORD=pon_un_password_si_quieres   # opcional (login usuario abc)
+      - PASSWORD=admin (login usuario abc)
     ports:
       - "33131:3000"     # tú ya lo tienes en 33131
     volumes:
