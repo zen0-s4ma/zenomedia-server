@@ -1247,7 +1247,7 @@ services:
       # --- Forzar salida ---
       - SERVER_COUNTRIES=Finland
       - SERVER_CITIES=Helsinki
-      # Usar el DNS que te dio Mullvad en el .conf
+      # Usar el DNS que dio Mullvad en el .conf
       - DNS_ADDRESS=${DNS_ADDRESS}
       # Firewall
       - FIREWALL_INPUT_PORTS=9981,9982,9191
