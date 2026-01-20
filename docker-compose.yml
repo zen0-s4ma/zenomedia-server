@@ -5,7 +5,7 @@ volumes:
 services:
   # --- JELLYFIN -------------------------------------------------------------
   jellyfin:
-    image: jellyfin/jellyfin:latest
+    image: jellyfin/jellyfin:10.11.4
     container_name: jellyfin
     ports:
       - "8096:8096"
