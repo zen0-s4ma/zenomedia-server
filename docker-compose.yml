@@ -67,10 +67,10 @@ services:
       - "C:/Docker_folders/jellifyn/cache:/cache"
       - "C:/Docker_folders/jellifyn/transcodes:/transcode"
       # GRABACIONES:
-      - "E:/Docker_folders/jellyfin/recordings:/recordings"
+      - "E:/Docker_folders/jellifyn/recordings:/recordings"
       - "E:/Docker_folders/nextpvr/recordings:/recordingsPVR"
       # SCRIPTS
-      - "E:/Docker_folders/jellyfin/scripts:/scripts"
+      - "E:/Docker_folders/jellifyn/scripts:/scripts"
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://localhost:8096/health"]
@@ -284,7 +284,7 @@ services:
 
   heimdall:
     image: linuxserver/heimdall
-    container_name: heimdall_dashboard
+    container_name: heimdall
     restart: unless-stopped
     ports:
       - "7771:80"
@@ -529,8 +529,9 @@ services:
     image: portainer/portainer-ce:latest
     container_name: portainer
     ports:
-      - "9443:9443"
-      - "8000:8000"
+      - "9443:9443"   # UI HTTPS (principal)
+      - "9000:9000"   # UI HTTP (opcional)
+      - "8000:8000"   # Edge tunnel (opcional)
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - "E:/Docker_folders/portainer/portainer_data:/data"
@@ -1153,37 +1154,37 @@ services:
   #    # - "./emulerr-amule/server.met:/config/amule/server.met"
   #    # - "./emulerr-amule/amule.overrides.conf:/config/amule/amule.overrides.conf"
 
+  
+
   amule:
-    image: ghcr.io/ngosang/amule:latest   # alternativa: ngosang/amule
+    image: ngosang/amule:latest
     container_name: amule
-    ports:
-      - "4711:4711"          # WebUI
-      - "4712:4712"          # EC/Remote GUI (amulecmd/amarr)
-      - "4662:4662"          # ED2K TCP
-      - "4665:4665/udp"      # ED2K global search UDP (TCP+3)
-      - "4672:4672/udp"      # ED2K Kad UDP
     environment:
+      - TZ=Europe/Madrid
       - PUID=1000
       - PGID=1000
-      - TZ=Europe/Madrid
-      - GUI_PWD=${AMULE_GUI_PWD:-amuleadmin}     # misma pass que usará Amarr
-      - WEBUI_PWD=${AMULE_WEBUI_PWD:-amuleadmin}
-      # Mods útiles y seguros
+      # passwords de la UI web y control remoto (recomendado)
+      - GUI_PWD=admin
+      - WEBUI_PWD=admin
+
+      # opcional: reinicio diario del contenedor (no imprescindible)
       - MOD_AUTO_RESTART_ENABLED=true
       - MOD_AUTO_RESTART_CRON=0 6 * * *
+      - MOD_AUTO_SHARE_ENABLED=false
+
       - MOD_FIX_KAD_GRAPH_ENABLED=true
       - MOD_FIX_KAD_BOOTSTRAP_ENABLED=true
+    ports:
+      - "0.0.0.0:4711:4711/tcp"
+      - "0.0.0.0:4712:4712/tcp"
+      - "0.0.0.0:4662:4662/tcp"
+      - "0.0.0.0:4665:4665/udp"
+      - "0.0.0.0:4672:4672/udp"
     volumes:
       - "E:/Docker_folders/amule/config:/home/amule/.aMule"
-      - "D:/Descargas/eMule/complete:/incoming"
-      - "D:/Descargas/eMule/incomplete:/temp"
+      - "E:/Docker_folders/amule/incoming:/incoming"
+      - "E:/Docker_folders/amule/temp:/temp"
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "curl -fsS http://localhost:4711/ >/dev/null || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 10
-      start_period: 120s
 
   amarr:
     image: vexdev/amarr:latest
@@ -1212,10 +1213,12 @@ services:
       - TZ=Europe/Madrid
       # Opcional: explícito, pero por defecto ya usan /downloads
       - DOWNLOAD_DIR=/downloads
-      - AUDIO_DOWNLOAD_DIR=/downloads
+      - AUDIO_DOWNLOAD_DIR=/downloads/Music
     volumes:
       # Carpeta de descargas en el host -> carpeta interna de MeTube
       - "E:/YouTube:/downloads"
+      - "E:/YouTube/Videos:/downloads/Videos"
+      - "E:/YouTube/Music:/downloads/Music"
 
   kanboard:
     image: kanboard/kanboard:v1.2.45
@@ -1333,7 +1336,7 @@ services:
       - TZ=Europe/Madrid
       - PUID=1000
       - PGID=1000
-      - PASSWORD=admin (login usuario abc)
+      - PASSWORD=${GPODDER_PASS}
     ports:
       - "33131:3000"     # tú ya lo tienes en 33131
     volumes:
@@ -1342,6 +1345,23 @@ services:
       - "F:/Podcasts:/jellyfin_podcasts"                     # salida para Jellyfin
     restart: unless-stopped
 
+  beets:
+    image: lscr.io/linuxserver/beets:latest
+    container_name: beets
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+      - JELLYFIN_URL=http://jellyfin:8096
+      - JELLYFIN_API_KEY=${JELLYFIN_API_KEY_BEETS}
+    volumes:
+      - "E:/Docker_folders/beets:/config"
+      - "E:/YouTube/Music/downloads:/inbox:rw"
+      - "F:/Musica:/library:rw"
+      - "E:/Docker_folders/beets/scripts:/scripts:rw"
+    ports:
+      - "8337:8337"  
+    restart: unless-stopped
 
   # --- Prueba de GPU -------------------------------------------------------
   #test-gpu:
