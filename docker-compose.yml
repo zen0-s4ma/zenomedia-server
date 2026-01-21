@@ -1361,6 +1361,9 @@ services:
       - "E:/Docker_folders/beets/scripts:/scripts:rw"
     ports:
       - "8337:8337"  
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
     restart: unless-stopped
 
   # --- Prueba de GPU -------------------------------------------------------

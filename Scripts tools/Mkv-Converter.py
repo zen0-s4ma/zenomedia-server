@@ -7,7 +7,7 @@ from pathlib import Path
 # CONFIG
 # =========================
 BASE_DIR = r"E:\zMkvConverter"
-INPUT_TS_NAME = "NCAA Football Bowl Games_20260120_17552025_trim.ts"  # o pásalo por argv
+INPUT_TS_NAME = "NCAA Football Bowl Games_20260120_17552025_trim_trim.ts"  # o pásalo por argv
 
 OUTPUT_CONTAINER = "mkv"  # "mkv" o "mp4"
 
@@ -22,6 +22,11 @@ PROBESIZE = "200M"
 # NVENC (GTX 1060)
 NVENC_PRESET = "p1"   # si tu ffmpeg no soporta p1..p7, usa "fast" o "hp"
 NVENC_CQ = "23"
+
+# --- NUEVO: eliminar hueco inicial saltando al primer keyframe ---
+AUTO_SALTAR_HUECO_INICIAL = True
+SCAN_KEYFRAMES_SEGUNDOS = 180   # cuánto escanear al principio buscando keyframe (sube si hace falta)
+MIN_HUECO = 0.20                # si el primer keyframe está antes de esto, no se salta
 
 # =========================
 # HELPERS
@@ -61,6 +66,44 @@ def resolve_input_path(base_dir: str, name_or_path: str) -> Path:
 def valid_output(p: Path) -> bool:
     return p.exists() and p.is_file() and p.stat().st_size > 0
 
+def find_first_video_keyframe_pts(path: Path, scan_seconds: int) -> float:
+    """
+    Devuelve el PTS (segundos) del primer keyframe (IDR/I) que ffprobe ve al inicio.
+    Si no encuentra, devuelve 0.0.
+    """
+    cmd = [
+        "ffprobe",
+        "-v", "error",
+        "-select_streams", "v:0",
+        "-read_intervals", f"0%+{scan_seconds}",
+        "-show_frames",
+        "-show_entries", "frame=key_frame,pkt_pts_time",
+        "-of", "csv=print_section=0",
+        str(path),
+    ]
+    p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                       text=True, encoding="utf-8", errors="ignore")
+    for line in p.stdout.splitlines():
+        s = line.strip()
+        if not s:
+            continue
+        # Formato: key_frame,pkt_pts_time  -> "1,7.040000"
+        parts = [x.strip() for x in s.split(",")]
+        if len(parts) < 2:
+            continue
+        try:
+            key = int(parts[0])
+        except Exception:
+            continue
+        if key != 1:
+            continue
+        try:
+            pts = float(parts[1])
+        except Exception:
+            continue
+        return max(0.0, pts)
+    return 0.0
+
 # =========================
 # MAIN
 # =========================
@@ -82,46 +125,55 @@ def main():
 
     audio_map = ["-map", "0:a?"] if MANTENER_TODOS_AUDIOS else ["-map", "0:a:0?"]
 
-    # Entrada común: tolerante con streams “sucios”
-    common_in = [
+    # --- NUEVO: calcula salto real al primer keyframe ---
+    skip_sec = 0.0
+    if AUTO_SALTAR_HUECO_INICIAL:
+        kf = find_first_video_keyframe_pts(in_path, SCAN_KEYFRAMES_SEGUNDOS)
+        if kf > MIN_HUECO:
+            skip_sec = kf
+            print(f"[INFO] El archivo no tiene vídeo decodificable hasta ~{skip_sec:.3f}s. Se saltará ese hueco.")
+        else:
+            print("[INFO] No se detecta hueco inicial significativo.")
+
+    # Entrada común
+    common_pre_i = [
         "-fflags", "+genpts+discardcorrupt",
         "-err_detect", "ignore_err",
         "-ignore_unknown",
         "-analyzeduration", ANALYZEDURATION,
         "-probesize", PROBESIZE,
-        "-i", str(in_path),
+    ]
+    if skip_sec > 0:
+        # Esto elimina el hueco (el contenido empieza “directo”)
+        common_pre_i += ["-ss", f"{skip_sec:.3f}"]
 
+    common_post_i = [
+        "-i", str(in_path),
         "-map", "0:v:0?",
         *audio_map,
         "-sn", "-dn",
         "-map_metadata", "-1",
         "-map_chapters", "-1",
         "-max_muxing_queue_size", "4096",
+        "-avoid_negative_ts", "make_zero",
     ]
 
     # ============================================================
-    # INTENTO A: VIDEO COPY + AUDIO AAC, PERO CORRIGIENDO OFFSET PTS
-    #   -> clave: -copyts -start_at_zero (start_at_zero solo con copyts)
+    # INTENTO A: VIDEO COPY + AUDIO AAC (rápido)
     # ============================================================
-    cmd_a = ffmpeg_base + ["-loglevel", "error"] + [
-        "-copyts",
-        "-start_at_zero",
-    ] + common_in + [
+    cmd_a = ffmpeg_base + ["-loglevel", "error"] + common_pre_i + common_post_i + [
         "-c:v", "copy",
         "-bsf:v", "extract_extradata",
         "-c:a", "aac",
         "-b:a", "160k",
-        "-avoid_negative_ts", "make_zero",
     ]
-
     if OUTPUT_CONTAINER.lower() == "mp4":
         cmd_a += ["-movflags", "+faststart"]
-
     cmd_a += [str(out_path)]
 
     rc_a = run(cmd_a)
     if rc_a == 0 and valid_output(out_path):
-        print(f"OK: Generado (copy video + aac audio + start_at_zero): {out_path}")
+        print(f"OK: Generado (copy video + aac audio): {out_path}")
         if BORRAR_ORIGINAL:
             try:
                 os.remove(in_path)
@@ -130,37 +182,28 @@ def main():
                 print(f"AVISO: No pude borrar el original ({in_path}): {e}")
         return
 
-    print("AVISO: Intento A falló o no fue válido. Fallback a NVENC + reset PTS (sin hueco inicial)...")
+    print("AVISO: Intento A falló. Fallback a NVENC (GTX 1060) + AAC...")
 
     # ============================================================
-    # INTENTO B: NVENC (GTX 1060) + AAC
-    #   -> clave: setpts/asetpts para que el primer frame/sonido sea t=0
+    # INTENTO B: NVENC VIDEO + AAC AUDIO
     # ============================================================
-    cmd_b = ffmpeg_base + ["-loglevel", "error"] + common_in + [
-        "-vf", "setpts=PTS-STARTPTS",
-        "-af", "asetpts=PTS-STARTPTS",
-
+    cmd_b = ffmpeg_base + ["-loglevel", "error"] + common_pre_i + common_post_i + [
         "-c:v", "h264_nvenc",
         "-preset", NVENC_PRESET,
         "-rc:v", "vbr",
         "-cq:v", str(NVENC_CQ),
         "-b:v", "0",
         "-pix_fmt", "yuv420p",
-
         "-c:a", "aac",
         "-b:a", "160k",
-
-        "-avoid_negative_ts", "make_zero",
     ]
-
     if OUTPUT_CONTAINER.lower() == "mp4":
         cmd_b += ["-movflags", "+faststart"]
-
     cmd_b += [str(out_path)]
 
     rc_b = run(cmd_b)
     if rc_b == 0 and valid_output(out_path):
-        print(f"OK: Generado (NVENC + reset PTS): {out_path}")
+        print(f"OK: Generado (NVENC + AAC): {out_path}")
         if BORRAR_ORIGINAL:
             try:
                 os.remove(in_path)
@@ -174,3 +217,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

@@ -11,13 +11,13 @@ from pathlib import Path
 BASE_DIR = r"E:\zMkvConverter"
 
 # Archivo de entrada (solo nombre o ruta completa; si es solo nombre, se busca dentro de BASE_DIR)
-INPUT_TS = "NCAA Football Bowl Games_20260120_17552025.ts"  # <-- cambia esto
+INPUT_TS = "NCAA Football Bowl Games_20260120_17552025_trim.ts"  # <-- cambia esto
 
 # Control de cortes
 cortar_inicio = True
-inicio_h, inicio_m, inicio_s = 0, 9, 47
+inicio_h, inicio_m, inicio_s = 0, 0, 7
 
-cortar_fin = True
+cortar_fin = False
 fin_h, fin_m, fin_s = 2, 36, 1
 
 # Borrar original al terminar
