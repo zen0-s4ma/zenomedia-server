@@ -67,7 +67,8 @@ services:
       - "C:/Docker_folders/jellifyn/cache:/cache"
       - "C:/Docker_folders/jellifyn/transcodes:/transcode"
       # GRABACIONES:
-      - "E:/Docker_folders/nextpvr/recordings:/recordings"
+      - "E:/Docker_folders/nextpvr/recordings:/recordingsPVR"
+      - "E:/Docker_folders/jellifyn/recordings:/recordings"
       # SCRIPTS
       - "E:/Docker_folders/jellifyn/scripts:/scripts"
     restart: unless-stopped
@@ -1431,7 +1432,7 @@ services:
     ports:
       - "33191:3000"
     volumes:
-      - "E:/Docker_folders/openvscode/workspace:/home/workspace"
+      - "E:/Docker_folders/repos:/home/workspace"
     restart: unless-stopped
 
   github-desktop:
@@ -1443,7 +1444,7 @@ services:
       - TZ=Europe/Madrid
       # Auth básica opcional (recomendable al menos en LAN)
       - CUSTOM_USER=${GHD_USER:-admin}
-      - PASSWORD=${GHD_PASS:-cambia_esto}
+      - PASSWORD=${GHD_PASS:-admin}
     volumes:
       - "E:/Docker_folders/github-desktop/config:/config"
       # Aquí montas donde quieras tener/clonar repos
@@ -1455,7 +1456,49 @@ services:
     cap_add:
       - IPC_LOCK
     restart: unless-stopped
-    
+
+  guacd:
+    image: guacamole/guacd:latest
+    container_name: guacd
+    restart: unless-stopped
+
+  guacamole-db:
+    image: postgres:16-alpine
+    container_name: guacamole-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=guacamole_db
+      - POSTGRES_USER=guacamole_user
+      - POSTGRES_PASSWORD=${GUACAMOLE_DB_PASS}
+    volumes:
+      - "E:/Docker_folders/guacamole/postgres:/var/lib/postgresql/data"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U guacamole_user -d guacamole_db -h 127.0.0.1 -p 5432"]
+      interval: 20s
+      timeout: 5s
+      retries: 10
+
+  guacamole:
+    image: guacamole/guacamole:latest
+    container_name: guacamole
+    restart: unless-stopped
+    depends_on:
+      guacd:
+        condition: service_started
+      guacamole-db:
+        condition: service_healthy
+    ports:
+      - "33170:8080"
+    environment:
+      - GUACD_HOSTNAME=guacd
+      - POSTGRES_HOSTNAME=guacamole-db
+      - POSTGRES_PORT=5432
+      - POSTGRES_DATABASE=guacamole_db
+      - POSTGRES_USER=guacamole_user
+      - POSTGRES_PASSWORD=${GUACAMOLE_DB_PASS}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
   # --- Prueba de GPU -------------------------------------------------------
   #test-gpu:
   #  image: nvidia/cuda:12.9.0-base-ubuntu22.04
