@@ -7,30 +7,23 @@ from pathlib import Path
 # CONFIGURACIÓN DEL USUARIO
 # =========================
 
-# Carpeta base (variable pedida)
-BASE_DIR = r"E:\zMkvConverter"
+BASE_DIR = r"E:\Docker_folders\nextpvr\recordings\Topuria"
+INPUT_FILE = "Topuria_20260121_22450026.mp4"  # .ts / .mkv / .mp4
 
-# Archivo de entrada (solo nombre o ruta completa; si es solo nombre, se busca dentro de BASE_DIR)
-INPUT_TS = "NCAA Football Bowl Games_20260120_17552025_trim.ts"  # <-- cambia esto
-
-# Control de cortes
 cortar_inicio = True
 inicio_h, inicio_m, inicio_s = 0, 0, 7
 
 cortar_fin = False
-fin_h, fin_m, fin_s = 2, 36, 1
+fin_h, fin_m, fin_s = 0, 28, 32
 
-# Borrar original al terminar
-borrar_original = False  # True => borra el .ts original si todo sale bien
-
-# Si quieres intentar corte rápido sin recodificar:
-# - copy suele ser más rápido pero puede no ser preciso al frame exacto y a veces da problemas con TS.
-# - si falla, el script reintenta recodificando.
+borrar_original = True  # True => reemplaza el original por el recortado (mismo nombre)
 MODO_RAPIDO_COPY = True
 
 # =========================
 # IMPLEMENTACIÓN
 # =========================
+
+SUPPORTED_EXTS = {".ts", ".mkv", ".mp4"}
 
 def hms_to_seconds(h: int, m: int, s: int) -> int:
     if h < 0 or m < 0 or s < 0:
@@ -47,7 +40,6 @@ def seconds_to_hhmmss(total_seconds: int) -> str:
     return f"{h:02d}:{m:02d}:{s:02d}"
 
 def run_ffmpeg(cmd: list[str]) -> int:
-    # Muestra el comando para depurar
     print("\n[FFMPEG CMD]")
     print(" ".join(cmd))
     print()
@@ -61,26 +53,41 @@ def ensure_ffmpeg():
         print("ERROR: No encuentro ffmpeg en el PATH. Instala FFmpeg y asegúrate de que 'ffmpeg' funcione en consola.")
         sys.exit(1)
 
-def resolve_input_path(base_dir: str, input_ts: str) -> Path:
-    p = Path(input_ts)
+def resolve_input_path(base_dir: str, input_file: str) -> Path:
+    p = Path(input_file)
     if p.is_absolute():
         return p
-    return Path(base_dir) / input_ts
+    return Path(base_dir) / input_file
 
 def build_output_path(input_path: Path) -> Path:
-    # Genera: nombre_trim.ts en la misma carpeta del input
-    return input_path.with_name(input_path.stem + "_trim.ts")
+    return input_path.with_name(input_path.stem + "_trim" + input_path.suffix)
+
+def pick_backup_path(input_path: Path) -> Path:
+    """
+    Devuelve una ruta libre para backup en la misma carpeta.
+    Ej: video.mp4.bak, video.mp4.bak1, video.mp4.bak2...
+    """
+    base = input_path.with_name(input_path.name + ".bak")
+    if not base.exists():
+        return base
+    i = 1
+    while True:
+        cand = input_path.with_name(input_path.name + f".bak{i}")
+        if not cand.exists():
+            return cand
+        i += 1
 
 def main():
     ensure_ffmpeg()
 
-    input_path = resolve_input_path(BASE_DIR, INPUT_TS)
+    input_path = resolve_input_path(BASE_DIR, INPUT_FILE)
     if not input_path.exists():
         print(f"ERROR: No existe el archivo: {input_path}")
         sys.exit(1)
 
-    if input_path.suffix.lower() != ".ts":
-        print(f"AVISO: El archivo no es .ts (es {input_path.suffix}). Intentaré igualmente.")
+    ext = input_path.suffix.lower()
+    if ext not in SUPPORTED_EXTS:
+        print(f"AVISO: Extensión {ext} no es {sorted(SUPPORTED_EXTS)}. Intentaré igualmente (FFmpeg decide).")
 
     start_sec = None
     end_sec = None
@@ -91,56 +98,63 @@ def main():
     if cortar_fin:
         end_sec = hms_to_seconds(fin_h, fin_m, fin_s)
 
-    # Validaciones de coherencia
     if cortar_inicio and cortar_fin and end_sec is not None and start_sec is not None:
         if end_sec <= start_sec:
             print("ERROR: El tiempo de fin debe ser mayor que el tiempo de inicio.")
             sys.exit(1)
 
     out_path = build_output_path(input_path)
+    out_ext = out_path.suffix.lower()
 
-    # Construcción de argumentos
-    ffmpeg_base = ["ffmpeg", "-y"]  # -y sobrescribe salida si existe
+    ffmpeg_base = ["ffmpeg", "-y"]
 
-    # Nota: para mayor precisión, normalmente conviene poner -ss después de -i (más lento).
-    # Para copy rápido, suele ir antes de -i (más rápido). Aquí hacemos:
-    # - 1er intento (si MODO_RAPIDO_COPY): copy rápido
-    # - si falla: reintento recodificando (más compatible)
     def cmd_copy():
         cmd = ffmpeg_base.copy()
+        cmd += ["-fflags", "+genpts", "-avoid_negative_ts", "make_zero"]
+
         if start_sec is not None:
             cmd += ["-ss", seconds_to_hhmmss(start_sec)]
+
         cmd += ["-i", str(input_path)]
+
         if end_sec is not None and start_sec is not None:
             duration = end_sec - start_sec
             cmd += ["-t", seconds_to_hhmmss(duration)]
         elif end_sec is not None:
-            # si NO hay inicio, entonces el fin sí puede ir como "to" tal cual
             cmd += ["-to", seconds_to_hhmmss(end_sec)]
-        cmd += ["-c", "copy", str(out_path)]
+
+        cmd += ["-c", "copy"]
+
+        if out_ext == ".mp4":
+            cmd += ["-movflags", "+faststart"]
+
+        cmd += [str(out_path)]
         return cmd
 
     def cmd_reencode():
         cmd = ffmpeg_base.copy()
-        # Para precisión: -ss después de -i, y -t (duración) en lugar de -to (fin absoluto) si hay ambos
         cmd += ["-i", str(input_path)]
+
         if start_sec is not None:
             cmd += ["-ss", seconds_to_hhmmss(start_sec)]
+
         if end_sec is not None and start_sec is not None:
             duration = end_sec - start_sec
             cmd += ["-t", seconds_to_hhmmss(duration)]
         elif end_sec is not None:
             cmd += ["-to", seconds_to_hhmmss(end_sec)]
 
-        # Reencode “razonable” (calidad buena sin ser enorme)
         cmd += [
             "-c:v", "libx264", "-preset", "veryfast", "-crf", "18",
             "-c:a", "aac", "-b:a", "192k",
-            str(out_path)
         ]
+
+        if out_ext == ".mp4":
+            cmd += ["-movflags", "+faststart"]
+
+        cmd += [str(out_path)]
         return cmd
 
-    # Ejecutar
     if out_path.exists():
         print(f"AVISO: La salida ya existe y se sobrescribirá: {out_path}")
 
@@ -160,16 +174,54 @@ def main():
         print("ERROR: No se pudo generar el archivo recortado.")
         sys.exit(1)
 
-    print(f"OK: Archivo generado: {out_path}")
+    print(f"OK: Archivo recortado generado: {out_path}")
 
+    final_path = out_path
+
+    # ==========
+    # CAMBIO: si borrar_original=True, el recortado se queda con el nombre del original
+    # ==========
     if borrar_original:
+        backup_path = pick_backup_path(input_path)
+        print(f"INFO: Reemplazando '{input_path.name}' por el recortado (backup: '{backup_path.name}')")
+
+        # 1) mover original a backup
         try:
-            os.remove(input_path)
-            print(f"OK: Original borrado: {input_path}")
+            input_path.replace(backup_path)  # rename/move en el mismo disco (rápido)
         except Exception as e:
-            print(f"AVISO: No pude borrar el original ({input_path}): {e}")
+            print(f"ERROR: No pude crear el backup del original. No se tocará el original. Detalle: {e}")
+            print(f"El recortado se queda como: {out_path}")
+            sys.exit(1)
+
+        # 2) mover recortado al nombre original
+        try:
+            out_path.replace(input_path)
+            final_path = input_path
+        except Exception as e:
+            print(f"ERROR: No pude renombrar el recortado al nombre original. Detalle: {e}")
+
+            # Intentar restaurar original
+            try:
+                if not input_path.exists() and backup_path.exists():
+                    backup_path.replace(input_path)
+                    print("OK: Original restaurado desde el backup.")
+            except Exception as e2:
+                print(f"CRÍTICO: No pude restaurar el original desde el backup ({backup_path}). Detalle: {e2}")
+
+            print(f"El recortado sigue en: {out_path}")
+            sys.exit(1)
+
+        # 3) borrar backup
+        try:
+            backup_path.unlink()
+            print(f"OK: Backup borrado: {backup_path.name}")
+        except Exception as e:
+            print(f"AVISO: No pude borrar el backup ({backup_path}). Puedes borrarlo manualmente. Detalle: {e}")
+
+        print(f"OK: Archivo final (mismo nombre que el original): {final_path}")
     else:
         print("Original conservado (borrar_original=False).")
+        print(f"OK: Archivo final: {final_path}")
 
 if __name__ == "__main__":
     main()
