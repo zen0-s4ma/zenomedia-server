@@ -1,0 +1,397 @@
+# ZENOMEDIA SERVER V0.1
+services:
+  # --- IPTV proxy (xTeVe moderno) ------------------------------------------
+  threadfin:
+    image: fyb3roptik/threadfin:latest
+    container_name: threadfin
+    ports:
+      - "34400:34400"
+    environment:
+      - TZ=Europe/Madrid
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - "E:/Docker_folders/threadfin/conf:/home/threadfin/conf"
+      - "E:/Docker_folders/threadfin/playlists:/playlists:ro"
+      - "C:/Docker_folders/threadfin/tmp:/tmp/threadfin:rw"
+    restart: unless-stopped
+
+  # --- Backend PVR completo (timeshift/DVR) --------------------------------
+  tvheadend:
+    image: lscr.io/linuxserver/tvheadend:latest
+    container_name: tvheadend
+    network_mode: "service:gluetun"
+    depends_on:
+      - gluetun
+    environment:
+      - TZ=Europe/Madrid
+      - PUID=1000
+      - PGID=
+    # ports:
+    #   - "9981:9981"
+    #   - "9982:9982"
+    volumes:
+      - "E:/Docker_folders/tvheadend/config:/config"
+      - "E:/Docker_folders/tvheadend/tvheadend/recordings:/recordings"
+      - "E:/Docker_folders/tvheadend/iptv:/iptv"
+    restart: unless-stopped
+
+  nextpvr:
+    image: nextpvr/nextpvr_amd64:latest
+    container_name: nextpvr
+    depends_on:
+      - gluetun
+      - dispatcharr
+    environment:
+      - TZ=Europe/Madrid
+    ports:
+      - "8866:8866"
+      - "16891:16891/udp"
+      - "8026:8026/udp"
+    volumes:
+      - "E:/Docker_folders/nextpvr/config:/config"
+      - "E:/Grabaciones:/recordings"
+      - "E:/Docker_folders/nextpvr/buffer:/buffer"
+    restart: unless-stopped
+
+  # --- TDARR ---------------------------------------------------------------
+  tdarr:
+    image: ghcr.io/haveagitgat/tdarr:latest
+    container_name: tdarr
+    ports:
+      - "33081:8265"
+      - "33082:8266"
+    environment:
+      - TZ=Europe/Madrid
+      - PUID=1000
+      - PGID=1000
+      - UMASK_SET=002
+      - serverIP=0.0.0.0
+      - serverPort=8266
+      - webUIPort=8265
+      - internalNode=true
+      - inContainer=true
+      - ffmpegVersion=7
+      - nodeName=InternalNode
+      - auth=false
+      - NVIDIA_DRIVER_CAPABILITIES=all
+      - NVIDIA_VISIBLE_DEVICES=all
+    volumes:
+      - "E:/Docker_folders/tdarr/tdarr_server:/app/server"
+      - "E:/Docker_folders/tdarr/tdarr_configs:/app/configs"
+      - "E:/Docker_folders/tdarr/tdarr_logs:/app/logs"
+      - "C:/Docker_folders/tdarr/tdarr_cache:/temp"
+      # UNIDAD DE ALMACENAMIENTO F (CONTENIDO MULTIMEDIA):
+      - "F:/Infantil:/media/Infantil"
+      - "F:/Peliculas:/media/Peliculas"
+      - "F:/Documentales:/media/Documentales"
+      - "F:/Series:/media/Series"
+      - "F:/MiniSeries:/media/MiniSeries"
+      - "F:/Anime:/media/Anime"
+      - "F:/Futbol:/media/Futbol"
+      - "F:/Baloncesto:/media/Baloncesto"
+      - "F:/NFL:/media/NFL"
+      - "F:/Combates:/media/Combates"
+      - "F:/LoL:/media/LoL"
+      - "F:/Olimpiadas:/media/Olimpiadas"
+      # UNIDAD DE ALMACENAMIENTO E (CONTENIDO MULTIMEDIA):
+      - "E:/Infantil:/media/Infantil2"
+      - "E:/Peliculas:/media/Peliculas2"
+      - "E:/Series:/media/Series2"
+      - "E:/MiniSeries:/media/MiniSeries2"
+      - "E:/YouTube:/media/YouTube2"
+      - "E:/Anime:/media/Anime2"
+      - "E:/Documentales:/media/Documentales2"
+      - "E:/Futbol:/media/Futbol2"
+      - "E:/Baloncesto:/media/Baloncesto2"
+      - "E:/NFL:/media/NFL2"
+      - "E:/Combates:/media/Combates2"
+      - "E:/LoL:/media/LoL2"
+      - "E:/Olimpiadas:/media/Olimpiadas2"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    restart: unless-stopped
+
+  # --- KAVITA --------------------------------------------------------------
+  kavita:
+    image: lscr.io/linuxserver/kavita:latest
+    container_name: kavita
+    ports: ["33086:5000"]
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    volumes:
+      - "E:/Docker_folders/kavita/kavita_config:/config"
+      - "E:/Docker_folders/kavita/kavita_data:/data"
+    restart: unless-stopped
+
+  audiobookshelf:
+    image: ghcr.io/advplyr/audiobookshelf:latest
+    container_name: audiobookshelf
+    ports:
+      - "13378:80"
+    environment:
+      - TZ=Europe/Madrid
+      - DISABLE_SSRF_REQUEST_FILTER=1
+    volumes:
+      - "E:/Docker_folders/audiobookshelf/audiobookshelf_config:/config"
+      - "E:/Docker_folders/audiobookshelf/audiobookshelf_metadata:/metadata"
+      - "F:/Audiolibros:/audiobooks"
+      - "F:/Podcasts:/podcasts"
+    restart: unless-stopped
+
+  docker-socket-proxy:
+    image: tecnativa/docker-socket-proxy
+    container_name: docker-socket-proxy
+    restart: unless-stopped
+    environment:
+      - CONTAINERS=1     # /containers/*
+      - IMAGES=1         # /images/*
+      - POST=1           # operaciones POST (start/stop, etc.)
+      - INFO=1           # /info (por si Homarr lo usa)
+      - SYSTEM=1         # /system/* (stats globales, df, etc.)
+      # - NETWORKS=1     # solo si algún día lo necesitas
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    expose:
+      - "2375"
+    healthcheck:
+      test: ["CMD", "wget", "-qO", "-", "http://localhost:2375/_ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  organizr:
+    image: ghcr.io/organizr/organizr:latest
+    container_name: organizr
+    ports:
+      - "33102:80"
+    environment:
+      - TZ=Europe/Madrid
+      - PUID=1000
+      - PGID=1000
+      - branch=v2-master
+    volumes:
+      - "E:/Docker_folders/organizr/organizr_config:/config"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost/ > /dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # --- KOMETA (ex Plex-Meta-Manager) ---------------------------------------
+  kometa:
+    image: lscr.io/linuxserver/kometa:latest
+    container_name: kometa
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+      - KOMETA_CONFIG=/config/config.yml
+      - KOMETA_TIME=05:00
+    volumes:
+      - "E:/Docker_folders/kometa/kometa_config:/config"
+
+  # --- CALIBRE-WEB (frontend para Calibre) ---------------------------------
+  calibre-web:
+    image: lscr.io/linuxserver/calibre-web:latest
+    container_name: calibre-web
+    restart: unless-stopped
+    ports:
+      - "8083:8083"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    volumes:
+      - "E:/Docker_folders/calibre_web/calibre_web_config:/config"
+      - "F:/Libros:/books"
+
+  # --- NAVIDROME (servidor de música) --------------------------------------
+  navidrome:
+    image: deluan/navidrome:latest
+    container_name: navidrome
+    restart: unless-stopped
+    ports:
+      - "4533:4533"
+    environment:
+      - TZ=Europe/Madrid
+      - ND_LOGLEVEL=info
+      - ND_SCANSCHEDULE=1h
+    volumes:
+      - "E:/Docker_folders/navidrome/navidrome_data:/data"
+      - "F:/Musica:/music:ro"
+
+  # --- OPEN WEBUI (UI para Ollama/LLMs) ------------------------------------
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    restart: unless-stopped
+    ports:
+      - "3002:8080"
+    environment:
+      - OLLAMA_BASE_URL=http://host.docker.internal:11000
+      - WEBUI_NAME=OpenWebUI
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - "E:/Docker_folders/openwebui/openwebui_data:/app/backend/data"
+
+  # --- Explorador de carpetas compartidas ----------------------------------
+  filebrowser:
+    image: filebrowser/filebrowser:latest
+    container_name: filebrowser
+    environment:
+      - TZ=Europe/Madrid
+    volumes:
+      - "F:/Peliculas:/srv/Peliculas:ro"
+      - "E:/Compartida:/srv/Compartida:rw"
+      - "E:/Docker_folders/filebrowser/filebrowser_data:/database"
+    ports:
+      - "18080:80"
+    restart: unless-stopped
+
+  # --- Servicio DNS duckDNS ------------------------------------------------
+  duckdns:
+    image: lscr.io/linuxserver/duckdns:latest
+    container_name: duckdns
+    environment:
+      - SUBDOMAINS=maripiflix
+      - TOKEN=453c480f-666f-42b0-96a3-e1f2ab1f7048
+    restart: unless-stopped
+
+  kali:
+    build: ./kali/kali-custom
+    container_name: kali
+    hostname: kali
+    tty: true
+    stdin_open: true
+    privileged: true
+    gpus: all
+    environment:
+      - DISPLAY=${DISPLAY:-host.docker.internal:0.0}
+      - DOCKER_HOST=${DOCKER_HOST:-unix:///var/run/docker.sock}
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility,graphics
+    volumes:
+      - "E:/Docker_folders/kali:/home/kali"
+      - ./kali/entrypoint_kali.sh:/entrypoint_kali.sh
+      - ./kali/kali_scripts:/custom_scripts
+      - ./kali/id_rsa_n8n_kali.pub:/root/.ssh/authorized_keys
+      - "/sys/fs/cgroup:/sys/fs/cgroup:rw"
+      - /var/run/docker.sock:/var/run/docker.sock
+    entrypoint: ["/bin/bash", "/entrypoint_kali.sh"]
+    ports:
+      - "38081:80"
+      - "44443:443"
+      - "22222:22"
+    restart: unless-stopped
+
+  py-runner:
+    build:
+      context: ./python_scripts
+      dockerfile: Dockerfile
+    container_name: py-runner
+    environment:
+      - TZ=Europe/Madrid
+      - SUPERVISOR_USER=admin
+      - SUPERVISOR_PASSWORD=admin
+      - SCRIPTS_DIR=/workspace/scripts
+      - LOGS_DIR=/workspace/logs
+      - REQUIREMENTS_FILE=/workspace/requirements.txt
+      - CRON_FILE=/workspace/schedule.cron
+      - AUTO_REGISTER_INTERVAL=5   # opcional (segundos)
+    ports:
+      - "9012:9001"   # UI web de Supervisor
+      - "9013:9001"   # Supervisor (backend)
+      - "9014:8000"   # UI moderno (FastAPI)
+    volumes:
+      - "E:/Docker_folders/python_scripts:/workspace"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:9001 >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  kanboard:
+    image: kanboard/kanboard:v1.2.45
+    container_name: kanboard
+    ports:
+      - "8811:80"          # UI web Kanboard -> http://HOST:8811
+      # - "8443:443"       # (opcional) si algún día configuras SSL dentro del contenedor
+    environment:
+      - TZ=Europe/Madrid
+      - PLUGIN_INSTALLER=true    # permite instalar plugins desde la interfaz
+    volumes:
+      - "E:/Docker_folders/kanboard/data:/var/www/app/data"
+      - "E:/Docker_folders/kanboard/plugins:/var/www/app/plugins"
+      - "E:/Docker_folders/kanboard/ssl:/etc/nginx/ssl"
+    restart: unless-stopped
+
+  autobrr:
+    image: ghcr.io/autobrr/autobrr:latest
+    container_name: autobrr
+    ports:
+      - "7474:7474"
+    environment:
+      - TZ=Europe/Madrid
+    volumes:
+      - "E:/Docker_folders/autoborr/autobrr_config:/config"
+    restart: unless-stopped
+
+  emulerr:
+    image: isc30/emulerr:latest
+    container_name: emulerr
+    restart: unless-stopped
+    tty: true
+    environment:
+      - TZ=Europe/Madrid
+      - PASSWORD=admin
+      - LOG_LEVEL=debug
+    ports:
+      - "39000:3000"          # UI eMulerr
+      - "39062:39062/tcp"     # eD2K TCP
+      - "39062:39062/udp"     # Kad/Cliente UDP 
+      - "39065:39065/udp"     # Server UDP
+      - "39011:39011/tcp"     # amuleweb 
+      - "39012:39012/tcp"     # EC/Remote 
+    volumes:
+      - "D:/Descargas/eMule:/downloads"
+      - "./emulerr-amule:/home/amule/.aMule"
+      # - "./emulerr-amule/server.met:/config/amule/server.met"
+      # - "./emulerr-amule/amule.overrides.conf:/config/amule/amule.overrides.conf"
+
+
+  # --------------------------------------------------------
+  # --- pihole
+  # --- DNS sinkhole / adblock
+  # --- Ports: 8090 (Gui Web)
+  # --------------------------------------------------------
+  pihole:
+    image: pihole/pihole:latest
+    container_name: pihole
+    hostname: pihole
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "8090:80"          # Panel web (NPM ya usa 80/443)
+    environment:
+      - TZ=Europe/Madrid
+      - WEBPASSWORD=${PIHOLE_WEBPASSWORD:-admin}   # cámbialo en .env
+      - DNSMASQ_LISTENING=all
+      # Si usas Unbound, configúralo luego en la UI a 127.0.0.1#5335
+    volumes:
+      - "E:/Docker_folders/pihole/etc-pihole:/etc/pihole"
+      - "E:/Docker_folders/pihole/dnsmasq.d:/etc/dnsmasq.d"
+    restart: unless-stopped

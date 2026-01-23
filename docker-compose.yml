@@ -3,7 +3,60 @@ volumes:
   romm_db_data:
 
 services:
-  # --- JELLYFIN -------------------------------------------------------------
+  # +++++++++++++++++++++++++++++++
+  # 
+  # CATEGORIA: DASHBOARDS / PORTALES
+  # 
+  # +++++++++++++++++++++++++++++++
+
+  # --------------------------------------------------------
+  # --- heimdall
+  # --- Dashboard / portal de accesos
+  # --- Ports: 7771 (Gui Web)
+  # --------------------------------------------------------
+  heimdall:
+    image: linuxserver/heimdall
+    container_name: heimdall
+    restart: unless-stopped
+    ports:
+      - "7771:80"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    volumes:
+      - "E:/Docker_folders/heimdall:/config"
+
+  # --------------------------------------------------------
+  # --- homarr
+  # --- Dashboard / portal de accesos
+  # --- Ports: 7575 (Gui Web)
+  # --------------------------------------------------------
+  homarr:
+    image: ghcr.io/homarr-labs/homarr:latest
+    container_name: homarr
+    restart: unless-stopped
+    ports:
+      - "7575:7575"
+    environment:
+      - SECRET_ENCRYPTION_KEY=9F32AFA73371B50FA139FED313838FA0091002277E483B27DDD1D3162B93DD02
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - "E:/Docker_folders/homarr/appdata:/appdata"
+     
+    
+
+  # +++++++++++++++++++++++++++++++
+  #
+  # CATEGORIA: MEDIA STREAMING Y BIBLIOTECAS
+  #
+  # +++++++++++++++++++++++++++++++
+
+  # --------------------------------------------------------
+  # --- jellyfin
+  # --- Media server / streaming
+  # --- Ports: 8096 (Gui Web)
+  # --------------------------------------------------------
   jellyfin:
     image: jellyfin/jellyfin:10.11.4
     container_name: jellyfin
@@ -67,8 +120,7 @@ services:
       - "C:/Docker_folders/jellifyn/cache:/cache"
       - "C:/Docker_folders/jellifyn/transcodes:/transcode"
       # GRABACIONES:
-      - "E:/Docker_folders/nextpvr/recordings:/recordingsPVR"
-      - "E:/Docker_folders/jellifyn/recordings:/recordings"
+      - "E:/Grabaciones:/recordings"
       # SCRIPTS
       - "E:/Docker_folders/jellifyn/scripts:/scripts"
     restart: unless-stopped
@@ -79,7 +131,153 @@ services:
       retries: 5
       start_period: 60s
 
-  # --- TUBEARCHIVIST (UI :8000) --------------------------------------------
+  # --------------------------------------------------------
+  # --- jfa-go
+  # --- Gestión de usuarios Jellyfin
+  # --- Ports: 8056 (Gui Web)
+  # --------------------------------------------------------
+  jfa-go:
+    image: hrfee/jfa-go:latest
+    container_name: jfa-go
+    depends_on: [jellyfin]
+    ports:
+      - "8056:8056"
+    environment:
+      - TZ=Europe/Madrid
+      - JELLYFIN_URL=http://jellyfin:8096
+    volumes:
+      - "E:/Docker_folders/jfa-go:/data"
+      - "E:/Docker_folders/jellifyn/metadata:/jf:ro"
+    restart: unless-stopped
+
+  # --------------------------------------------------------
+  # --- komga
+  # --- Biblioteca de cómics/manga (servidor)
+  # --- Ports: 33083 (Gui Web)
+  # --------------------------------------------------------
+  komga:
+    image: gotson/komga:latest
+    container_name: komga
+    ports: ["33083:25600"]
+    environment:
+      - TZ=Europe/Madrid
+    volumes:
+      - "E:/Docker_folders/komga/komga_config:/config"
+      - "E:/Docker_folders/komga/komga_data:/data"
+    restart: unless-stopped
+
+  # --------------------------------------------------------
+  # --- calibre
+  # --- Gestión de biblioteca de ebooks (GUI web/noVNC)
+  # --- Ports: 33084 (Gui Web)
+  # --------------------------------------------------------
+  calibre:
+    image: lscr.io/linuxserver/calibre:latest
+    container_name: calibre
+    ports:
+      - "33084:8080"
+      - "33085:8181"
+      - "33087:8081"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+    volumes:
+      - "E:/Docker_folders/calibre/calibre_config:/config"
+    restart: unless-stopped
+
+
+  # +++++++++++++++++++++++++++++++
+  #
+  # CATEGORIA: DESCARGAS Y CAPTURA DE CONTENIDO
+  #
+  # +++++++++++++++++++++++++++++++
+
+  # --------------------------------------------------------
+  # --- qbittorrent
+  # --- Cliente BitTorrent
+  # --- Ports: 8080 (Gui Web)
+  # --------------------------------------------------------
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    ports:
+      - "8080:8080"
+      - "6881:6881"
+      - "6881:6881/udp"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+      - WEBUI_PORT=8080
+      - TORRENTING_PORT=6881
+    volumes:
+      - "E:/Docker_folders/qbittorrent/qbittorrent_data:/config"
+      - "E:/Docker_folders/qbittorrent/media_data:/downloads"
+    restart: unless-stopped
+
+  # --------------------------------------------------------
+  # --- amule
+  # --- Cliente eD2k/Kad (aMule) con Web UI
+  # --- Ports: 4711 (Gui Web)
+  # --------------------------------------------------------
+  amule:
+    image: ngosang/amule:latest
+    container_name: amule
+    environment:
+      - TZ=Europe/Madrid
+      - PUID=1000
+      - PGID=1000
+      # passwords de la UI web y control remoto (recomendado)
+      - GUI_PWD=admin
+      - WEBUI_PWD=admin
+
+      # opcional: reinicio diario del contenedor (no imprescindible)
+      - MOD_AUTO_RESTART_ENABLED=true
+      - MOD_AUTO_RESTART_CRON=0 6 * * *
+      - MOD_AUTO_SHARE_ENABLED=false
+
+      - MOD_FIX_KAD_GRAPH_ENABLED=true
+      - MOD_FIX_KAD_BOOTSTRAP_ENABLED=true
+    ports:
+      - "4711:4711/tcp"
+      - "4712:4712/tcp"
+      - "4662:4662/tcp"
+      - "4665:4665/udp"
+      - "4672:4672/udp"
+    volumes:
+      - "E:/Docker_folders/amule/config:/home/amule/.aMule"
+      - "E:/Docker_folders/amule/incoming:/incoming"
+      - "E:/Docker_folders/amule/temp:/temp"
+    restart: unless-stopped
+
+  # --------------------------------------------------------
+  # --- metube
+  # --- Descargas de YouTube (ytdl) con UI
+  # --- Ports: 8081 (Gui Web)
+  # --------------------------------------------------------
+  metube:
+    image: ghcr.io/alexta69/metube:latest
+    container_name: metube
+    restart: unless-stopped
+    ports:
+      - "8081:8081"          # UI web de MeTube
+    environment:
+      - TZ=Europe/Madrid
+      # Opcional: explícito, pero por defecto ya usan /downloads
+      - DOWNLOAD_DIR=/downloads
+      - AUDIO_DOWNLOAD_DIR=/downloads/Music
+    volumes:
+      # Carpeta de descargas en el host -> carpeta interna de MeTube
+      - "E:/YouTube:/downloads"
+      - "E:/YouTube/Videos:/downloads/Videos"
+      - "E:/YouTube/Music:/downloads/Music"
+
+  # --------------------------------------------------------
+  # --- tubearchivist
+  # --- Archivo/descarga y gestión de YouTube
+  # --- Ports: 8001 (Gui Web)
+  # --------------------------------------------------------
   tubearchivist:
     image: bbilly1/tubearchivist:latest
     pull_policy: always
@@ -111,6 +309,11 @@ services:
       retries: 3
       start_period: 30s
 
+  # --------------------------------------------------------
+  # --- archivist-redis
+  # --- Redis (cache/cola) para TubeArchivist
+  # --- Ports: N/A
+  # --------------------------------------------------------
   archivist-redis:
     image: redis:7-alpine
     pull_policy: always
@@ -121,6 +324,11 @@ services:
     volumes:
       - "E:/Docker_folders/tubearchivist/redis:/data"
 
+  # --------------------------------------------------------
+  # --- archivist-es
+  # --- Elasticsearch para TubeArchivist
+  # --- Ports: N/A
+  # --------------------------------------------------------
   archivist-es:
     image: bbilly1/tubearchivist-es:latest
     pull_policy: always
@@ -141,162 +349,18 @@ services:
     expose:
       - "9200"
 
-  # --- Gestión de usuarios Jellyfin ----------------------------------------
-  jfa-go:
-    image: hrfee/jfa-go:latest
-    container_name: jfa-go
-    depends_on: [jellyfin]
-    ports:
-      - "8056:8056"
-    environment:
-      - TZ=Europe/Madrid
-      - JELLYFIN_URL=http://jellyfin:8096
-    volumes:
-      - "E:/Docker_folders/jfa-go:/data"
-      - "E:/Docker_folders/jellifyn/metadata:/jf:ro"
-    restart: unless-stopped
 
-  # --- Estadísticas avanzadas ----------------------------------------------
-  jellystat:
-    image: cyfershepard/jellystat:latest
-    container_name: jellystat
-    depends_on:
-      jellystat-db:
-        condition: service_healthy
-    ports: ["3000:3000"]
-    environment:
-      - TZ=Europe/Madrid
-      - POSTGRES_IP=jellystat-db
-      - POSTGRES_PORT=5432
-      - POSTGRES_DB=jellystat
-      - POSTGRES_USER=jellystat
-      - POSTGRES_PASSWORD=${JELLYSTAT_DB_PASS}
-      - JWT_SECRET=${JELLYSTAT_JWT}
-      - JELLYFIN_URL=http://jellyfin:8096
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "curl -fsS http://localhost:3000 >/dev/null"]
-      interval: 1m
-      timeout: 5s
-      retries: 3
-      start_period: 20s
+  # +++++++++++++++++++++++++++++++
+  #
+  # CATEGORIA: AUTOMATIZACION MULTIMEDIA (ARR STACK, REQUESTS, NOTIFICACIONES, METADATOS)
+  #
+  # +++++++++++++++++++++++++++++++
 
-  jellystat-db:
-    image: postgres:16
-    container_name: jellystat-db
-    environment:
-      - POSTGRES_DB=jellystat
-      - POSTGRES_USER=jellystat
-      - POSTGRES_PASSWORD=${JELLYSTAT_DB_PASS}
-    volumes:
-      - "E:/Docker_folders/jellystat/postgres:/var/lib/postgresql/data"
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U jellystat -d jellystat -h 127.0.0.1 -p 5432"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
- 
-  # --- IPTV proxy (xTeVe moderno) ------------------------------------------
-  threadfin:
-    image: fyb3roptik/threadfin:latest
-    container_name: threadfin
-    ports:
-      - "34400:34400"
-    environment:
-      - TZ=Europe/Madrid
-      - PUID=1000
-      - PGID=1000
-    volumes:
-      - "E:/Docker_folders/threadfin/conf:/home/threadfin/conf"
-      - "E:/Docker_folders/threadfin/playlists:/playlists:ro"
-      - "C:/Docker_folders/threadfin/tmp:/tmp/threadfin:rw"
-    restart: unless-stopped
-
-  # --- Backend PVR completo (timeshift/DVR) --------------------------------
-  tvheadend:
-    image: lscr.io/linuxserver/tvheadend:latest
-    container_name: tvheadend
-    network_mode: "service:gluetun"
-    depends_on:
-      - gluetun
-    environment:
-      - TZ=Europe/Madrid
-      - PUID=1000
-      - PGID=
-    # ports:
-    #   - "9981:9981"
-    #   - "9982:9982"
-    volumes:
-      - "E:/Docker_folders/tvheadend/config:/config"
-      - "E:/Docker_folders/tvheadend/tvheadend/recordings:/recordings"
-      - "E:/Docker_folders/tvheadend/iptv:/iptv"
-    restart: unless-stopped
-
-  webgrabplus:
-    image: lscr.io/linuxserver/webgrabplus:latest
-    container_name: webgrabplus
-    hostname: webgrabplus
-    mac_address: "4C-CC-6A-B5-C5-6B"
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Madrid
-      - DOCKER_MODS=linuxserver/mods:universal-cron
-    volumes:
-      - "E:/Docker_folders/webgrabplus/config:/config"
-      - "E:/Docker_folders/epg:/data"
-    restart: unless-stopped
-
-  nextpvr:
-    image: nextpvr/nextpvr_amd64:latest
-    container_name: nextpvr
-    depends_on:
-      - gluetun
-      - dispatcharr
-    environment:
-      - TZ=Europe/Madrid
-    ports:
-      - "8866:8866"
-      - "16891:16891/udp"
-      - "8026:8026/udp"
-    volumes:
-      - "E:/Docker_folders/nextpvr/config:/config"
-      - "E:/Docker_folders/nextpvr/recordings:/recordings"
-      - "E:/Docker_folders/nextpvr/buffer:/buffer"
-    restart: unless-stopped
-
-  heimdall:
-    image: linuxserver/heimdall
-    container_name: heimdall
-    restart: unless-stopped
-    ports:
-      - "7771:80"
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Madrid
-    volumes:
-      - "E:/Docker_folders/heimdall:/config"
-
-  qbittorrent:
-    image: lscr.io/linuxserver/qbittorrent:latest
-    container_name: qbittorrent
-    ports:
-      - "8080:8080"
-      - "6881:6881"
-      - "6881:6881/udp"
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Madrid
-      - WEBUI_PORT=8080
-      - TORRENTING_PORT=6881
-    volumes:
-      - "E:/Docker_folders/qbittorrent/qbittorrent_data:/config"
-      - "E:/Docker_folders/qbittorrent/media_data:/downloads"
-    restart: unless-stopped
-
+  # --------------------------------------------------------
+  # --- sonarr
+  # --- Automatización de series (Arr)
+  # --- Ports: 33074 (Gui Web)
+  # --------------------------------------------------------
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
@@ -313,6 +377,11 @@ services:
       - "E:/Series:/tv2"
     restart: unless-stopped
 
+  # --------------------------------------------------------
+  # --- radarr
+  # --- Automatización de películas (Arr)
+  # --- Ports: 33075 (Gui Web)
+  # --------------------------------------------------------
   radarr:
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
@@ -328,6 +397,11 @@ services:
       - "F:/Peliculas:/movies"
     restart: unless-stopped
 
+  # --------------------------------------------------------
+  # --- bazarr
+  # --- Subtítulos (Arr)
+  # --- Ports: 33076 (Gui Web)
+  # --------------------------------------------------------
   bazarr:
     image: lscr.io/linuxserver/bazarr:latest
     container_name: bazarr
@@ -344,6 +418,11 @@ services:
       - "F:/Series:/tv:ro"
     restart: unless-stopped
 
+  # --------------------------------------------------------
+  # --- lidarr
+  # --- Automatización de música (Arr)
+  # --- Ports: 33077 (Gui Web)
+  # --------------------------------------------------------
   lidarr:
     image: lscr.io/linuxserver/lidarr:latest
     container_name: lidarr
@@ -358,6 +437,11 @@ services:
       - "E:/Docker_folders/lidarr/media_data:/downloads"
     restart: unless-stopped
 
+  # --------------------------------------------------------
+  # --- readarr
+  # --- Automatización de libros (Arr)
+  # --- Ports: 33078 (Gui Web)
+  # --------------------------------------------------------
   readarr:
     image: ghcr.io/hotio/readarr:latest
     container_name: readarr
@@ -373,6 +457,11 @@ services:
       - "F:/Libros:/books"
     restart: unless-stopped
 
+  # --------------------------------------------------------
+  # --- prowlarr
+  # --- Indexers / agregador (Arr)
+  # --- Ports: 33079 (Gui Web)
+  # --------------------------------------------------------
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:latest
     container_name: prowlarr
@@ -386,6 +475,31 @@ services:
       - "E:/Docker_folders/prowlarr/prowlarr_data:/config"
     restart: unless-stopped
 
+  # --------------------------------------------------------
+  # --- jackett
+  # --- Indexers (Torznab) alternativo
+  # --- Ports: 9117 (Gui Web)
+  # --------------------------------------------------------
+  jackett:
+    image: lscr.io/linuxserver/jackett:latest
+    container_name: jackett
+    ports:
+      - "9117:9117"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+      - AUTO_UPDATE=true
+    volumes:
+      - "E:/Docker_folders/jackett/jackett_data:/config"
+      - "E:/Docker_folders/jackett/media_data:/downloads"
+    restart: unless-stopped
+
+  # --------------------------------------------------------
+  # --- jellyseerr
+  # --- Requests de contenido para Jellyfin
+  # --- Ports: 33080 (Gui Web)
+  # --------------------------------------------------------
   jellyseerr:
     image: fallenbagel/jellyseerr:latest
     container_name: jellyseerr
@@ -404,182 +518,119 @@ services:
       retries: 5
       start_period: 20s
 
-  # --- TDARR ---------------------------------------------------------------
-  tdarr:
-    image: ghcr.io/haveagitgat/tdarr:latest
-    container_name: tdarr
+  # --------------------------------------------------------
+  # --- recyclarr
+  # --- Sincronización de perfiles/quality para Arr
+  # --- Ports: N/A
+  # --------------------------------------------------------
+  recyclarr:
+    image: ghcr.io/recyclarr/recyclarr:latest
+    container_name: recyclarr
+    environment:
+      - TZ=Europe/Madrid
+      - CRON_SCHEDULE=0 5 * * *
+    volumes:
+      - "E:/Docker_folders/recyclarr/recyclarr_config:/config"
+    restart: unless-stopped
+
+  # --------------------------------------------------------
+  # --- notifiarr
+  # --- Notificaciones e integración con stack multimedia
+  # --- Ports: 5454 (Gui Web)
+  # --------------------------------------------------------
+  notifiarr:
+    image: golift/notifiarr:latest
+    container_name: notifiarr
     ports:
-      - "33081:8265"
-      - "33082:8266"
+      - "5454:5454"
     environment:
       - TZ=Europe/Madrid
       - PUID=1000
       - PGID=1000
-      - UMASK_SET=002
-      - serverIP=0.0.0.0
-      - serverPort=8266
-      - webUIPort=8265
-      - internalNode=true
-      - inContainer=true
-      - ffmpegVersion=7
-      - nodeName=InternalNode
-      - auth=false
-      - NVIDIA_DRIVER_CAPABILITIES=all
-      - NVIDIA_VISIBLE_DEVICES=all
     volumes:
-      - "E:/Docker_folders/tdarr/tdarr_server:/app/server"
-      - "E:/Docker_folders/tdarr/tdarr_configs:/app/configs"
-      - "E:/Docker_folders/tdarr/tdarr_logs:/app/logs"
-      - "C:/Docker_folders/tdarr/tdarr_cache:/temp"
-      # UNIDAD DE ALMACENAMIENTO F (CONTENIDO MULTIMEDIA):
-      - "F:/Infantil:/media/Infantil"
-      - "F:/Peliculas:/media/Peliculas"
-      - "F:/Documentales:/media/Documentales"
-      - "F:/Series:/media/Series"
-      - "F:/MiniSeries:/media/MiniSeries"
-      - "F:/Anime:/media/Anime"
-      - "F:/Futbol:/media/Futbol"
-      - "F:/Baloncesto:/media/Baloncesto"
-      - "F:/NFL:/media/NFL"
-      - "F:/Combates:/media/Combates"
-      - "F:/LoL:/media/LoL"
-      - "F:/Olimpiadas:/media/Olimpiadas"
-      # UNIDAD DE ALMACENAMIENTO E (CONTENIDO MULTIMEDIA):
-      - "E:/Infantil:/media/Infantil2"
-      - "E:/Peliculas:/media/Peliculas2"
-      - "E:/Series:/media/Series2"
-      - "E:/MiniSeries:/media/MiniSeries2"
-      - "E:/YouTube:/media/YouTube2"
-      - "E:/Anime:/media/Anime2"
-      - "E:/Documentales:/media/Documentales2"
-      - "E:/Futbol:/media/Futbol2"
-      - "E:/Baloncesto:/media/Baloncesto2"
-      - "E:/NFL:/media/NFL2"
-      - "E:/Combates:/media/Combates2"
-      - "E:/LoL:/media/LoL2"
-      - "E:/Olimpiadas:/media/Olimpiadas2"
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
+      - "E:/Docker_folders/notifiarr/notifiarr_config:/config"
     restart: unless-stopped
 
-  # --- KOMGA ---------------------------------------------------------------
-  komga:
-    image: gotson/komga:latest
-    container_name: komga
-    ports: ["33083:25600"]
-    environment:
-      - TZ=Europe/Madrid
-    volumes:
-      - "E:/Docker_folders/komga/komga_config:/config"
-      - "E:/Docker_folders/komga/komga_data:/data"
-    restart: unless-stopped
-
-  # --- CALIBRE -------------------------------------------------------------
-  calibre:
-    image: lscr.io/linuxserver/calibre:latest
-    container_name: calibre
+  # --------------------------------------------------------
+  # --- amarr
+  # --- Bridge/endpoint para aMule (Torznab/cliente simulado)
+  # --- Ports: 33120 (Gui Web)
+  # --------------------------------------------------------
+  amarr:
+    image: vexdev/amarr:latest
+    container_name: amarr
+    depends_on:
+      - amule
     ports:
-      - "33084:8080"
-      - "33085:8181"
-      - "33087:8081"
+      - "33120:8080"   # UI/endpoint Torznab y cliente simulado
+    environment:
+      - AMULE_HOST=amule
+      - AMULE_PORT=4712
+      - AMULE_PASSWORD=${AMULE_GUI_PWD:-amuleadmin}  # coincide con GUI_PWD de aMule
+      - AMARR_LOG_LEVEL=INFO
+      - AMULE_FINISHED_PATH=/incoming                 # coincide con aMule
+    volumes:
+      - "E:/Docker_folders/amarr:/config"
+    restart: unless-stopped
+
+
+  # +++++++++++++++++++++++++++++++
+  #
+  # CATEGORIA: IPTV / EPG
+  #
+  # +++++++++++++++++++++++++++++++
+
+  # --------------------------------------------------------
+  # --- webgrabplus
+  # --- Generación/captura de EPG
+  # --- Ports: N/A
+  # --------------------------------------------------------
+  webgrabplus:
+    image: lscr.io/linuxserver/webgrabplus:latest
+    container_name: webgrabplus
+    hostname: webgrabplus
+    mac_address: "4C-CC-6A-B5-C5-6B"
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Madrid
+      - DOCKER_MODS=linuxserver/mods:universal-cron
     volumes:
-      - "E:/Docker_folders/calibre/calibre_config:/config"
+      - "E:/Docker_folders/webgrabplus/config:/config"
+      - "E:/Docker_folders/epg:/data"
     restart: unless-stopped
 
-  # --- KAVITA --------------------------------------------------------------
-  kavita:
-    image: lscr.io/linuxserver/kavita:latest
-    container_name: kavita
-    ports: ["33086:5000"]
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Madrid
-    volumes:
-      - "E:/Docker_folders/kavita/kavita_config:/config"
-      - "E:/Docker_folders/kavita/kavita_data:/data"
-    restart: unless-stopped
-
-  portainer:
-    image: portainer/portainer-ce:latest
-    container_name: portainer
-    ports:
-      - "9443:9443"   # UI HTTPS (principal)
-      - "9000:9000"   # UI HTTP (opcional)
-      - "8000:8000"   # Edge tunnel (opcional)
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - "E:/Docker_folders/portainer/portainer_data:/data"
-    restart: unless-stopped
-
-  dozzle:
-    image: amir20/dozzle:latest
-    container_name: dozzle
-    ports:
-      - "9999:8080"
+  # --------------------------------------------------------
+  # --- dispatcharr
+  # --- Gestor/servicio IPTV (bajo VPN gluetun)
+  # --- Ports: N/A
+  # --------------------------------------------------------
+  dispatcharr:
+    image: ghcr.io/dispatcharr/dispatcharr:latest
+    container_name: dispatcharr
+    network_mode: "service:gluetun"
     environment:
       - TZ=Europe/Madrid
-      - DOZZLE_LEVEL=info
+      - DISPATCHARR_ENV=aio
+      - DISPATCHARR_LOG_LEVEL=info
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - "E:/Docker_folders/dispatcharr/data:/data"
+      - "E:/Docker_folders/dispatcharr/iptv:/data/m3us"
+      - "E:/Docker_folders/epg:/data/epgs:ro"
     restart: unless-stopped
 
-  netdata:
-    image: netdata/netdata:stable
-    container_name: netdata
-    hostname: netdata
-    ports:
-      - "19999:19999"
-    cap_add:
-      - SYS_PTRACE
-    security_opt:
-      - apparmor:unconfined
-    environment:
-      - TZ=Europe/Madrid
-    volumes:
-      - "E:/Docker_folders/netdata/netdata_config:/etc/netdata"
-      - "E:/Docker_folders/netdata/netdata_lib:/var/lib/netdata"
-      - "E:/Docker_folders/netdata/netdata_cache:/var/cache/netdata"
-      - /etc/passwd:/host/etc/passwd:ro
-      - /etc/group:/host/etc/group:ro
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /etc/os-release:/host/etc/os-release:ro
-    restart: unless-stopped
 
-  audiobookshelf:
-    image: ghcr.io/advplyr/audiobookshelf:latest
-    container_name: audiobookshelf
-    ports:
-      - "13378:80"
-    environment:
-      - TZ=Europe/Madrid
-      - DISABLE_SSRF_REQUEST_FILTER=1
-    volumes:
-      - "E:/Docker_folders/audiobookshelf/audiobookshelf_config:/config"
-      - "E:/Docker_folders/audiobookshelf/audiobookshelf_metadata:/metadata"
-      - "F:/Audiolibros:/audiobooks"
-      - "F:/Podcasts:/podcasts"
-    restart: unless-stopped
+  # +++++++++++++++++++++++++++++++
+  #
+  # CATEGORIA: PROCESADO / TRANSCODIFICACION / UTILIDADES MULTIMEDIA
+  #
+  # +++++++++++++++++++++++++++++++
 
-  rss-bridge:
-    image: rssbridge/rss-bridge:latest
-    container_name: rss-bridge
-    ports:
-      - "33137:80"
-    volumes:
-      - "E:/Docker_folders/rss-bridge:/config"
-    restart: unless-stopped
-
+  # --------------------------------------------------------
+  # --- unmanic
+  # --- Transcodificación/optimización automática
+  # --- Ports: 8888 (Gui Web)
+  # --------------------------------------------------------
   unmanic:
     image: josh5/unmanic:latest
     container_name: unmanic
@@ -604,396 +655,11 @@ services:
               capabilities: [gpu,video,utility]
     restart: unless-stopped
 
-  recyclarr:
-    image: ghcr.io/recyclarr/recyclarr:latest
-    container_name: recyclarr
-    environment:
-      - TZ=Europe/Madrid
-      - CRON_SCHEDULE=0 5 * * *
-    volumes:
-      - "E:/Docker_folders/recyclarr/recyclarr_config:/config"
-    restart: unless-stopped
-
-  autobrr:
-    image: ghcr.io/autobrr/autobrr:latest
-    container_name: autobrr
-    ports:
-      - "7474:7474"
-    environment:
-      - TZ=Europe/Madrid
-    volumes:
-      - "E:/Docker_folders/autoborr/autobrr_config:/config"
-    restart: unless-stopped
-
-  notifiarr:
-    image: golift/notifiarr:latest
-    container_name: notifiarr
-    ports:
-      - "5454:5454"
-    environment:
-      - TZ=Europe/Madrid
-      - PUID=1000
-      - PGID=1000
-    volumes:
-      - "E:/Docker_folders/notifiarr/notifiarr_config:/config"
-    restart: unless-stopped
-
-  docker-socket-proxy:
-    image: tecnativa/docker-socket-proxy
-    container_name: docker-socket-proxy
-    restart: unless-stopped
-    environment:
-      - CONTAINERS=1     # /containers/*
-      - IMAGES=1         # /images/*
-      - POST=1           # operaciones POST (start/stop, etc.)
-      - INFO=1           # /info (por si Homarr lo usa)
-      - SYSTEM=1         # /system/* (stats globales, df, etc.)
-      # - NETWORKS=1     # solo si algún día lo necesitas
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    expose:
-      - "2375"
-    healthcheck:
-      test: ["CMD", "wget", "-qO", "-", "http://localhost:2375/_ping"]
-      interval: 10s
-      timeout: 3s
-      retries: 5
-
-  homarr:
-    container_name: homarr
-    image: ghcr.io/homarr-labs/homarr:v1.35.1
-    restart: unless-stopped
-    depends_on:
-      docker-socket-proxy:
-        condition: service_healthy
-    ports:
-      - "7575:7575"
-    volumes:
-      - E:/Docker_folders/homarr/appdata:/appdata
-    environment:
-      - SECRET_ENCRYPTION_KEY=e111e33c3056a58c37491e24fd3a90b087f906ab1468893544c23205dd10e96b
-      - DOCKER_HOSTNAMES=docker-socket-proxy
-      - DOCKER_PORTS=2375
-      # - LOG_LEVEL=debug
-
-  jackett:
-    image: lscr.io/linuxserver/jackett:latest
-    container_name: jackett
-    ports:
-      - "9117:9117"
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Madrid
-      - AUTO_UPDATE=true
-    volumes:
-      - "E:/Docker_folders/jackett/jackett_data:/config"
-      - "E:/Docker_folders/jackett/media_data:/downloads"
-    restart: unless-stopped
-
-  organizr:
-    image: ghcr.io/organizr/organizr:latest
-    container_name: organizr
-    ports:
-      - "33102:80"
-    environment:
-      - TZ=Europe/Madrid
-      - PUID=1000
-      - PGID=1000
-      - branch=v2-master
-    volumes:
-      - "E:/Docker_folders/organizr/organizr_config:/config"
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "curl -fsS http://localhost/ > /dev/null || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
-
-  cloudbeaver:
-    image: dbeaver/cloudbeaver:latest
-    container_name: cloudbeaver
-    ports:
-      - "18978:8978"
-    volumes:
-      - "E:/Docker_folders/cloudbeaver/cloudbeaver_workspace:/opt/cloudbeaver/workspace"
-    restart: unless-stopped
-
-  postgres:
-    image: postgres:16-alpine
-    container_name: postgres
-    hostname: postgres
-    restart: unless-stopped
-    environment:
-      - POSTGRES_USER
-      - POSTGRES_PASSWORD
-      - POSTGRES_DB
-    volumes:
-      - "E:/Docker_folders/postgres/postgres_storage:/var/lib/postgresql/data"
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "pg_isready -h 127.0.0.1 -p 5432 -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
-        ]
-      interval: 20s
-      timeout: 10s
-      retries: 10
-      start_period: 240s
-
-  postgresn8n:
-    image: postgres:16-alpine
-    container_name: postgresn8n
-    hostname: postgresn8n
-    restart: unless-stopped
-    environment:
-      - POSTGRES_N8N_USER
-      - POSTGRES_N8N_PASSWORD
-      - POSTGRES_N8N_DB
-    volumes:
-      - "E:/Docker_folders/postgres/postgres_storage:/var/lib/postgresql/data"
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "pg_isready -h 127.0.0.1 -p 5432 -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
-        ]
-      interval: 20s
-      timeout: 10s
-      retries: 10
-      start_period: 240s
-
-  n8n:
-    hostname: n8n
-    container_name: n8n
-    restart: unless-stopped
-    image: n8nio/n8n:latest
-    environment:
-      - DB_TYPE=postgresdb
-      - DB_POSTGRESDB_HOST=postgresn8n
-      - DB_POSTGRESDB_USER=${POSTGRES_N8N_USER}
-      - DB_POSTGRESDB_PASSWORD=${POSTGRES_N8N_PASSWORD}
-      - N8N_RUNNERS_ENABLED=true                # Activa task runners (evita problemas futuros)
-      - N8N_BLOCK_ENV_ACCESS_IN_NODE=true       # Más seguro por defecto (ver nota abajo)
-      - N8N_GIT_NODE_DISABLE_BARE_REPOS=true    # Desactiva repos bare en Git Node
-      - N8N_DIAGNOSTICS_ENABLED=false
-      - N8N_PERSONALIZATION_ENABLED=false
-      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
-      - N8N_USER_MANAGEMENT_JWT_SECRET=${N8N_USER_MANAGEMENT_JWT_SECRET}
-      - OLLAMA_HOST=${OLLAMA_HOST:-ollama:11434}
-      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
-    env_file:
-      - path: .env
-        required: true
-    ports:
-      - 5678:5678
-    volumes:
-      - "E:/Docker_folders/n8n/n8n_storage:/home/node/.n8n"
-      - "E:/Docker_folders/n8n/n8n/demo-data:/demo-data"
-      - "E:/Docker_folders/n8n/shared:/data/shared"
-    depends_on:
-      postgresn8n:
-        condition: service_healthy
-
-  ollama-cpu:
-    profiles: ["cpu"]
-    image: ollama/ollama:latest
-    container_name: ollama
-    restart: unless-stopped
-    ports:
-      - 11000:11434
-    volumes:
-      - "E:/Docker_folders/ollama:/root/.ollama"
-
-  ollama-gpu:
-    profiles: ["gpu-nvidia"]
-    image: ollama/ollama:latest
-    container_name: ollama
-    restart: unless-stopped
-    ports:
-      - 11000:11434
-    volumes:
-      - "E:/Docker_folders/ollama:/root/.ollama"
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
-
-  ollama-gpu-amd:
-    profiles: ["gpu-amd"]
-    image: ollama/ollama:latest
-    container_name: ollama
-    restart: unless-stopped
-    ports:
-      - 11000:11434
-    volumes:
-      - "E:/Docker_folders/ollama:/root/.ollama"
-    devices:
-      - "/dev/kfd"
-      - "/dev/dri"
-
-  qdrant:
-    image: qdrant/qdrant
-    hostname: qdrant
-    container_name: qdrant
-    restart: unless-stopped
-    ports:
-      - 6333:6333
-    volumes:
-      - "E:/Docker_folders/qdrant/qdrant_storage:/qdrant/storage"
-
-  searxng:
-    image: searxng/searxng:latest
-    container_name: searxng
-    restart: unless-stopped
-    ports:
-      - "4080:8080"
-    environment:
-      - SEARXNG_BASE_URL=http://localhost:4080
-      # - SEARXNG_SECRET=CAMBIA_ESTA_CLAVE_LARGA_Y_UNICA
-    volumes:
-      - "E:/Docker_folders/SearXNG/config:/etc/searxng"
-      - "E:/Docker_folders/SearXNG/cache:/var/cache/searxng"
-
-  # --- NGINX PROXY MANAGER (HTTP/HTTPS + Panel) ----------------------------
-  nginx-proxy-manager:
-    image: jc21/nginx-proxy-manager:latest
-    container_name: nginx-proxy-manager
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-      - "81:81"
-    environment:
-      - TZ=Europe/Madrid
-      - INITIAL_ADMIN_EMAIL=admin@admin.com
-      - INITIAL_ADMIN_PASSWORD=admin123
-      - DISABLE_IPV6=true
-    volumes:
-      - "E:/Docker_folders/nginx/npm_data:/data"
-      - "E:/Docker_folders/nginx/npm_letsencrypt:/etc/letsencrypt"
-
-  # --- KOMETA (ex Plex-Meta-Manager) ---------------------------------------
-  kometa:
-    image: lscr.io/linuxserver/kometa:latest
-    container_name: kometa
-    restart: unless-stopped
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Madrid
-      - KOMETA_CONFIG=/config/config.yml
-      - KOMETA_TIME=05:00
-    volumes:
-      - "E:/Docker_folders/kometa/kometa_config:/config"
-
-  # --- CALIBRE-WEB (frontend para Calibre) ---------------------------------
-  calibre-web:
-    image: lscr.io/linuxserver/calibre-web:latest
-    container_name: calibre-web
-    restart: unless-stopped
-    ports:
-      - "8083:8083"
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Madrid
-    volumes:
-      - "E:/Docker_folders/calibre_web/calibre_web_config:/config"
-      - "F:/Libros:/books"
-
-  # --- NAVIDROME (servidor de música) --------------------------------------
-  navidrome:
-    image: deluan/navidrome:latest
-    container_name: navidrome
-    restart: unless-stopped
-    ports:
-      - "4533:4533"
-    environment:
-      - TZ=Europe/Madrid
-      - ND_LOGLEVEL=info
-      - ND_SCANSCHEDULE=1h
-    volumes:
-      - "E:/Docker_folders/navidrome/navidrome_data:/data"
-      - "F:/Musica:/music:ro"
-
-  # --- OPEN WEBUI (UI para Ollama/LLMs) ------------------------------------
-  open-webui:
-    image: ghcr.io/open-webui/open-webui:main
-    container_name: open-webui
-    restart: unless-stopped
-    ports:
-      - "3002:8080"
-    environment:
-      - OLLAMA_BASE_URL=http://host.docker.internal:11000
-      - WEBUI_NAME=OpenWebUI
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    volumes:
-      - "E:/Docker_folders/openwebui/openwebui_data:/app/backend/data"
-
-  # --- UPTIME KUMA (monitor de servicios) ----------------------------------
-  uptime-kuma:
-    image: louislam/uptime-kuma:1
-    container_name: uptime-kuma
-    restart: unless-stopped
-    ports:
-      - "3001:3001"
-    volumes:
-      - "E:/Docker_folders/uptime_kuma/uptime_kuma_data:/app/data"
-
-  # --- RomM (servidor de videojuegos via web) ----------------------------------
-  romm-db:
-    image: mariadb:11
-    container_name: romm-db
-    restart: unless-stopped
-    environment:
-      - MARIADB_ROOT_PASSWORD=${ROMM_DB_ROOT_PASS}
-      - MARIADB_DATABASE=romm
-      - MARIADB_USER=admin
-      - MARIADB_PASSWORD=${ROMM_DB_PASS}
-    volumes:
-      - romm_db_data:/var/lib/mysql  # <-- volumen nombrado (NO ruta de Windows)
-    healthcheck:
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
-      start_period: 240s   # antes 30s
-      interval: 20s        # antes 10s
-      timeout: 10s         # antes 5s
-      retries: 10          # antes 5
-
-  romm:
-    image: rommapp/romm:latest
-    container_name: romm
-    restart: unless-stopped
-    depends_on:
-      romm-db:
-        condition: service_healthy
-    environment:
-      - DB_HOST=romm-db
-      - DB_PORT=3306
-      - DB_NAME=romm
-      - DB_USER=admin                # <-- igual que el creado por MariaDB
-      - DB_PASSWD=${ROMM_DB_PASS}    # <-- usa la MISMA pass que MARIADB_PASSWORD en romm-db
-      - ROMM_AUTH_SECRET_KEY=${ROMM_AUTH_SECRET_KEY}
-      - STEAMGRIDDB_API_KEY=${STEAMGRIDDB_API_KEY}
-      - IGDB_CLIENT_ID=${IGDB_CLIENT_ID}
-      - IGDB_CLIENT_SECRET=${IGDB_CLIENT_SECRET}
-      - SCREENSCRAPER_USER=${SCREENSCRAPER_USER}
-      - SCREENSCRAPER_PASSWORD=${SCREENSCRAPER_PASSWORD}
-    volumes:
-      - "E:/Docker_folders/romm/romm_resources:/romm/resources"
-      - "E:/Docker_folders/romm/romm_redis_data:/redis-data"
-      - "E:/ROMM/library:/romm/library"
-      - "E:/ROMM/assets:/romm/assets"
-      - "E:/ROMM/config:/romm/config"
-    ports:
-      - "33110:8080"
-
-  # --- Mover de emule a pelis ----------------------------------------------
+  # --------------------------------------------------------
+  # --- moverpelis
+  # --- Script de utilidades: mover archivos descargados
+  # --- Ports: N/A
+  # --------------------------------------------------------
   moverpelis:
     image: alpine:3.20
     container_name: moverpelis
@@ -1010,215 +676,210 @@ services:
       - "E:/Peliculas:/target"
     restart: unless-stopped
 
-  # --- Explorador de carpetas compartidas ----------------------------------
-  filebrowser:
-    image: filebrowser/filebrowser:latest
-    container_name: filebrowser
+
+  # +++++++++++++++++++++++++++++++
+  #
+  # CATEGORIA: MONITORIZACION / LOGS / UPTIME
+  #
+  # +++++++++++++++++++++++++++++++
+
+  # --------------------------------------------------------
+  # --- uptime-kuma
+  # --- Monitor de uptime y servicios
+  # --- Ports: 3001 (Gui Web)
+  # --------------------------------------------------------
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: uptime-kuma
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    volumes:
+      - "E:/Docker_folders/uptime_kuma/uptime_kuma_data:/app/data"
+
+  # --------------------------------------------------------
+  # --- dozzle
+  # --- Logs en tiempo real (Docker)
+  # --- Ports: 9999 (Gui Web)
+  # --------------------------------------------------------
+  dozzle:
+    image: amir20/dozzle:latest
+    container_name: dozzle
+    ports:
+      - "9999:8080"
+    environment:
+      - TZ=Europe/Madrid
+      - DOZZLE_LEVEL=info
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: unless-stopped
+
+  # --------------------------------------------------------
+  # --- netdata
+  # --- Monitorización del host / métricas
+  # --- Ports: 19999 (Gui Web)
+  # --------------------------------------------------------
+  netdata:
+    image: netdata/netdata:stable
+    container_name: netdata
+    hostname: netdata
+    ports:
+      - "19999:19999"
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
     environment:
       - TZ=Europe/Madrid
     volumes:
-      - "F:/Peliculas:/srv/Peliculas:ro"
-      - "E:/Compartida:/srv/Compartida:rw"
-      - "E:/Docker_folders/filebrowser/filebrowser_data:/database"
-    ports:
-      - "18080:80"
+      - "E:/Docker_folders/netdata/netdata_config:/etc/netdata"
+      - "E:/Docker_folders/netdata/netdata_lib:/var/lib/netdata"
+      - "E:/Docker_folders/netdata/netdata_cache:/var/cache/netdata"
+      - /etc/passwd:/host/etc/passwd:ro
+      - /etc/group:/host/etc/group:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /etc/os-release:/host/etc/os-release:ro
     restart: unless-stopped
 
-  # --- Servicio DNS duckDNS ------------------------------------------------
-  duckdns:
-    image: lscr.io/linuxserver/duckdns:latest
-    container_name: duckdns
-    environment:
-      - SUBDOMAINS=maripiflix
-      - TOKEN=453c480f-666f-42b0-96a3-e1f2ab1f7048
-    restart: unless-stopped
-
-
-  kali:
-    build: ./kali/kali-custom
-    container_name: kali
-    hostname: kali
-    tty: true
-    stdin_open: true
-    privileged: true
-    gpus: all
-    environment:
-      - DISPLAY=${DISPLAY:-host.docker.internal:0.0}
-      - DOCKER_HOST=${DOCKER_HOST:-unix:///var/run/docker.sock}
-      - NVIDIA_VISIBLE_DEVICES=all
-      - NVIDIA_DRIVER_CAPABILITIES=compute,utility,graphics
-    volumes:
-      - "E:/Docker_folders/kali:/home/kali"
-      - ./kali/entrypoint_kali.sh:/entrypoint_kali.sh
-      - ./kali/kali_scripts:/custom_scripts
-      - ./kali/id_rsa_n8n_kali.pub:/root/.ssh/authorized_keys
-      - '/sys/fs/cgroup:/sys/fs/cgroup:rw'
-      - /var/run/docker.sock:/var/run/docker.sock
-    entrypoint: ["/bin/bash", "/entrypoint_kali.sh"]
-    ports:
-      - "38081:80"
-      - "44443:443"
-      - "22222:22"
-    restart: unless-stopped
-
-  pihole:
-    image: pihole/pihole:latest
-    container_name: pihole
-    hostname: pihole
-    ports:
-      - "53:53/tcp"
-      - "53:53/udp"
-      - "8090:80"          # Panel web (NPM ya usa 80/443)
+  # --------------------------------------------------------
+  # --- jellystat
+  # --- Estadísticas avanzadas Jellyfin
+  # --- Ports: 3000 (Gui Web)
+  # --------------------------------------------------------
+  jellystat:
+    image: cyfershepard/jellystat:latest
+    container_name: jellystat
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports: ["3000:3000"]
     environment:
       - TZ=Europe/Madrid
-      - WEBPASSWORD=${PIHOLE_WEBPASSWORD:-admin}   # cámbialo en .env
-      - DNSMASQ_LISTENING=all
-      # Si usas Unbound, configúralo luego en la UI a 127.0.0.1#5335
-    volumes:
-      - "E:/Docker_folders/pihole/etc-pihole:/etc/pihole"
-      - "E:/Docker_folders/pihole/dnsmasq.d:/etc/dnsmasq.d"
-    restart: unless-stopped
-
-#  clamav:
-#    image: mkodockx/docker-clamav:latest
-#    container_name: clamav
-#    ports:
-#      - "33049:3310"
-#    volumes:
-#      - "E:/Docker_folders/clamav:/var/lib/clamav"
-#    restart: unless-stopped
-
-  py-runner:
-    build:
-      context: ./python_scripts
-      dockerfile: Dockerfile
-    container_name: py-runner
-    environment:
-      - TZ=Europe/Madrid
-      - SUPERVISOR_USER=admin
-      - SUPERVISOR_PASSWORD=admin
-      - SCRIPTS_DIR=/workspace/scripts
-      - LOGS_DIR=/workspace/logs
-      - REQUIREMENTS_FILE=/workspace/requirements.txt
-      - CRON_FILE=/workspace/schedule.cron
-      - AUTO_REGISTER_INTERVAL=5   # opcional (segundos)
-    ports:
-      - "9012:9001"   # UI web de Supervisor
-      - "9013:9001"   # Supervisor (backend)
-      - "9014:8000"   # UI moderno (FastAPI)
-    volumes:
-      - "E:/Docker_folders/python_scripts:/workspace"
+      - POSTGRES_IP=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=jellystat
+      - POSTGRES_USER=jellystat
+      - POSTGRES_PASSWORD=${JELLYSTAT_DB_PASS}
+      - JWT_SECRET=${JELLYSTAT_JWT}
+      - JELLYFIN_URL=http://jellyfin:8096
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "curl -fsS http://localhost:9001 >/dev/null || exit 1"]
-      interval: 30s
+      test: ["CMD-SHELL", "curl -fsS http://localhost:3000 >/dev/null"]
+      interval: 1m
       timeout: 5s
-      retries: 5
+      retries: 3
       start_period: 20s
 
-  #emulerr:
-  #  image: isc30/emulerr:latest
-  #  container_name: emulerr
-  #  restart: unless-stopped
-  #  tty: true
-  #  environment:
-  #    - TZ=Europe/Madrid
-  #    - PASSWORD=admin
-  #    - LOG_LEVEL=debug
-  #  ports:
-  #    - "39000:3000"          # UI eMulerr
-  #    - "39062:39062/tcp"     # eD2K TCP
-  #    - "39062:39062/udp"     # Kad/Cliente UDP 
-  #    - "39065:39065/udp"     # Server UDP
-  #    - "39011:39011/tcp"     # amuleweb 
-  #    - "39012:39012/tcp"     # EC/Remote 
-  #  volumes:
-  #    - "D:/Descargas/eMule:/downloads"
-  #    - "./emulerr-amule:/home/amule/.aMule"
-  #    # - "./emulerr-amule/server.met:/config/amule/server.met"
-  #    # - "./emulerr-amule/amule.overrides.conf:/config/amule/amule.overrides.conf"
 
-  
-
-  amule:
-    image: ngosang/amule:latest
-    container_name: amule
-    environment:
-      - TZ=Europe/Madrid
-      - PUID=1000
-      - PGID=1000
-      # passwords de la UI web y control remoto (recomendado)
-      - GUI_PWD=admin
-      - WEBUI_PWD=admin
-
-      # opcional: reinicio diario del contenedor (no imprescindible)
-      - MOD_AUTO_RESTART_ENABLED=true
-      - MOD_AUTO_RESTART_CRON=0 6 * * *
-      - MOD_AUTO_SHARE_ENABLED=false
-
-      - MOD_FIX_KAD_GRAPH_ENABLED=true
-      - MOD_FIX_KAD_BOOTSTRAP_ENABLED=true
-    ports:
-      - "0.0.0.0:4711:4711/tcp"
-      - "0.0.0.0:4712:4712/tcp"
-      - "0.0.0.0:4662:4662/tcp"
-      - "0.0.0.0:4665:4665/udp"
-      - "0.0.0.0:4672:4672/udp"
-    volumes:
-      - "E:/Docker_folders/amule/config:/home/amule/.aMule"
-      - "E:/Docker_folders/amule/incoming:/incoming"
-      - "E:/Docker_folders/amule/temp:/temp"
-    restart: unless-stopped
-
-  amarr:
-    image: vexdev/amarr:latest
-    container_name: amarr
+  # --------------------------------------------------------
+  # --- vpn-ip-check
+  # --- Comprobación de IP/VPN (logs)
+  # --- Ports: N/A
+  # --------------------------------------------------------
+  vpn-ip-check:
+    image: alpine:3.20
+    container_name: vpn-ip-check
+    network_mode: "service:gluetun"
     depends_on:
-      - amule
-    ports:
-      - "33120:8080"   # UI/endpoint Torznab y cliente simulado
-    environment:
-      - AMULE_HOST=amule
-      - AMULE_PORT=4712
-      - AMULE_PASSWORD=${AMULE_GUI_PWD:-amuleadmin}  # coincide con GUI_PWD de aMule
-      - AMARR_LOG_LEVEL=INFO
-      - AMULE_FINISHED_PATH=/incoming                 # coincide con aMule
-    volumes:
-      - "E:/Docker_folders/amarr:/config"
+      - gluetun
+    command: >
+      sh -c "apk add --no-cache curl >/dev/null
+      && while true; do
+           echo '============================='
+           date
+           echo '[Mullvad check]'
+           curl -s https://am.i.mullvad.net/json || true
+           echo
+           echo '[Public IP]'
+           curl -s https://ipinfo.io/ip || true
+           echo
+           sleep 30
+         done"
     restart: unless-stopped
 
-  metube:
-    image: ghcr.io/alexta69/metube:latest
-    container_name: metube
+
+  # +++++++++++++++++++++++++++++++
+  #
+  # CATEGORIA: GESTION DOCKER / INFRAESTRUCTURA
+  #
+  # +++++++++++++++++++++++++++++++
+
+  # --------------------------------------------------------
+  # --- portainer
+  # --- Gestión de Docker
+  # --- Ports: 9443 (Gui Web)
+  # --------------------------------------------------------
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    ports:
+      - "9443:9443"   # UI HTTPS (principal)
+      - "9000:9000"   # UI HTTP (opcional)
+      - "8000:8000"   # Edge tunnel (opcional)
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - "E:/Docker_folders/portainer/portainer_data:/data"
+    restart: unless-stopped
+
+  # --------------------------------------------------------
+  # --- test-gpu
+  # --- Prueba de GPU (nvidia-smi)
+  # --- Ports: N/A
+  # --------------------------------------------------------
+  test-gpu:
+    image: nvidia/cuda:12.9.0-base-ubuntu22.04
+    container_name: test-gpu
+    command: >
+      bash -lc "while true; do
+        date;
+        nvidia-smi;
+        sleep 3600;
+      done"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: "no"
+
+
+
+  # +++++++++++++++++++++++++++++++
+  #
+  # CATEGORIA: REDES, PROXY, DNS, VPN, DDNS
+  #
+  # +++++++++++++++++++++++++++++++
+
+  # --------------------------------------------------------
+  # --- nginx-proxy-manager
+  # --- Reverse proxy + gestión de hosts/SSL
+  # --- Ports: 81 (Gui Web)
+  # --------------------------------------------------------
+  nginx-proxy-manager:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: nginx-proxy-manager
     restart: unless-stopped
     ports:
-      - "8081:8081"          # UI web de MeTube
+      - "80:80"
+      - "443:443"
+      - "127.0.0.1:81:81"
     environment:
       - TZ=Europe/Madrid
-      # Opcional: explícito, pero por defecto ya usan /downloads
-      - DOWNLOAD_DIR=/downloads
-      - AUDIO_DOWNLOAD_DIR=/downloads/Music
+      - INITIAL_ADMIN_EMAIL=admin@admin.com
+      - INITIAL_ADMIN_PASSWORD=admin123
+      - DISABLE_IPV6=true
     volumes:
-      # Carpeta de descargas en el host -> carpeta interna de MeTube
-      - "E:/YouTube:/downloads"
-      - "E:/YouTube/Videos:/downloads/Videos"
-      - "E:/YouTube/Music:/downloads/Music"
+      - "E:/Docker_folders/nginx/npm_data:/data"
+      - "E:/Docker_folders/nginx/npm_letsencrypt:/etc/letsencrypt"
 
-  kanboard:
-    image: kanboard/kanboard:v1.2.45
-    container_name: kanboard
-    ports:
-      - "8811:80"          # UI web Kanboard -> http://HOST:8811
-      # - "8443:443"       # (opcional) si algún día configuras SSL dentro del contenedor
-    environment:
-      - TZ=Europe/Madrid
-      - PLUGIN_INSTALLER=true    # permite instalar plugins desde la interfaz
-    volumes:
-      - "E:/Docker_folders/kanboard/data:/var/www/app/data"
-      - "E:/Docker_folders/kanboard/plugins:/var/www/app/plugins"
-      - "E:/Docker_folders/kanboard/ssl:/etc/nginx/ssl"
-    restart: unless-stopped
-
+  # --------------------------------------------------------
+  # --- gluetun
+  # --- VPN (WireGuard/Mullvad) + firewall
+  # --- Ports: N/A
+  # --------------------------------------------------------
   gluetun:
     image: qmcgaw/gluetun:latest
     container_name: gluetun
@@ -1245,41 +906,11 @@ services:
       - "9191:9191"
     restart: unless-stopped
 
-  vpn-ip-check:
-    image: alpine:3.20
-    container_name: vpn-ip-check
-    network_mode: "service:gluetun"
-    depends_on:
-      - gluetun
-    command: >
-      sh -c "apk add --no-cache curl >/dev/null
-      && while true; do
-           echo '============================='
-           date
-           echo '[Mullvad check]'
-           curl -s https://am.i.mullvad.net/json || true
-           echo
-           echo '[Public IP]'
-           curl -s https://ipinfo.io/ip || true
-           echo
-           sleep 30
-         done"
-    restart: unless-stopped
-
-  dispatcharr:
-    image: ghcr.io/dispatcharr/dispatcharr:latest
-    container_name: dispatcharr
-    network_mode: "service:gluetun"
-    environment:
-      - TZ=Europe/Madrid
-      - DISPATCHARR_ENV=aio
-      - DISPATCHARR_LOG_LEVEL=info
-    volumes:
-      - "E:/Docker_folders/dispatcharr/data:/data"
-      - "E:/Docker_folders/dispatcharr/iptv:/data/m3us"
-      - "E:/Docker_folders/epg:/data/epgs:ro"
-    restart: unless-stopped
-
+  # --------------------------------------------------------
+  # --- cloudflare-ddns
+  # --- DDNS para Cloudflare
+  # --- Ports: N/A
+  # --------------------------------------------------------
   cloudflare-ddns:
     image: favonia/cloudflare-ddns:latest
     container_name: cloudflare-ddns
@@ -1291,62 +922,256 @@ services:
       - IP6_PROVIDER=none
       - UPDATE_CRON=@every 5m
 
-  gpodder:
-    image: xthursdayx/gpodder-docker:latest
-    container_name: gpodder
+
+  # +++++++++++++++++++++++++++++++
+  #
+  # CATEGORIA: IA Y BUSQUEDA
+  #
+  # +++++++++++++++++++++++++++++++
+
+  # --------------------------------------------------------
+  # --- searxng
+  # --- Metabuscador (self-hosted)
+  # --- Ports: 4080 (Gui Web)
+  # --------------------------------------------------------
+  searxng:
+    image: searxng/searxng:latest
+    container_name: searxng
+    restart: unless-stopped
+    ports:
+      - "4080:8080"
+    environment:
+      - SEARXNG_BASE_URL=http://localhost:4080
+      # - SEARXNG_SECRET=CAMBIA_ESTA_CLAVE_LARGA_Y_UNICA
+    volumes:
+      - "E:/Docker_folders/SearXNG/config:/etc/searxng"
+      - "E:/Docker_folders/SearXNG/cache:/var/cache/searxng"
+
+  # --------------------------------------------------------
+  # --- qdrant
+  # --- Vector DB (RAG/embeddings)
+  # --- Ports: 6333 (Gui Web)
+  # --------------------------------------------------------
+  qdrant:
+    image: qdrant/qdrant
+    hostname: qdrant
+    container_name: qdrant
+    restart: unless-stopped
+    ports:
+      - 6333:6333
+    volumes:
+      - "E:/Docker_folders/qdrant/qdrant_storage:/qdrant/storage"
+
+  # --------------------------------------------------------
+  # --- ollama-cpu
+  # --- LLM server (API)
+  # --- Ports: N/A
+  # --------------------------------------------------------
+  ollama-cpu:
+    profiles: ["cpu"]
+    image: ollama/ollama:latest
+    container_name: ollama
+    restart: unless-stopped
+    ports:
+      - 11000:11434
+    volumes:
+      - "E:/Docker_folders/ollama:/root/.ollama"
+
+  # --------------------------------------------------------
+  # --- ollama-gpu
+  # --- LLM server (API) con GPU NVIDIA
+  # --- Ports: N/A
+  # --------------------------------------------------------
+  ollama-gpu:
+    profiles: ["gpu-nvidia"]
+    image: ollama/ollama:latest
+    container_name: ollama
+    restart: unless-stopped
+    ports:
+      - 11000:11434
+    volumes:
+      - "E:/Docker_folders/ollama:/root/.ollama"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  # --------------------------------------------------------
+  # --- ollama-gpu-amd
+  # --- LLM server (API) con GPU AMD
+  # --- Ports: N/A
+  # --------------------------------------------------------
+  ollama-gpu-amd:
+    profiles: ["gpu-amd"]
+    image: ollama/ollama:latest
+    container_name: ollama
+    restart: unless-stopped
+    ports:
+      - 11000:11434
+    volumes:
+      - "E:/Docker_folders/ollama:/root/.ollama"
+    devices:
+      - "/dev/kfd"
+      - "/dev/dri"
+
+
+  # +++++++++++++++++++++++++++++++
+  #
+  # CATEGORIA: BASES DE DATOS
+  #
+  # +++++++++++++++++++++++++++++++
+
+  # --------------------------------------------------------
+  # --- postgres
+  # --- PostgreSQL (general)
+  # --- Ports: 5432
+  # --------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres
+    hostname: postgres
+    restart: unless-stopped
     environment:
       - TZ=Europe/Madrid
-      - PUID=1000
-      - PGID=1000
-      - PASSWORD=${GPODDER_PASS}
-    ports:
-      - "33131:3000"     # tú ya lo tienes en 33131
+      - POSTGRES_USER=${POSTGRES_ADMIN_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_ADMIN_PASSWORD}
+      - POSTGRES_DB=postgres
     volumes:
-      - "E:/Docker_folders/gpodder/config:/config"
-      - "E:/Docker_folders/gpodder/downloads:/downloads"     # caché de gPodder (NO jellyfin)
-      - "F:/Podcasts:/jellyfin_podcasts"                     # salida para Jellyfin
-    restart: unless-stopped
+      - "E:/Docker_folders/postgres/postgres_storage:/var/lib/postgresql/data"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -p 5432 -U ${POSTGRES_ADMIN_USER} -d postgres"]
+      interval: 20s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+    ports:
+       - "5432:5432"
 
-  beets:
-    image: lscr.io/linuxserver/beets:latest
-    container_name: beets
+  # --------------------------------------------------------
+  # --- guacamole-initdb
+  # --- inicializa la base de datos de guacamole
+  # --- Ports: N/A
+  # --------------------------------------------------------
+  guacamole-initdb:
+    image: guacamole/guacamole:latest
+    profiles: ["provision"]
+    container_name: guacamole-initdb
+    command: >
+      sh -c "/opt/guacamole/bin/initdb.sh --postgresql > /schemas/guacamole-initdb.sql"
+    volumes:
+      - "E:/Docker_folders/postgres/provisioner/schemas:/schemas"
+    restart: "no"
+
+  # --------------------------------------------------------
+  # --- pg-provisioner
+  # --- provisionador de bases de datos se configura con databases.yml
+  # --- Ports: N/A
+  # --------------------------------------------------------
+  pg-provisioner:
+    profiles: ["provision"]
+    build:
+      context: "E:/Docker_folders/postgres/provisioner"
+      dockerfile: Dockerfile
+    container_name: pg-provisioner
+    depends_on:
+      postgres:
+        condition: service_healthy
+      guacamole-initdb:
+        condition: service_completed_successfully
+    env_file:
+      - path: .env
+        required: true
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Madrid
-      - JELLYFIN_URL=http://jellyfin:8096
-      - JELLYFIN_API_KEY=${JELLYFIN_API_KEY_BEETS}
-      - ACOUSTID_API_KEY=${ACOUSTID_API_KEY}
+      - PGHOST=postgres
+      - PGPORT=5432
+      - PGUSER=${POSTGRES_ADMIN_USER}
+      - PGPASSWORD=${POSTGRES_ADMIN_PASSWORD}
+      - DB_REGISTRY=/config/databases.yml
     volumes:
-      - "E:/Docker_folders/beets:/config"
-      - "F:/Musica:/music"
-      - "E:/YouTube/Music/downloads:/downloads"
-    ports:
-      - "8337:8337"
-    dns:
-      - 1.1.1.1
-      - 8.8.8.8
-    restart: unless-stopped
+      - "E:/Docker_folders/postgres/provisioner:/config:ro"
+      - "E:/Docker_folders/postgres/provisioner/schemas:/schemas:ro"
+    restart: "no"
 
-  swagger-ui:
-    image: swaggerapi/swagger-ui:latest
-    container_name: swagger-ui
+
+  # --------------------------------------------------------
+  # --- romm-db
+  # --- MariaDB (RomM)
+  # --- Ports: N/A
+  # --------------------------------------------------------
+  romm-db:
+    image: mariadb:11
+    container_name: romm-db
     restart: unless-stopped
-    ports:
-      - "33150:8080"
+    environment:
+      - MARIADB_ROOT_PASSWORD=${ROMM_DB_ROOT_PASS}
+      - MARIADB_DATABASE=romm
+      - MARIADB_USER=admin
+      - MARIADB_PASSWORD=${ROMM_DB_PASS}
     volumes:
-      # Tus OpenAPI specs (yaml/json)
-      - "E:/Docker_folders/swagger/specs:/usr/share/nginx/html/specs:ro"
-      # Sobrescribe el inicializador para mostrar un selector con varias APIs
-      - "E:/Docker_folders/swagger/ui/swagger-initializer.js:/usr/share/nginx/html/swagger-initializer.js:ro"
+      - romm_db_data:/var/lib/mysql  # <-- volumen nombrado (NO ruta de Windows)
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 240s   # antes 30s
+      interval: 20s        # antes 10s
+      timeout: 10s         # antes 5s
+      retries: 10          # antes 5
 
-  swagger-editor:
-    image: swaggerapi/swagger-editor:latest
-    container_name: swagger-editor
+
+  # +++++++++++++++++++++++++++++++
+  #
+  # CATEGORIA: AUTOMATIZACION / RUNNERS / SCHEDULING
+  #
+  # +++++++++++++++++++++++++++++++
+
+  # --------------------------------------------------------
+  # --- n8n
+  # --- Automatización de workflows
+  # --- Ports: 5678 (Gui Web)
+  # --------------------------------------------------------
+  n8n:
+    hostname: n8n
+    container_name: n8n
     restart: unless-stopped
-    ports:
-      - "33154:80"
+    image: n8nio/n8n:latest
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=${POSTGRES_N8N_DB}
+      - DB_POSTGRESDB_USER=${POSTGRES_N8N_USER}
+      - DB_POSTGRESDB_PASSWORD=${POSTGRES_N8N_PASSWORD}
 
+      - N8N_RUNNERS_ENABLED=true
+      - N8N_BLOCK_ENV_ACCESS_IN_NODE=true
+      - N8N_GIT_NODE_DISABLE_BARE_REPOS=true
+      - N8N_DIAGNOSTICS_ENABLED=false
+      - N8N_PERSONALIZATION_ENABLED=false
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+      - N8N_USER_MANAGEMENT_JWT_SECRET=${N8N_USER_MANAGEMENT_JWT_SECRET}
+      - OLLAMA_HOST=${OLLAMA_HOST:-ollama:11434}
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+    env_file:
+      - path: .env
+        required: true
+    ports:
+      - 5678:5678
+    volumes:
+      - "E:/Docker_folders/n8n/n8n_storage:/home/node/.n8n"
+      - "E:/Docker_folders/n8n/n8n/demo-data:/demo-data"
+      - "E:/Docker_folders/n8n/shared:/data/shared"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+
+  # --------------------------------------------------------
+  # --- cronicle
+  # --- Scheduler / job runner con UI
+  # --- Ports: 3012 (Gui Web)
+  # --------------------------------------------------------
   cronicle:
     image: bluet/cronicle-docker:latest
     container_name: cronicle
@@ -1384,7 +1209,87 @@ services:
       # Ruta específica eMule
       - "D:/Descargas/eMule:/host/eMule"
     restart: unless-stopped
-  
+
+
+  # +++++++++++++++++++++++++++++++
+  #
+  # CATEGORIA: PODCASTS / MUSICA / RSS / FEEDS
+  #
+  # +++++++++++++++++++++++++++++++
+
+  # --------------------------------------------------------
+  # --- gpodder
+  # --- Gestión/descarga de podcasts
+  # --- Ports: 33131 (Gui Web)
+  # --------------------------------------------------------
+  gpodder:
+    image: xthursdayx/gpodder-docker:latest
+    container_name: gpodder
+    environment:
+      - TZ=Europe/Madrid
+      - PUID=1000
+      - PGID=1000
+      - PASSWORD=${GPODDER_PASS}
+    ports:
+      - "33131:3000"     # tú ya lo tienes en 33131
+    volumes:
+      - "E:/Docker_folders/gpodder/config:/config"
+      - "E:/Docker_folders/gpodder/downloads:/downloads"     # caché de gPodder (NO jellyfin)
+      - "F:/Podcasts:/jellyfin_podcasts"                     # salida para Jellyfin
+    restart: unless-stopped
+
+  # --------------------------------------------------------
+  # --- beets
+  # --- Organización/tagging de música (integración Jellyfin)
+  # --- Ports: 8337 (Gui Web)
+  # --------------------------------------------------------
+  beets:
+    image: lscr.io/linuxserver/beets:latest
+    container_name: beets
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Madrid
+      - JELLYFIN_URL=http://jellyfin:8096
+      - JELLYFIN_API_KEY=${JELLYFIN_API_KEY_BEETS}
+      - ACOUSTID_API_KEY=${ACOUSTID_API_KEY}
+    volumes:
+      - "E:/Docker_folders/beets:/config"
+      - "F:/Musica:/music"
+      - "E:/YouTube/Music/downloads:/downloads"
+    ports:
+      - "8337:8337"
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+    restart: unless-stopped
+
+  # --------------------------------------------------------
+  # --- rss-bridge
+  # --- Generador/puente RSS
+  # --- Ports: 33137 (Gui Web)
+  # --------------------------------------------------------
+  rss-bridge:
+    image: rssbridge/rss-bridge:latest
+    container_name: rss-bridge
+    ports:
+      - "33137:80"
+    volumes:
+      - "E:/Docker_folders/rss-bridge:/config"
+    restart: unless-stopped
+
+
+  # +++++++++++++++++++++++++++++++
+  #
+  # CATEGORIA: ARCHIVOS, EXPLORACION Y TRANSFERENCIA
+  #
+  # +++++++++++++++++++++++++++++++
+
+  # --------------------------------------------------------
+  # --- sftpgo
+  # --- SFTP + Web Admin/Web Client
+  # --- Ports: 33160 (Gui Web)
+  # --------------------------------------------------------
   sftpgo:
     image: drakkan/sftpgo:latest
     container_name: sftpgo
@@ -1404,6 +1309,11 @@ services:
       - "E:/:/storage/E"
       - "F:/:/storage/F"
 
+  # --------------------------------------------------------
+  # --- filezilla
+  # --- Cliente FTP/SFTP con GUI web (noVNC)
+  # --- Ports: 33161 (Gui Web)
+  # --------------------------------------------------------
   filezilla:
     image: jlesage/filezilla:latest
     container_name: filezilla
@@ -1426,6 +1336,111 @@ services:
       - "E:/:/storage/E:rw"
       - "F:/:/storage/F:rw"
 
+  # --------------------------------------------------------
+  # --- filestash
+  # --- Explorador de archivos web
+  # --- Ports: 8334 (Gui Web)
+  # --------------------------------------------------------
+  filestash:
+    image: machines/filestash:latest
+    container_name: filestash
+    restart: unless-stopped
+    ports:
+      - "8334:8334"
+    environment:
+      - APPLICATION_URL=
+      - OFFICE_URL=http://filestash_wopi:9980
+      - OFFICE_FILESTASH_URL=http://filestash:8334
+      - OFFICE_REWRITE_URL=http://127.0.0.1:9980
+    volumes:
+      - "E:/Docker_folders/filestash/state:/app/data/state"
+    depends_on:
+      - filestash_wopi
+
+  # --------------------------------------------------------
+  # --- filestash_wopi
+  # --- filestash para documentos de ofimatica
+  # --- Ports: 9980 (Gui Web)
+  # --------------------------------------------------------
+  filestash_wopi:
+    image: collabora/code:24.04.10.2.1
+    container_name: filestash_wopi
+    restart: unless-stopped
+    environment:
+      - "extra_params=--o:ssl.enable=false"
+      - 'aliasgroup1="https://.*:443"'
+    command:
+      - /bin/bash
+      - -c
+      - |
+        curl -o /usr/share/coolwsd/browser/dist/branding-desktop.css https://gist.githubusercontent.com/mickael-kerjean/bc1f57cd312cf04731d30185cc4e7ba2/raw/d706dcdf23c21441e5af289d871b33defc2770ea/destop.css
+        /bin/su -s /bin/bash -c '/start-collabora-online.sh' cool
+    user: root
+    ports:
+      - "9980:9980"
+
+
+  # +++++++++++++++++++++++++++++++
+  #
+  # CATEGORIA: DESARROLLO / HERRAMIENTAS API
+  #
+  # +++++++++++++++++++++++++++++++
+
+  # --------------------------------------------------------
+  # --- swagger-ui
+  # --- Visualizador de OpenAPI/Swagger
+  # --- Ports: 33150 (Gui Web)
+  # --------------------------------------------------------
+  swagger-ui:
+    image: swaggerapi/swagger-ui:latest
+    container_name: swagger-ui
+    restart: unless-stopped
+    ports:
+      - "33150:8080"
+    volumes:
+      # Tus OpenAPI specs (yaml/json)
+      - "E:/Docker_folders/swagger/specs:/usr/share/nginx/html/specs:ro"
+      # Sobrescribe el inicializador para mostrar un selector con varias APIs
+      - "E:/Docker_folders/swagger/ui/swagger-initializer.js:/usr/share/nginx/html/swagger-initializer.js:ro"
+
+  # --------------------------------------------------------
+  # --- swagger-editor
+  # --- Editor de OpenAPI/Swagger
+  # --- Ports: 33154 (Gui Web)
+  # --------------------------------------------------------
+  swagger-editor:
+    image: swaggerapi/swagger-editor:latest
+    container_name: swagger-editor
+    restart: unless-stopped
+    ports:
+      - "33154:80"
+
+  # --------------------------------------------------------
+  # --- cloudbeaver
+  # --- UI web para bases de datos (DBeaver)
+  # --- Ports: 18978 (Gui Web)
+  # --------------------------------------------------------
+  cloudbeaver:
+    image: dbeaver/cloudbeaver:latest
+    container_name: cloudbeaver
+    restart: unless-stopped
+    ports:
+      - "18978:8978"
+    environment:
+      - CB_SERVER_NAME=cloudbeaver
+      - CB_SERVER_URL=http://localhost:18978
+    volumes:
+      - "E:/Docker_folders/cloudbeaver/cloudbeaver_workspace:/opt/cloudbeaver/workspace"
+      - "E:/Docker_folders/jellifyn/metadata:/mnt/jellyfin:ro"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # --------------------------------------------------------
+  # --- openvscode
+  # --- IDE web (OpenVSCode Server)
+  # --- Ports: 33191 (Gui Web)
+  # --------------------------------------------------------
   openvscode:
     image: gitpod/openvscode-server:latest
     container_name: openvscode
@@ -1435,6 +1450,11 @@ services:
       - "E:/Docker_folders/repos:/home/workspace"
     restart: unless-stopped
 
+  # --------------------------------------------------------
+  # --- github-desktop
+  # --- GitHub Desktop en web (noVNC)
+  # --- Ports: 33192 (Gui Web)
+  # --------------------------------------------------------
   github-desktop:
     image: lscr.io/linuxserver/github-desktop:latest
     container_name: github-desktop
@@ -1457,27 +1477,28 @@ services:
       - IPC_LOCK
     restart: unless-stopped
 
+
+  # +++++++++++++++++++++++++++++++
+  #
+  # CATEGORIA: ACCESO REMOTO
+  #
+  # +++++++++++++++++++++++++++++++
+
+  # --------------------------------------------------------
+  # --- guacd
+  # --- Daemon RDP/VNC/SSH para Guacamole
+  # --- Ports: N/A
+  # --------------------------------------------------------
   guacd:
     image: guacamole/guacd:latest
     container_name: guacd
     restart: unless-stopped
 
-  guacamole-db:
-    image: postgres:16-alpine
-    container_name: guacamole-db
-    restart: unless-stopped
-    environment:
-      - POSTGRES_DB=guacamole_db
-      - POSTGRES_USER=guacamole_user
-      - POSTGRES_PASSWORD=${GUACAMOLE_DB_PASS}
-    volumes:
-      - "E:/Docker_folders/guacamole/postgres:/var/lib/postgresql/data"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U guacamole_user -d guacamole_db -h 127.0.0.1 -p 5432"]
-      interval: 20s
-      timeout: 5s
-      retries: 10
-
+  # --------------------------------------------------------
+  # --- guacamole
+  # --- Acceso remoto vía web (RDP/VNC/SSH)
+  # --- Ports: 33170 (Gui Web)
+  # --------------------------------------------------------
   guacamole:
     image: guacamole/guacamole:latest
     container_name: guacamole
@@ -1485,30 +1506,106 @@ services:
     depends_on:
       guacd:
         condition: service_started
-      guacamole-db:
+      postgres:
         condition: service_healthy
     ports:
       - "33170:8080"
     environment:
-      - GUACD_HOSTNAME=guacd
-      - POSTGRES_HOSTNAME=guacamole-db
-      - POSTGRES_PORT=5432
-      - POSTGRES_DATABASE=guacamole_db
-      - POSTGRES_USER=guacamole_user
-      - POSTGRES_PASSWORD=${GUACAMOLE_DB_PASS}
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+      # Guacd (daemon)
+      GUACD_HOSTNAME: guacd
+      GUACD_PORT: 4822
+      # PostgreSQL auth (DB)
+      POSTGRESQL_ENABLED: "true"
+      POSTGRESQL_HOSTNAME: postgres
+      POSTGRESQL_PORT: 5432
+      POSTGRESQL_DATABASE: guacamole_db
+      POSTGRESQL_USERNAME: guacamole_user
+      POSTGRESQL_PASSWORD: ${GUACAMOLE_DB_PASS}
+      # Opcional
+      BAN_ENABLED: "false"
+    volumes:
+      - "E:/Docker_folders/guacamole/extensions:/etc/guacamole/extensions"
+      - "E:/Docker_folders/guacamole/lib:/etc/guacamole/lib"
 
-  # --- Prueba de GPU -------------------------------------------------------
-  #test-gpu:
-  #  image: nvidia/cuda:12.9.0-base-ubuntu22.04
-  #  container_name: test-gpu
-  #  command: nvidia-smi
-  #  deploy:
-  #    resources:
-  #      reservations:
-  #        devices:
-  #          - driver: nvidia
-  #            count: 1
-  #            capabilities: [gpu]
-  #  restart: "no"
+
+  # +++++++++++++++++++++++++++++++
+  #
+  # CATEGORIA: SEGURIDAD Y CREDENCIALES
+  #
+  # +++++++++++++++++++++++++++++++
+
+  # --------------------------------------------------------
+  # --- bitwarden-lite
+  # --- Gestor de contraseñas (servido por proxy)
+  # --- Ports: N/A
+  # --------------------------------------------------------
+  bitwarden-lite:
+    image: ghcr.io/bitwarden/lite:latest
+    container_name: bitwarden-lite
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      TZ: Europe/Madrid
+      BW_DOMAIN: ${BW_DOMAIN}
+      BW_DB_PROVIDER: postgresql
+      BW_DB_SERVER: postgres
+      BW_DB_PORT: 5432
+      BW_DB_DATABASE: bitwarden
+      BW_DB_USERNAME: bitwarden
+      BW_DB_PASSWORD: ${BW_DB_PASSWORD}
+      BW_INSTALLATION_ID: ${BW_INSTALLATION_ID}
+      BW_INSTALLATION_KEY: ${BW_INSTALLATION_KEY}
+      globalSettings__disableUserRegistration: "true"
+    volumes:
+      - "E:/Docker_folders/bitwarden-lite:/etc/bitwarden"
+    expose:
+      - "65121"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080 >/dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+
+
+
+  # +++++++++++++++++++++++++++++++
+  #
+  # CATEGORIA: GAMING / ROMS Y BIBLIOTECA DE VIDEOJUEGOS
+  #
+  # +++++++++++++++++++++++++++++++
+
+  # --------------------------------------------------------
+  # --- romm
+  # --- Biblioteca web de ROMs / videojuegos
+  # --- Ports: 33110 (Gui Web)
+  # --------------------------------------------------------
+  romm:
+    image: rommapp/romm:latest
+    container_name: romm
+    restart: unless-stopped
+    depends_on:
+      romm-db:
+        condition: service_healthy
+    environment:
+      - DB_HOST=romm-db
+      - DB_PORT=3306
+      - DB_NAME=romm
+      - DB_USER=admin                # <-- igual que el creado por MariaDB
+      - DB_PASSWD=${ROMM_DB_PASS}    # <-- usa la MISMA pass que MARIADB_PASSWORD en romm-db
+      - ROMM_AUTH_SECRET_KEY=${ROMM_AUTH_SECRET_KEY}
+      - STEAMGRIDDB_API_KEY=${STEAMGRIDDB_API_KEY}
+      - IGDB_CLIENT_ID=${IGDB_CLIENT_ID}
+      - IGDB_CLIENT_SECRET=${IGDB_CLIENT_SECRET}
+      - SCREENSCRAPER_USER=${SCREENSCRAPER_USER}
+      - SCREENSCRAPER_PASSWORD=${SCREENSCRAPER_PASSWORD}
+    volumes:
+      - "E:/Docker_folders/romm/romm_resources:/romm/resources"
+      - "E:/Docker_folders/romm/romm_redis_data:/redis-data"
+      - "E:/ROMM/library:/romm/library"
+      - "E:/ROMM/assets:/romm/assets"
+      - "E:/ROMM/config:/romm/config"
+    ports:
+      - "33110:8080"
