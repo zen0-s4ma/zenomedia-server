@@ -619,6 +619,23 @@ services:
       - "E:/Docker_folders/epg:/data/epgs:ro"
     restart: unless-stopped
 
+  nextpvr:
+    image: nextpvr/nextpvr_amd64:latest
+    container_name: nextpvr
+    depends_on:
+      - gluetun
+      - dispatcharr
+    environment:
+      - TZ=Europe/Madrid
+    ports:
+      - "8866:8866"
+      - "16891:16891/udp"
+      - "8026:8026/udp"
+    volumes:
+      - "E:/Docker_folders/nextpvr/config:/config"
+      - "E:/Grabaciones:/recordings"
+      - "E:/Docker_folders/nextpvr/buffer:/buffer"
+    restart: unless-stopped
 
   # +++++++++++++++++++++++++++++++
   #
@@ -874,6 +891,19 @@ services:
     volumes:
       - "E:/Docker_folders/nginx/npm_data:/data"
       - "E:/Docker_folders/nginx/npm_letsencrypt:/etc/letsencrypt"
+
+  # --------------------------------------------------------
+  # --- cloudflared
+  # --- container for coludflare tunnel (ssh)
+  # --- Ports: N/A
+  # --------------------------------------------------------
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --token ${CF_TUNNEL_TOKEN}
+    depends_on:
+      - nginx-proxy-manager
 
   # --------------------------------------------------------
   # --- gluetun
@@ -1178,17 +1208,11 @@ services:
     hostname: cronicle
     environment:
       - TZ=Europe/Madrid
-      # URL base que Cronicle usa para generar enlaces internos (logs, UI, etc.)
       - CRONICLE_base_app_url=http://localhost:3012
-      # Recomendado en despliegues containerizados para que el proceso se quede en foreground y loguee
       - CRONICLE_foreground=1
       - CRONICLE_echo=1
-      # Secreto compartido (muy importante si algún día escalas a multi-nodo)
-      # Cronicle lo usa para autenticar llamadas internas entre servidores.
       - CRONICLE_secret_key=admin
-      # Para que el docker CLI dentro del contenedor hable con el daemon del host
       - DOCKER_HOST=unix:///var/run/docker.sock
-      # Si lo vas a poner detrás de proxy inverso y no quieres conexiones “direct connect”
       - CRONICLE_web_direct_connect=0
     ports:
       - "3012:3012"
@@ -1304,7 +1328,6 @@ services:
       # Persistencia SFTPGo
       - "E:/Docker_folders/sftpgo/srv:/srv/sftpgo"
       - "E:/Docker_folders/sftpgo/home:/var/lib/sftpgo"
-
       # Monta UNIDADES COMPLETAS (E y F) dentro del contenedor
       - "E:/:/storage/E"
       - "F:/:/storage/F"
@@ -1320,13 +1343,10 @@ services:
     restart: unless-stopped
     environment:
       - TZ=Europe/Madrid
-      # Opcional (si quieres auth en la web UI):
-      - WEB_AUTHENTICATION_USERNAME=${FILEZILLA_WEB_USER:-admin}
-      - WEB_AUTHENTICATION_PASSWORD=${FILEZILLA_WEB_PASS:-admin}
-      # Opcional (cosmética):
-      - DISPLAY_WIDTH=1920
-      - DISPLAY_HEIGHT=1080
-      - DARK_MODE=1
+      - SECURE_CONNECTION=1
+      - WEB_AUTHENTICATION=1
+      - WEB_AUTHENTICATION_USERNAME=${FILEZILLA_WEB_USER}
+      - WEB_AUTHENTICATION_PASSWORD=${FILEZILLA_WEB_PASS}
     ports:
       - "33161:5800"     # GUI web: http://HOST:33161
       # - "33162:5900"   # (Opcional) VNC si quieres
@@ -1428,7 +1448,7 @@ services:
       - "18978:8978"
     environment:
       - CB_SERVER_NAME=cloudbeaver
-      - CB_SERVER_URL=http://localhost:18978
+      - CB_SERVER_URL=https://cloudbeaver:8978
     volumes:
       - "E:/Docker_folders/cloudbeaver/cloudbeaver_workspace:/opt/cloudbeaver/workspace"
       - "E:/Docker_folders/jellifyn/metadata:/mnt/jellyfin:ro"
@@ -1463,8 +1483,8 @@ services:
       - PGID=1000
       - TZ=Europe/Madrid
       # Auth básica opcional (recomendable al menos en LAN)
-      - CUSTOM_USER=${GHD_USER:-admin}
-      - PASSWORD=${GHD_PASS:-admin}
+      - CUSTOM_USER=${GHD_USER}
+      - PASSWORD=${GHD_PASS}
     volumes:
       - "E:/Docker_folders/github-desktop/config:/config"
       # Aquí montas donde quieras tener/clonar repos
@@ -1523,6 +1543,9 @@ services:
       POSTGRESQL_PASSWORD: ${GUACAMOLE_DB_PASS}
       # Opcional
       BAN_ENABLED: "false"
+      # Conexion remota
+      WEBAPP_CONTEXT: "ROOT"
+      REMOTE_IP_VALVE_ENABLED: "true"
     volumes:
       - "E:/Docker_folders/guacamole/extensions:/etc/guacamole/extensions"
       - "E:/Docker_folders/guacamole/lib:/etc/guacamole/lib"
@@ -1549,19 +1572,22 @@ services:
     environment:
       TZ: Europe/Madrid
       BW_DOMAIN: ${BW_DOMAIN}
+      # DB
       BW_DB_PROVIDER: postgresql
       BW_DB_SERVER: postgres
       BW_DB_PORT: 5432
       BW_DB_DATABASE: bitwarden
       BW_DB_USERNAME: bitwarden
       BW_DB_PASSWORD: ${BW_DB_PASSWORD}
+      # Instalación Bitwarden
       BW_INSTALLATION_ID: ${BW_INSTALLATION_ID}
       BW_INSTALLATION_KEY: ${BW_INSTALLATION_KEY}
-      globalSettings__disableUserRegistration: "true"
+      # IMPORTANTE: primero "false" para crear tu usuario, luego lo pones "true"
+      globalSettings__disableUserRegistration: "false"
     volumes:
       - "E:/Docker_folders/bitwarden-lite:/etc/bitwarden"
-    expose:
-      - "65121"
+    ports:
+      - "65121:8080"
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:8080 >/dev/null 2>&1 || exit 1"]
       interval: 30s

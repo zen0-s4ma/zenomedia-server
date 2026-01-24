@@ -36,23 +36,7 @@ services:
       - "E:/Docker_folders/tvheadend/iptv:/iptv"
     restart: unless-stopped
 
-  nextpvr:
-    image: nextpvr/nextpvr_amd64:latest
-    container_name: nextpvr
-    depends_on:
-      - gluetun
-      - dispatcharr
-    environment:
-      - TZ=Europe/Madrid
-    ports:
-      - "8866:8866"
-      - "16891:16891/udp"
-      - "8026:8026/udp"
-    volumes:
-      - "E:/Docker_folders/nextpvr/config:/config"
-      - "E:/Grabaciones:/recordings"
-      - "E:/Docker_folders/nextpvr/buffer:/buffer"
-    restart: unless-stopped
+  
 
   # --- TDARR ---------------------------------------------------------------
   tdarr:
