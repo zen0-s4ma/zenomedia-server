@@ -7,14 +7,14 @@ from pathlib import Path
 # CONFIGURACIÓN DEL USUARIO
 # =========================
 
-BASE_DIR = r"E:\Docker_folders\nextpvr\recordings\Informe Plus+. Andrea Fuentes, locura artística"
-INPUT_FILE = "Informe Plus+. Andrea Fuentes, locura artística_20260122_08300925.mp4"  # .ts / .mkv / .mp4
+BASE_DIR = r"E:\Grabaciones\La recicladora de muebles"
+INPUT_FILE = "La recicladora de muebles_20260124_17031734.ts"  # .ts / .mkv / .mp4
 
 cortar_inicio = True
-inicio_h, inicio_m, inicio_s = 0, 0, 4
+inicio_h, inicio_m, inicio_s = 0, 10, 40
 
-cortar_fin = False
-fin_h, fin_m, fin_s = 0, 57, 51
+cortar_fin = True
+fin_h, fin_m, fin_s = 0, 35, 29
 
 borrar_original = True  # True => reemplaza el original por el recortado (mismo nombre)
 MODO_RAPIDO_COPY = True

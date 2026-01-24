@@ -1371,9 +1371,15 @@ services:
       - APPLICATION_URL=
       - OFFICE_URL=http://filestash_wopi:9980
       - OFFICE_FILESTASH_URL=http://filestash:8334
-      - OFFICE_REWRITE_URL=http://127.0.0.1:9980
+      - OFFICE_REWRITE_URL=http://localhost:9980
     volumes:
+      # Persistencia Filestash
       - "E:/Docker_folders/filestash/state:/app/data/state"
+      - "E:/Docker_folders/filestash/files:/app/data/files"
+      # Mapeos de tus rutas
+      - "E:/:/mnt/host/E"
+      - "F:/:/mnt/host/F"
+      - "D:/Descargas:/mnt/host/Descargas"
     depends_on:
       - filestash_wopi
 
