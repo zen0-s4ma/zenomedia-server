@@ -815,30 +815,6 @@ services:
          done"
     restart: unless-stopped
 
-
-  # +++++++++++++++++++++++++++++++
-  #
-  # CATEGORIA: GESTION DOCKER / INFRAESTRUCTURA
-  #
-  # +++++++++++++++++++++++++++++++
-
-  # --------------------------------------------------------
-  # --- portainer
-  # --- Gestión de Docker
-  # --- Ports: 9443 (Gui Web)
-  # --------------------------------------------------------
-  portainer:
-    image: portainer/portainer-ce:latest
-    container_name: portainer
-    ports:
-      - "9443:9443"   # UI HTTPS (principal)
-      - "9000:9000"   # UI HTTP (opcional)
-      - "8000:8000"   # Edge tunnel (opcional)
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - "E:/Docker_folders/portainer/portainer_data:/data"
-    restart: unless-stopped
-
   # --------------------------------------------------------
   # --- test-gpu
   # --- Prueba de GPU (nvidia-smi)
@@ -862,6 +838,29 @@ services:
               capabilities: [gpu]
     restart: "no"
 
+
+  # +++++++++++++++++++++++++++++++
+  #
+  # CATEGORIA: GESTION DOCKER / INFRAESTRUCTURA
+  #
+  # +++++++++++++++++++++++++++++++
+
+  # --------------------------------------------------------
+  # --- portainer
+  # --- Gestión de Docker
+  # --- Ports: 9443 (Gui Web)
+  # --------------------------------------------------------
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    ports:
+      - "9443:9443"   # UI HTTPS (principal)
+      - "9000:9000"   # UI HTTP (opcional)
+      - "8000:8000"   # Edge tunnel (opcional)
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - "E:/Docker_folders/portainer/portainer_data:/data"
+    restart: unless-stopped
 
 
   # +++++++++++++++++++++++++++++++
@@ -923,8 +922,8 @@ services:
       - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
       - WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESSES}
       # --- Forzar salida ---
-      - SERVER_COUNTRIES=Finland
-      - SERVER_CITIES=Helsinki
+      - SERVER_COUNTRIES=Thailand
+      - SERVER_CITIES=Bangkok
       # Usar el DNS que dio Mullvad en el .conf
       - DNS_ADDRESS=${DNS_ADDRESS}
       # Firewall
@@ -1475,6 +1474,20 @@ services:
     volumes:
       - "E:/Docker_folders/repos:/home/workspace"
     restart: unless-stopped
+
+  vscode-kasm:
+    image: kasmweb/vs-code:1.18.0
+    container_name: vscode-kasm
+    restart: unless-stopped
+    ports:
+      - "33196:6901"
+    environment:
+      - TZ=Europe/Madrid
+      - VNC_PW=${KASM_VNC_PW:-cambia_esta_pass}
+    shm_size: "512m"
+    volumes:
+      - "E:/Docker_folders/repos:/home/kasm-user/projects"
+      - "E:/Docker_folders/vscode-kasm:/home/kasm-user"
 
   # --------------------------------------------------------
   # --- github-desktop
