@@ -1,10 +1,11 @@
 # Nunca subir el .env en claro
 .env
-.env.general_backup
 
 # Nunca subir backups (solo local)
 .env.bkp.*
 .env.enc.bkp.*
+.env.general_backup
+.gitignore
 
 # Sí subir estos:
 !.env.example

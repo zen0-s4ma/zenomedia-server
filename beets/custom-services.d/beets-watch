@@ -1,3 +1,0 @@
-#!/usr/bin/with-contenv bash
-set -euo pipefail
-exec /config/scripts/watch_inbox.sh >> /config/watch_inbox.log 2>&1

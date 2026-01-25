@@ -1654,3 +1654,30 @@ services:
       - "E:/ROMM/config:/romm/config"
     ports:
       - "33110:8080"
+
+  
+  # +++++++++++++++++++++++++++++++
+  #
+  # CATEGORIA: UTILIDADES (ENV CRYPTO)
+  #
+  # +++++++++++++++++++++++++++++++
+
+  # --------------------------------------------------------
+  # --- env-crypto
+  # --- Cifra/descifra .env <-> .env.enc con backups
+  # --- Ports: N/A
+  # --------------------------------------------------------
+  env-crypto:
+    build:
+      context: .
+      dockerfile: Dockerfile.env-crypto
+    container_name: env-crypto
+    working_dir: /work
+    volumes:
+      - ./:/work
+      - ./scripts/env-crypto.sh:/usr/local/bin/env-crypto.sh:ro
+    entrypoint: ["sh", "/usr/local/bin/env-crypto.sh"]
+    stdin_open: true
+    tty: true
+    restart: "no"
+    profiles: ["tools"]
