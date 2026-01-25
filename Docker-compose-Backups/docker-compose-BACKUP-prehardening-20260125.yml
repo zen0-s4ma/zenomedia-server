@@ -1,21 +1,12 @@
-# ZENOMEDIA SERVER V0.1 (hardened)
-#
-# Esta versión del docker‑compose aplica medidas de hardening centradas en:
-#  - Restringir exposiciones de puertos: todos los servicios con interfaz web o
-#    API se exponen únicamente a la interfaz de loopback (127.0.0.1) o, si
-#    necesitan compartir recursos en red local, a la IP LAN del host
-#    (192.168.1.113). De este modo no hay servicios escuchando en todas las
-#    interfaces del host, reduciendo la superficie de ataque.
-
+# ZENOMEDIA SERVER V0.1
 volumes:
   romm_db_data:
 
 services:
-
   # +++++++++++++++++++++++++++++++
-  #
+  # 
   # CATEGORIA: DASHBOARDS / PORTALES
-  #
+  # 
   # +++++++++++++++++++++++++++++++
 
   # --------------------------------------------------------
@@ -27,21 +18,14 @@ services:
     image: linuxserver/heimdall
     container_name: heimdall
     restart: unless-stopped
-    # expone la UI solo al host local
     ports:
-      - "127.0.0.1:7771:80"
+      - "7771:80"
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Madrid
     volumes:
       - "E:/Docker_folders/heimdall:/config"
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost/ >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
 
   # --------------------------------------------------------
   # --- homarr
@@ -52,21 +36,15 @@ services:
     image: ghcr.io/homarr-labs/homarr:latest
     container_name: homarr
     restart: unless-stopped
-    # expone la UI solo al host local
     ports:
-      - "127.0.0.1:7575:7575"
+      - "7575:7575"
     environment:
-      # clave encriptación gestionada en .env
-      - SECRET_ENCRYPTION_KEY=${HOMARR_SECRET_ENCRYPTION_KEY}
+      - SECRET_ENCRYPTION_KEY=9F32AFA73371B50FA139FED313838FA0091002277E483B27DDD1D3162B93DD02
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - "E:/Docker_folders/homarr/appdata:/appdata"
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:7575/api/health/ready >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:7575/api/health/ready >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
+     
+    
 
   # +++++++++++++++++++++++++++++++
   #
@@ -82,11 +60,10 @@ services:
   jellyfin:
     image: jellyfin/jellyfin:10.11.4
     container_name: jellyfin
-    # limita exposición a la LAN
     ports:
-      - "192.168.1.113:8096:8096"
-      - "192.168.1.113:8920:8920"
-      - "192.168.1.113:7359:7359/udp"
+      - "8096:8096"
+      - "8920:8920"
+      - "7359:7359/udp"
     environment:
       TZ: Europe/Madrid
       UMASK: "022"
@@ -103,6 +80,7 @@ services:
               capabilities: [gpu]
     volumes:
       # CONFIG
+      # Carpeta completa del cliente web
       - "E:/Docker_folders/jellifyn/jellyfin-web:/jellyfin/jellyfin-web"
       # Logos extra para CSS
       # -"E:/Docker_folders/jellifyn/custom-logos:/jellyfin/jellyfin-web/custom-logos:ro"
@@ -162,9 +140,8 @@ services:
     image: hrfee/jfa-go:latest
     container_name: jfa-go
     depends_on: [jellyfin]
-    # expone la UI sólo local
     ports:
-      - "127.0.0.1:8056:8056"
+      - "8056:8056"
     environment:
       - TZ=Europe/Madrid
       - JELLYFIN_URL=http://jellyfin:8096
@@ -172,12 +149,6 @@ services:
       - "E:/Docker_folders/jfa-go:/data"
       - "E:/Docker_folders/jellifyn/metadata:/jf:ro"
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:8056/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:8056/ >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
 
   # --------------------------------------------------------
   # --- komga
@@ -187,20 +158,13 @@ services:
   komga:
     image: gotson/komga:latest
     container_name: komga
-    ports:
-      - "127.0.0.1:33083:25600"
+    ports: ["33083:25600"]
     environment:
       - TZ=Europe/Madrid
     volumes:
       - "E:/Docker_folders/komga/komga_config:/config"
       - "E:/Docker_folders/komga/komga_data:/data"
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:25600/actuator/health >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:25600/actuator/health >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 60s
 
   # --------------------------------------------------------
   # --- calibre
@@ -211,9 +175,9 @@ services:
     image: lscr.io/linuxserver/calibre:latest
     container_name: calibre
     ports:
-      - "127.0.0.1:33084:8080"
-      - "127.0.0.1:33085:8181"
-      - "127.0.0.1:33087:8081"
+      - "33084:8080"
+      - "33085:8181"
+      - "33087:8081"
     environment:
       - PUID=1000
       - PGID=1000
@@ -221,12 +185,7 @@ services:
     volumes:
       - "E:/Docker_folders/calibre/calibre_config:/config"
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:8080/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:8080/ >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
+
 
   # +++++++++++++++++++++++++++++++
   #
@@ -243,9 +202,7 @@ services:
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
     ports:
-      # UI web sólo local
-      - "127.0.0.1:8080:8080"
-      # puertos P2P mantienen exposición para el tráfico torrent
+      - "8080:8080"
       - "6881:6881"
       - "6881:6881/udp"
     environment:
@@ -258,13 +215,41 @@ services:
       - "E:/Docker_folders/qbittorrent/qbittorrent_data:/config"
       - "E:/Docker_folders/qbittorrent/media_data:/downloads"
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:8080/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:8080/ >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 45s
 
+  # --------------------------------------------------------
+  # --- amule
+  # --- Cliente eD2k/Kad (aMule) con Web UI
+  # --- Ports: 4711 (Gui Web)
+  # --------------------------------------------------------
+  amule:
+    image: ngosang/amule:latest
+    container_name: amule
+    environment:
+      - TZ=Europe/Madrid
+      - PUID=1000
+      - PGID=1000
+      # passwords de la UI web y control remoto (recomendado)
+      - GUI_PWD=admin
+      - WEBUI_PWD=admin
+
+      # opcional: reinicio diario del contenedor (no imprescindible)
+      - MOD_AUTO_RESTART_ENABLED=true
+      - MOD_AUTO_RESTART_CRON=0 6 * * *
+      - MOD_AUTO_SHARE_ENABLED=false
+
+      - MOD_FIX_KAD_GRAPH_ENABLED=true
+      - MOD_FIX_KAD_BOOTSTRAP_ENABLED=true
+    ports:
+      - "4711:4711/tcp"
+      - "4712:4712/tcp"
+      - "4662:4662/tcp"
+      - "4665:4665/udp"
+      - "4672:4672/udp"
+    volumes:
+      - "E:/Docker_folders/amule/config:/home/amule/.aMule"
+      - "E:/Docker_folders/amule/incoming:/incoming"
+      - "E:/Docker_folders/amule/temp:/temp"
+    restart: unless-stopped
 
   # --------------------------------------------------------
   # --- metube
@@ -276,7 +261,7 @@ services:
     container_name: metube
     restart: unless-stopped
     ports:
-      - "127.0.0.1:8081:8081"          # UI web de MeTube
+      - "8081:8081"          # UI web de MeTube
     environment:
       - TZ=Europe/Madrid
       # Opcional: explícito, pero por defecto ya usan /downloads
@@ -287,12 +272,6 @@ services:
       - "E:/YouTube:/downloads"
       - "E:/YouTube/Videos:/downloads/Videos"
       - "E:/YouTube/Music:/downloads/Music"
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:8081/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:8081/ >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
 
   # --------------------------------------------------------
   # --- tubearchivist
@@ -305,7 +284,7 @@ services:
     container_name: tubearchivist
     restart: unless-stopped
     ports:
-      - "127.0.0.1:8001:8000"
+      - "8001:8000"
     volumes:
       - "E:/YouTube/Videos:/youtube"
       - "E:/Docker_folders/tubearchivist/cache:/cache"
@@ -317,7 +296,7 @@ services:
       - TA_PASSWORD=${TA_PASSWORD}
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
       - TZ=${TZ}
-      # En Windows suele dar igual, pero se deja por compat con el compose oficial
+      # En Windows suele dar igual, pero lo dejo por compat con el compose oficial
       - HOST_UID=1000
       - HOST_GID=1000
     depends_on:
@@ -344,12 +323,6 @@ services:
       - "6379"
     volumes:
       - "E:/Docker_folders/tubearchivist/redis:/data"
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
 
   # --------------------------------------------------------
   # --- archivist-es
@@ -375,12 +348,7 @@ services:
       - "E:/Docker_folders/tubearchivist/es:/usr/share/elasticsearch/data"
     expose:
       - "9200"
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v curl >/dev/null 2>&1 && curl -fsS -u elastic:\"$ELASTIC_PASSWORD\" \"http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=2s\" >/dev/null) || (command -v wget >/dev/null 2>&1 && wget -qO- --user=elastic --password=\"$ELASTIC_PASSWORD\" \"http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=2s\" >/dev/null 2>&1) || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 10
-      start_period: 120s
+
 
   # +++++++++++++++++++++++++++++++
   #
@@ -397,7 +365,7 @@ services:
     image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
     ports:
-      - "127.0.0.1:33074:8989"
+      - "33074:8989"
     environment:
       - PUID=1000
       - PGID=1000
@@ -408,12 +376,6 @@ services:
       - "F:/Series:/tv"
       - "E:/Series:/tv2"
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:8989/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:8989/ >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 45s
 
   # --------------------------------------------------------
   # --- radarr
@@ -424,7 +386,7 @@ services:
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
     ports:
-      - "127.0.0.1:33075:7878"
+      - "33075:7878"
     environment:
       - PUID=1000
       - PGID=1000
@@ -434,12 +396,6 @@ services:
       - "E:/Docker_folders/radarr/media_data:/downloads"
       - "F:/Peliculas:/movies"
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:7878/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:7878/ >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 45s
 
   # --------------------------------------------------------
   # --- bazarr
@@ -450,7 +406,7 @@ services:
     image: lscr.io/linuxserver/bazarr:latest
     container_name: bazarr
     ports:
-      - "127.0.0.1:33076:6767"
+      - "33076:6767"
     environment:
       - PUID=1000
       - PGID=1000
@@ -461,12 +417,6 @@ services:
       - "F:/Peliculas:/movies:ro"
       - "F:/Series:/tv:ro"
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:6767/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:6767/ >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 45s
 
   # --------------------------------------------------------
   # --- lidarr
@@ -477,7 +427,7 @@ services:
     image: lscr.io/linuxserver/lidarr:latest
     container_name: lidarr
     ports:
-      - "127.0.0.1:33077:8686"
+      - "33077:8686"
     environment:
       - PUID=1000
       - PGID=1000
@@ -486,12 +436,6 @@ services:
       - "E:/Docker_folders/lidarr/lidarr_data:/config"
       - "E:/Docker_folders/lidarr/media_data:/downloads"
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:8686/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:8686/ >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 45s
 
   # --------------------------------------------------------
   # --- readarr
@@ -502,7 +446,7 @@ services:
     image: ghcr.io/hotio/readarr:latest
     container_name: readarr
     ports:
-      - "127.0.0.1:33078:8787"
+      - "33078:8787"
     environment:
       - PUID=1000
       - PGID=1000
@@ -512,12 +456,6 @@ services:
       - "E:/Docker_folders/readarr/descargas:/downloads"
       - "F:/Libros:/books"
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:8787/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:8787/ >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 45s
 
   # --------------------------------------------------------
   # --- prowlarr
@@ -528,7 +466,7 @@ services:
     image: lscr.io/linuxserver/prowlarr:latest
     container_name: prowlarr
     ports:
-      - "127.0.0.1:33079:9696"
+      - "33079:9696"
     environment:
       - PUID=1000
       - PGID=1000
@@ -536,12 +474,6 @@ services:
     volumes:
       - "E:/Docker_folders/prowlarr/prowlarr_data:/config"
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:9696/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:9696/ >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 45s
 
   # --------------------------------------------------------
   # --- jackett
@@ -552,7 +484,7 @@ services:
     image: lscr.io/linuxserver/jackett:latest
     container_name: jackett
     ports:
-      - "127.0.0.1:9117:9117"
+      - "9117:9117"
     environment:
       - PUID=1000
       - PGID=1000
@@ -562,12 +494,6 @@ services:
       - "E:/Docker_folders/jackett/jackett_data:/config"
       - "E:/Docker_folders/jackett/media_data:/downloads"
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:9117/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:9117/ >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 45s
 
   # --------------------------------------------------------
   # --- jellyseerr
@@ -577,8 +503,7 @@ services:
   jellyseerr:
     image: fallenbagel/jellyseerr:latest
     container_name: jellyseerr
-    ports:
-      - "127.0.0.1:33080:5055"
+    ports: ["33080:5055"]
     environment:
       - TZ=Europe/Madrid
       - LOG_LEVEL=info
@@ -617,7 +542,7 @@ services:
     image: golift/notifiarr:latest
     container_name: notifiarr
     ports:
-      - "127.0.0.1:5454:5454"
+      - "5454:5454"
     environment:
       - TZ=Europe/Madrid
       - PUID=1000
@@ -625,12 +550,29 @@ services:
     volumes:
       - "E:/Docker_folders/notifiarr/notifiarr_config:/config"
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:5454/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:5454/ >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 60s
+
+  # --------------------------------------------------------
+  # --- amarr
+  # --- Bridge/endpoint para aMule (Torznab/cliente simulado)
+  # --- Ports: 33120 (Gui Web)
+  # --------------------------------------------------------
+  amarr:
+    image: vexdev/amarr:latest
+    container_name: amarr
+    depends_on:
+      - amule
+    ports:
+      - "33120:8080"   # UI/endpoint Torznab y cliente simulado
+    environment:
+      - AMULE_HOST=amule
+      - AMULE_PORT=4712
+      - AMULE_PASSWORD=${AMULE_GUI_PWD:-amuleadmin}  # coincide con GUI_PWD de aMule
+      - AMARR_LOG_LEVEL=INFO
+      - AMULE_FINISHED_PATH=/incoming                 # coincide con aMule
+    volumes:
+      - "E:/Docker_folders/amarr:/config"
+    restart: unless-stopped
+
 
   # +++++++++++++++++++++++++++++++
   #
@@ -666,9 +608,9 @@ services:
   dispatcharr:
     image: ghcr.io/dispatcharr/dispatcharr:latest
     container_name: dispatcharr
-    network_mode: "service:gluetun-swt"
+    network_mode: "service:gluetun"
     depends_on:
-      - gluetun-swt
+      - gluetun
     environment:
       - TZ=Europe/Madrid
       - DISPATCHARR_ENV=aio
@@ -683,6 +625,7 @@ services:
     image: nextpvr/nextpvr_amd64:latest
     container_name: nextpvr
     depends_on:
+      - gluetun
       - dispatcharr
     environment:
       - TZ=Europe/Madrid
@@ -711,7 +654,7 @@ services:
     image: josh5/unmanic:latest
     container_name: unmanic
     ports:
-      - "127.0.0.1:8888:8888"
+      - "8888:8888"
     environment:
       - TZ=Europe/Madrid
       - PUID=1000
@@ -730,12 +673,6 @@ services:
               count: all
               capabilities: [gpu,video,utility]
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:8888/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:8888/ >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 60s
 
   # --------------------------------------------------------
   # --- moverpelis
@@ -758,6 +695,7 @@ services:
       - "E:/Peliculas:/target"
     restart: unless-stopped
 
+
   # +++++++++++++++++++++++++++++++
   #
   # CATEGORIA: MONITORIZACION / LOGS / UPTIME
@@ -774,7 +712,7 @@ services:
     container_name: uptime-kuma
     restart: unless-stopped
     ports:
-      - "127.0.0.1:3001:3001"
+      - "3001:3001"
     environment:
       - TZ=Europe/Madrid
     volumes:
@@ -799,19 +737,13 @@ services:
     image: amir20/dozzle:latest
     container_name: dozzle
     ports:
-      - "127.0.0.1:9999:8080"
+      - "9999:8080"
     environment:
       - TZ=Europe/Madrid
       - DOZZLE_LEVEL=info
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:8080/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:8080/ >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
 
   # --------------------------------------------------------
   # --- netdata
@@ -823,7 +755,7 @@ services:
     container_name: netdata
     hostname: netdata
     ports:
-      - "127.0.0.1:19999:19999"
+      - "19999:19999"
     cap_add:
       - SYS_PTRACE
     security_opt:
@@ -840,12 +772,6 @@ services:
       - /sys:/host/sys:ro
       - /etc/os-release:/host/etc/os-release:ro
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:19999/api/v1/info >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:19999/api/v1/info >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 60s
 
   # --------------------------------------------------------
   # --- jellystat
@@ -858,8 +784,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    ports:
-      - "127.0.0.1:3000:3000"
+    ports: ["3000:3000"]
     environment:
       - TZ=Europe/Madrid
       - POSTGRES_IP=postgres
@@ -871,11 +796,12 @@ services:
       - JELLYFIN_URL=http://jellyfin:8096
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "(command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:3000 >/dev/null) || (command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:3000 >/dev/null 2>&1) || exit 1"]
+      test: ["CMD-SHELL", "curl -fsS http://localhost:3000 >/dev/null"]
       interval: 1m
       timeout: 5s
       retries: 3
       start_period: 20s
+
 
   # --------------------------------------------------------
   # --- vpn-ip-check
@@ -885,7 +811,9 @@ services:
   vpn-ip-check:
     image: alpine:3.20
     container_name: vpn-ip-check
-    network_mode: "service:gluetun-swt"
+    network_mode: "service:gluetun"
+    depends_on:
+      - gluetun
     command: >
       sh -c "apk add --no-cache curl >/dev/null
       && while true; do
@@ -924,6 +852,7 @@ services:
               capabilities: [gpu]
     restart: "no"
 
+
   # +++++++++++++++++++++++++++++++
   #
   # CATEGORIA: GESTION DOCKER / INFRAESTRUCTURA
@@ -939,34 +868,14 @@ services:
     image: portainer/portainer-ce:latest
     container_name: portainer
     ports:
-      - "127.0.0.1:9443:9443"   # UI HTTPS (principal)
-      - "127.0.0.1:9000:9000"   # UI HTTP (opcional)
-      - "127.0.0.1:8000:8000"   # Edge tunnel (opcional)
+      - "9443:9443"   # UI HTTPS (principal)
+      - "9000:9000"   # UI HTTP (opcional)
+      - "8000:8000"   # Edge tunnel (opcional)
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - "E:/Docker_folders/portainer/portainer_data:/data"
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:9000/api/status >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:9000/api/status >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 60s
 
-  # --------------------------------------------------------
-  # --- autoheal
-  # --- Gestiona que los contenedores que lo llamen se mantengan en estado heal
-  # --- Ports: N/A
-  # --------------------------------------------------------
-  autoheal:
-    image: willfarrell/autoheal:latest
-    container_name: autoheal
-    restart: unless-stopped
-    environment:
-      - AUTOHEAL_CONTAINER_LABEL=autoheal
-      - AUTOHEAL_INTERVAL=30
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
 
   # +++++++++++++++++++++++++++++++
   #
@@ -989,22 +898,16 @@ services:
       - "127.0.0.1:81:81"
     environment:
       - TZ=Europe/Madrid
-      - INITIAL_ADMIN_EMAIL=${NPM_ADMIN_EMAIL}
-      - INITIAL_ADMIN_PASSWORD=${NPM_ADMIN_PASSWORD}
+      - INITIAL_ADMIN_EMAIL=admin@admin.com
+      - INITIAL_ADMIN_PASSWORD=admin123
       - DISABLE_IPV6=true
     volumes:
       - "E:/Docker_folders/nginx/npm_data:/data"
       - "E:/Docker_folders/nginx/npm_letsencrypt:/etc/letsencrypt"
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:81/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:81/ >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 90s
 
   # --------------------------------------------------------
   # --- cloudflared
-  # --- container for cloudflare tunnel (ssh)
+  # --- container for coludflare tunnel (ssh)
   # --- Ports: N/A
   # --------------------------------------------------------
   cloudflared:
@@ -1015,25 +918,34 @@ services:
     depends_on:
       - nginx-proxy-manager
 
-
-  gluetun-swt:
+  # --------------------------------------------------------
+  # --- gluetun
+  # --- VPN (WireGuard/Mullvad) + firewall
+  # --- Ports: N/A
+  # --------------------------------------------------------
+  gluetun:
     image: qmcgaw/gluetun:latest
-    container_name: gluetun-swt
+    container_name: gluetun
     cap_add:
       - NET_ADMIN
     environment:
       - TZ=Europe/Madrid
+      # --- Mullvad WireGuard ---
       - VPN_SERVICE_PROVIDER=mullvad
       - VPN_TYPE=wireguard
-      - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY_SWT}
-      - WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESSES_SWT}
-      - DNS_ADDRESS=${DNS_ADDRESS_SWT}
-      # salida SWITZERLAND/ZURICH
+      - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
+      - WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESSES}
+      # --- Forzar salida ---
       - SERVER_COUNTRIES=Switzerland
       - SERVER_CITIES=Zurich
-      - FIREWALL_INPUT_PORTS=9191
+      # Usar el DNS que dio Mullvad en el .conf
+      - DNS_ADDRESS=${DNS_ADDRESS}
+      # Firewall
+      - FIREWALL_INPUT_PORTS=9981,9982,9191
     ports:
       - "127.0.0.1:31377:8000"
+      - "9981:9981"
+      - "9982:9982"
       - "9191:9191"
     restart: unless-stopped
 
@@ -1053,6 +965,7 @@ services:
       - IP6_PROVIDER=none
       - UPDATE_CRON=@every 5m
 
+
   # +++++++++++++++++++++++++++++++
   #
   # CATEGORIA: IA Y BUSQUEDA
@@ -1069,19 +982,13 @@ services:
     container_name: searxng
     restart: unless-stopped
     ports:
-      - "127.0.0.1:4080:8080"
+      - "4080:8080"
     environment:
       - SEARXNG_BASE_URL=http://localhost:4080
       # - SEARXNG_SECRET=CAMBIA_ESTA_CLAVE_LARGA_Y_UNICA
     volumes:
       - "E:/Docker_folders/SearXNG/config:/etc/searxng"
       - "E:/Docker_folders/SearXNG/cache:/var/cache/searxng"
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:8080/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:8080/ >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 60s
 
   # --------------------------------------------------------
   # --- qdrant
@@ -1094,15 +1001,9 @@ services:
     container_name: qdrant
     restart: unless-stopped
     ports:
-      - "127.0.0.1:6333:6333"
+      - 6333:6333
     volumes:
       - "E:/Docker_folders/qdrant/qdrant_storage:/qdrant/storage"
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:6333/healthz >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:6333/healthz >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 60s
 
   # --------------------------------------------------------
   # --- ollama-cpu
@@ -1115,15 +1016,9 @@ services:
     container_name: ollama
     restart: unless-stopped
     ports:
-      - "127.0.0.1:11000:11434"
+      - 11000:11434
     volumes:
       - "E:/Docker_folders/ollama:/root/.ollama"
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:11434/api/version >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:11434/api/version >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
 
   # --------------------------------------------------------
   # --- ollama-gpu
@@ -1136,7 +1031,7 @@ services:
     container_name: ollama
     restart: unless-stopped
     ports:
-      - "127.0.0.1:11000:11434"
+      - 11000:11434
     volumes:
       - "E:/Docker_folders/ollama:/root/.ollama"
     deploy:
@@ -1146,12 +1041,6 @@ services:
             - driver: nvidia
               count: 1
               capabilities: [gpu]
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:11434/api/version >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:11434/api/version >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
 
   # --------------------------------------------------------
   # --- ollama-gpu-amd
@@ -1164,18 +1053,13 @@ services:
     container_name: ollama
     restart: unless-stopped
     ports:
-      - "127.0.0.1:11000:11434"
+      - 11000:11434
     volumes:
       - "E:/Docker_folders/ollama:/root/.ollama"
     devices:
       - "/dev/kfd"
       - "/dev/dri"
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:11434/api/version >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:11434/api/version >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
+
 
   # +++++++++++++++++++++++++++++++
   #
@@ -1207,7 +1091,7 @@ services:
       retries: 10
       start_period: 60s
     ports:
-       - "127.0.0.1:5432:5432"
+       - "5432:5432"
 
   # --------------------------------------------------------
   # --- guacamole-initdb
@@ -1254,6 +1138,7 @@ services:
       - "E:/Docker_folders/postgres/provisioner/schemas:/schemas:ro"
     restart: "no"
 
+
   # --------------------------------------------------------
   # --- romm-db
   # --- MariaDB (RomM)
@@ -1272,10 +1157,11 @@ services:
       - romm_db_data:/var/lib/mysql  # <-- volumen nombrado (NO ruta de Windows)
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
-      start_period: 240s
-      interval: 20s
-      timeout: 10s
-      retries: 10
+      start_period: 240s   # antes 30s
+      interval: 20s        # antes 10s
+      timeout: 10s         # antes 5s
+      retries: 10          # antes 5
+
 
   # +++++++++++++++++++++++++++++++
   #
@@ -1314,7 +1200,7 @@ services:
       - path: .env
         required: true
     ports:
-      - "127.0.0.1:5678:5678"
+      - 5678:5678
     volumes:
       - "E:/Docker_folders/n8n/n8n_storage:/home/node/.n8n"
       - "E:/Docker_folders/n8n/n8n/demo-data:/demo-data"
@@ -1322,12 +1208,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:5678/healthz >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:5678/healthz >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 60s
+
 
   # --------------------------------------------------------
   # --- cronicle
@@ -1343,12 +1224,11 @@ services:
       - CRONICLE_base_app_url=http://localhost:3012
       - CRONICLE_foreground=1
       - CRONICLE_echo=1
-      # secreto gestionado en .env
-      - CRONICLE_secret_key=${CRONICLE_SECRET_KEY}
+      - CRONICLE_secret_key=admin
       - DOCKER_HOST=unix:///var/run/docker.sock
       - CRONICLE_web_direct_connect=0
     ports:
-      - "127.0.0.1:3012:3012"
+      - "3012:3012"
     volumes:
       # Persistencia Cronicle
       - "E:/Docker_folders/cronicle/data:/opt/cronicle/data"
@@ -1366,12 +1246,7 @@ services:
       # Ruta específica eMule
       - "D:/Descargas/eMule:/host/eMule"
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:3012/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:3012/ >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 60s
+
 
   # +++++++++++++++++++++++++++++++
   #
@@ -1393,18 +1268,12 @@ services:
       - PGID=1000
       - PASSWORD=${GPODDER_PASS}
     ports:
-      - "127.0.0.1:33131:3000"     # UI web
+      - "33131:3000"     # tú ya lo tienes en 33131
     volumes:
       - "E:/Docker_folders/gpodder/config:/config"
-      - "E:/Docker_folders/gpodder/downloads:/downloads"
-      - "F:/Podcasts:/jellyfin_podcasts"
+      - "E:/Docker_folders/gpodder/downloads:/downloads"     # caché de gPodder (NO jellyfin)
+      - "F:/Podcasts:/jellyfin_podcasts"                     # salida para Jellyfin
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:3000/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:3000/ >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 60s
 
   # --------------------------------------------------------
   # --- beets
@@ -1426,17 +1295,11 @@ services:
       - "F:/Musica:/music"
       - "E:/YouTube/Music/downloads:/downloads"
     ports:
-      - "127.0.0.1:8337:8337"
+      - "8337:8337"
     dns:
       - 1.1.1.1
       - 8.8.8.8
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:8337/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:8337/ >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 60s
 
   # --------------------------------------------------------
   # --- rss-bridge
@@ -1447,16 +1310,11 @@ services:
     image: rssbridge/rss-bridge:latest
     container_name: rss-bridge
     ports:
-      - "127.0.0.1:33137:80"
+      - "33137:80"
     volumes:
       - "E:/Docker_folders/rss-bridge:/config"
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost/ >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
+
 
   # +++++++++++++++++++++++++++++++
   #
@@ -1477,19 +1335,15 @@ services:
       - TZ=Europe/Madrid
       - SFTPGO_LOG_LEVEL=info
     ports:
-      - "192.168.1.113:33160:8080"   # Web Admin + Web Client
-      - "192.168.1.113:33222:2022"   # SFTP
+      - "33160:8080"   # Web Admin + Web Client
+      - "33222:2022"   # SFTP
     volumes:
+      # Persistencia SFTPGo
       - "E:/Docker_folders/sftpgo/srv:/srv/sftpgo"
       - "E:/Docker_folders/sftpgo/home:/var/lib/sftpgo"
+      # Monta UNIDADES COMPLETAS (E y F) dentro del contenedor
       - "E:/:/storage/E"
       - "F:/:/storage/F"
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:8080/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:8080/ >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 60s
 
   # --------------------------------------------------------
   # --- filezilla
@@ -1507,18 +1361,13 @@ services:
       - WEB_AUTHENTICATION_USERNAME=${FILEZILLA_WEB_USER}
       - WEB_AUTHENTICATION_PASSWORD=${FILEZILLA_WEB_PASS}
     ports:
-      - "127.0.0.1:33161:5800"
-      # - "127.0.0.1:33162:5900"   # (Opcional) VNC si se necesita
+      - "33161:5800"     # GUI web: http://HOST:33161
+      # - "33162:5900"   # (Opcional) VNC si quieres
     volumes:
       - "E:/Docker_folders/filezilla:/config:rw"
+      # Monta E y F enteras para navegar desde FileZilla (lado local)
       - "E:/:/storage/E:rw"
       - "F:/:/storage/F:rw"
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:5800/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:5800/ >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 60s
 
   # --------------------------------------------------------
   # --- filestash
@@ -1530,26 +1379,22 @@ services:
     container_name: filestash
     restart: unless-stopped
     ports:
-      - "127.0.0.1:8334:8334"
+      - "8334:8334"
     environment:
       - APPLICATION_URL=
       - OFFICE_URL=http://filestash_wopi:9980
       - OFFICE_FILESTASH_URL=http://filestash:8334
       - OFFICE_REWRITE_URL=http://localhost:9980
     volumes:
+      # Persistencia Filestash
       - "E:/Docker_folders/filestash/state:/app/data/state"
       - "E:/Docker_folders/filestash/files:/app/data/files"
+      # Mapeos de tus rutas
       - "E:/:/mnt/host/E"
       - "F:/:/mnt/host/F"
       - "D:/Descargas:/mnt/host/Descargas"
     depends_on:
       - filestash_wopi
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:8334/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:8334/ >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 60s
 
   # --------------------------------------------------------
   # --- filestash_wopi
@@ -1571,13 +1416,8 @@ services:
         /bin/su -s /bin/bash -c '/start-collabora-online.sh' cool
     user: root
     ports:
-      - "127.0.0.1:9980:9980"
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:9980/hosting/discovery >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:9980/hosting/discovery >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 90s
+      - "9980:9980"
+
 
   # +++++++++++++++++++++++++++++++
   #
@@ -1595,16 +1435,12 @@ services:
     container_name: swagger-ui
     restart: unless-stopped
     ports:
-      - "127.0.0.1:33150:8080"
+      - "33150:8080"
     volumes:
+      # Tus OpenAPI specs (yaml/json)
       - "E:/Docker_folders/swagger/specs:/usr/share/nginx/html/specs:ro"
+      # Sobrescribe el inicializador para mostrar un selector con varias APIs
       - "E:/Docker_folders/swagger/ui/swagger-initializer.js:/usr/share/nginx/html/swagger-initializer.js:ro"
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:8080/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:8080/ >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
 
   # --------------------------------------------------------
   # --- swagger-editor
@@ -1616,13 +1452,7 @@ services:
     container_name: swagger-editor
     restart: unless-stopped
     ports:
-      - "127.0.0.1:33154:80"
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost/ >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
+      - "33154:80"
 
   # --------------------------------------------------------
   # --- cloudbeaver
@@ -1634,7 +1464,7 @@ services:
     container_name: cloudbeaver
     restart: unless-stopped
     ports:
-      - "127.0.0.1:18978:8978"
+      - "18978:8978"
     environment:
       - CB_SERVER_NAME=cloudbeaver
       - CB_SERVER_URL=https://cloudbeaver:8978
@@ -1644,12 +1474,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:8978/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:8978/ >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 90s
 
   # --------------------------------------------------------
   # --- openvscode
@@ -1660,16 +1484,10 @@ services:
     image: gitpod/openvscode-server:latest
     container_name: openvscode
     ports:
-      - "127.0.0.1:33191:3000"
+      - "33191:3000"
     volumes:
       - "E:/Docker_folders/repos:/home/workspace"
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:3000/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:3000/ >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
 
   # --------------------------------------------------------
   # --- github-desktop
@@ -1688,20 +1506,16 @@ services:
       - PASSWORD=${GHD_PASS}
     volumes:
       - "E:/Docker_folders/github-desktop/config:/config"
+      # Aquí montas donde quieras tener/clonar repos
       - "E:/Docker_folders/repos:/repos"
     ports:
-      - "127.0.0.1:33192:3000"   # HTTP (pensado para ir detrás de proxy)
-      - "127.0.0.1:33193:3001"   # HTTPS directo (cert self-signed)
+      - "33192:3000"   # HTTP (pensado para ir detrás de proxy)
+      - "33193:3001"   # HTTPS directo (cert self-signed)
     shm_size: "1gb"
     cap_add:
       - IPC_LOCK
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:3000/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:3000/ >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 60s
+
 
   # +++++++++++++++++++++++++++++++
   #
@@ -1734,7 +1548,7 @@ services:
       postgres:
         condition: service_healthy
     ports:
-      - "127.0.0.1:33170:8080"
+      - "33170:8080"
     environment:
       # Guacd (daemon)
       GUACD_HOSTNAME: guacd
@@ -1754,12 +1568,7 @@ services:
     volumes:
       - "E:/Docker_folders/guacamole/extensions:/etc/guacamole/extensions"
       - "E:/Docker_folders/guacamole/lib:/etc/guacamole/lib"
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:8080/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:8080/ >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 90s
+
 
   # +++++++++++++++++++++++++++++++
   #
@@ -1797,13 +1606,15 @@ services:
     volumes:
       - "E:/Docker_folders/bitwarden-lite:/etc/bitwarden"
     ports:
-      - "127.0.0.1:65121:8080"
+      - "65121:8080"
     healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:8080/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:8080/ >/dev/null) || exit 1"]
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080 >/dev/null 2>&1 || exit 1"]
       interval: 30s
       timeout: 5s
       retries: 5
       start_period: 60s
+
+
 
   # +++++++++++++++++++++++++++++++
   #
@@ -1827,8 +1638,8 @@ services:
       - DB_HOST=romm-db
       - DB_PORT=3306
       - DB_NAME=romm
-      - DB_USER=admin
-      - DB_PASSWD=${ROMM_DB_PASS}
+      - DB_USER=admin                # <-- igual que el creado por MariaDB
+      - DB_PASSWD=${ROMM_DB_PASS}    # <-- usa la MISMA pass que MARIADB_PASSWORD en romm-db
       - ROMM_AUTH_SECRET_KEY=${ROMM_AUTH_SECRET_KEY}
       - STEAMGRIDDB_API_KEY=${STEAMGRIDDB_API_KEY}
       - IGDB_CLIENT_ID=${IGDB_CLIENT_ID}
@@ -1842,16 +1653,9 @@ services:
       - "E:/ROMM/assets:/romm/assets"
       - "E:/ROMM/config:/romm/config"
     ports:
-      - "127.0.0.1:33110:8080"
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:8080/api/heartbeat >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:8080/api/heartbeat >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 90s
-      
-      
-      
+      - "33110:8080"
+
+  
   # +++++++++++++++++++++++++++++++
   #
   # CATEGORIA: UTILIDADES (ENV CRYPTO)
@@ -1862,7 +1666,6 @@ services:
   # --- env-crypto
   # --- Cifra/descifra .env <-> .env.enc con backups
   # --- Ports: N/A
-  # --- Uso: docker compose --profile tools run --rm env-crypto
   # --------------------------------------------------------
   env-crypto:
     build:
@@ -1872,7 +1675,7 @@ services:
     working_dir: /work
     volumes:
       - ./:/work
-      - ./Scripts/env-crypto.sh:/usr/local/bin/env-crypto.sh:ro
+      - ./scripts/env-crypto.sh:/usr/local/bin/env-crypto.sh:ro
     entrypoint: ["sh", "/usr/local/bin/env-crypto.sh"]
     stdin_open: true
     tty: true

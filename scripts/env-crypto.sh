@@ -29,7 +29,7 @@ require_file() {
 
 do_decrypt() {
   require_file ".env.enc"
-  backup_if_exists ".env" ".env.bkp.${DATE}"
+  backup_if_exists ".env" "./env-backups/.env.bkp.${DATE}"
 
   echo "==> Descifrando .env.enc -> .env (te pedirá la contraseña)"
   # SIN -pass => OpenSSL pide contraseña interactiva
@@ -41,7 +41,7 @@ do_decrypt() {
 
 do_encrypt() {
   require_file ".env"
-  backup_if_exists ".env.enc" ".env.enc.bkp.${DATE}"
+  backup_if_exists ".env.enc" "./env-backups/.env.enc.bkp.${DATE}"
 
   echo "==> Cifrando .env -> .env.enc (te pedirá la contraseña + verificación)"
   # SIN -pass => OpenSSL pide contraseña interactiva

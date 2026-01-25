@@ -379,3 +379,76 @@ services:
       - "E:/Docker_folders/pihole/etc-pihole:/etc/pihole"
       - "E:/Docker_folders/pihole/dnsmasq.d:/etc/dnsmasq.d"
     restart: unless-stopped
+
+  # --------------------------------------------------------
+  # --- amule
+  # --- Cliente eD2k/Kad (aMule) con Web UI
+  # --- Ports: 4711 (Gui Web)
+  # --------------------------------------------------------
+  amule:
+    image: ngosang/amule:latest
+    container_name: amule
+    environment:
+      - TZ=Europe/Madrid
+      - PUID=1000
+      - PGID=1000
+      # contraseñas gestionadas en .env
+      - GUI_PWD=${AMULE_GUI_PWD}
+      - WEBUI_PWD=${AMULE_WEBUI_PWD}
+
+      # opcional: reinicio diario del contenedor (no imprescindible)
+      - MOD_AUTO_RESTART_ENABLED=true
+      - MOD_AUTO_RESTART_CRON=0 6 * * *
+      - MOD_AUTO_SHARE_ENABLED=false
+
+      - MOD_FIX_KAD_GRAPH_ENABLED=true
+      - MOD_FIX_KAD_BOOTSTRAP_ENABLED=true
+    ports:
+      # UI web y control sólo local
+      - "127.0.0.1:4711:4711/tcp"
+      - "127.0.0.1:4712:4712/tcp"
+      # puertos P2P permanecen abiertos para la red eD2k/Kad
+      - "4662:4662/tcp"
+      - "4665:4665/udp"
+      - "4672:4672/udp"
+    volumes:
+      - "E:/Docker_folders/amule/config:/home/amule/.aMule"
+      - "E:/Docker_folders/amule/incoming:/incoming"
+      - "E:/Docker_folders/amule/temp:/temp"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:4711/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:4711/ >/dev/null) || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+
+
+  # --------------------------------------------------------
+  # --- amarr
+  # --- Bridge/endpoint para aMule (Torznab/cliente simulado)
+  # --- Ports: 33120 (Gui Web)
+  # --------------------------------------------------------
+  amarr:
+    image: vexdev/amarr:latest
+    container_name: amarr
+    depends_on:
+      - amule
+    ports:
+      - "127.0.0.1:33120:8080"   # UI/endpoint Torznab y cliente simulado
+    environment:
+      - AMULE_HOST=amule
+      - AMULE_PORT=4712
+      # reutiliza la misma clave que aMule, gestionada en .env
+      - AMULE_PASSWORD=${AMULE_PASSWORD}
+      - AMARR_LOG_LEVEL=INFO
+      - AMULE_FINISHED_PATH=/incoming
+    volumes:
+      - "E:/Docker_folders/amarr:/config"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:8080/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:8080/ >/dev/null) || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
