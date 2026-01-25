@@ -7,14 +7,14 @@ from pathlib import Path
 # CONFIGURACIÓN DEL USUARIO
 # =========================
 
-BASE_DIR = r"E:\Grabaciones\La recicladora de muebles"
-INPUT_FILE = "La recicladora de muebles_20260124_17031734.ts"  # .ts / .mkv / .mp4
+BASE_DIR = r"E:\Grabaciones\Universo Valdano Brahim"
+INPUT_FILE = "Universo Valdano Brahim_20260125_00050100.ts"  # .ts / .mkv / .mp4
 
 cortar_inicio = True
-inicio_h, inicio_m, inicio_s = 0, 10, 40
+inicio_h, inicio_m, inicio_s = 0, 38, 53
 
 cortar_fin = True
-fin_h, fin_m, fin_s = 0, 35, 29
+fin_h, fin_m, fin_s = 1, 29, 12
 
 borrar_original = True  # True => reemplaza el original por el recortado (mismo nombre)
 MODO_RAPIDO_COPY = True

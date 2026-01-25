@@ -1,0 +1,19 @@
+# =========================
+# SECRETS / ENV
+# =========================
+.env
+.env.*
+!.env.example
+!.env.enc
+
+# keys / secrets (age/sops etc.)
+*.agekey
+*agekey*.txt
+keys.txt
+*.key
+*.pem
+*.pfx
+
+# misc
+.DS_Store
+Thumbs.db

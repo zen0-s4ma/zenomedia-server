@@ -6,8 +6,8 @@ from pathlib import Path
 # =========================
 # CONFIG
 # =========================
-BASE_DIR = r"E:\zMkvConverter"
-INPUT_TS_NAME = "NCAA Football Bowl Games_20260120_17552025_trim_trim.ts"  # o pásalo por argv
+BASE_DIR = r"E:\Documentales"
+INPUT_TS_NAME = "Matador-Topuria.mp4"  # o pásalo por argv
 
 OUTPUT_CONTAINER = "mkv"  # "mkv" o "mp4"
 
