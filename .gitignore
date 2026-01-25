@@ -1,19 +1,11 @@
-# =========================
-# SECRETS / ENV
-# =========================
+# Nunca subir el .env en claro
 .env
-.env.*
+.env.general_backup
+
+# Nunca subir backups (solo local)
+.env.bkp.*
+.env.enc.bkp.*
+
+# Sí subir estos:
 !.env.example
 !.env.enc
-
-# keys / secrets (age/sops etc.)
-*.agekey
-*agekey*.txt
-keys.txt
-*.key
-*.pem
-*.pfx
-
-# misc
-.DS_Store
-Thumbs.db
