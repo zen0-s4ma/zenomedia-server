@@ -941,11 +941,9 @@ services:
       # Usar el DNS que dio Mullvad en el .conf
       - DNS_ADDRESS=${DNS_ADDRESS}
       # Firewall
-      - FIREWALL_INPUT_PORTS=9981,9982,9191
+      - FIREWALL_INPUT_PORTS=9191
     ports:
       - "127.0.0.1:31377:8000"
-      - "9981:9981"
-      - "9982:9982"
       - "9191:9191"
     restart: unless-stopped
 

@@ -1031,9 +1031,10 @@ services:
       # salida SWITZERLAND/ZURICH
       - SERVER_COUNTRIES=Switzerland
       - SERVER_CITIES=Zurich
-      - FIREWALL_INPUT_PORTS=9191
+      - FIREWALL_INPUT_PORTS=9191,5800,5801
     ports:
-      - "127.0.0.1:31377:8000"
+      - "5800:5800"
+      - "5801:5801"
       - "9191:9191"
     restart: unless-stopped
 
@@ -1878,3 +1879,46 @@ services:
     tty: true
     restart: "no"
     profiles: ["tools"]
+
+  # --------------------------------------------------------
+  # --- firefox
+  # --- Navegador con GUI web (noVNC)
+  # --- Ports: 33163 (Gui Web)
+  # --------------------------------------------------------
+  firefox:
+    image: jlesage/firefox:latest
+    container_name: firefox
+    restart: unless-stopped
+    network_mode: "service:gluetun-swt"
+    depends_on:
+      - gluetun-swt
+    environment:
+      - TZ=Europe/Madrid
+    volumes:
+      - "E:/Docker_folders/firefox:/config:rw"
+      - "D:/Descargas/FirefoxVPN:/storage/Descargas:rw"
+
+  #tor-browser:
+  #  image: domistyle/tor-browser:latest
+  #  container_name: tor-browser
+  #  restart: unless-stopped
+  #  network_mode: "service:gluetun-swt"
+  #  depends_on:
+  #    - gluetun-swt
+  #  environment:
+  #    - TZ=Europe/Madrid
+  #    - WEB_LISTENING_PORT=5801
+  #  volumes:
+  #    - "D:/Descargas/TorBrowserVPN:/storage/Descargas:rw"
+
+  tor-browser:
+    image: domistyle/tor-browser:latest
+    container_name: tor-browser
+    restart: unless-stopped
+    shm_size: "2gb"
+    ports:
+      - "127.0.0.1:33164:5800"
+    environment:
+      - TZ=Europe/Madrid
+    volumes:
+      - "D:/Descargas/TorBrowser:/storage/Descargas:rw"
