@@ -322,6 +322,28 @@ services:
       retries: 5
       start_period: 30s
 
+
+  # --------------------------------------------------------
+  # --- podsync-web
+  # --- YouTube/Vimeo/SoundCloud/Twitch -> Podcast RSS con Web UI (Podsync Web)
+  # --- Ports: 33138 (Web UI + RSS)
+  # --------------------------------------------------------
+  podsync-web:
+    image: deltathreed/podsync-web:main-30eb27e  # mejor que :latest (pin a tag)
+    container_name: podsync-web
+    restart: unless-stopped
+    ports:
+      - "192.168.1.113:33138:8080"
+    environment:
+      - TZ=Europe/Madrid
+      - PODSYNC_CONFIG_PATH=/app/config.toml
+      # Si prefieres tokens por env:
+      - PODSYNC_YOUTUBE_API_KEY=${PODSYNC_YOUTUBE_API_KEY}
+    volumes:
+      - "E:/Podcasts:/app/data"
+      - "E:/Docker_folders/podsync-web/db:/app/db"
+      - "E:/Docker_folders/podsync-web/config.toml:/app/config.toml:rw"
+
   # --------------------------------------------------------
   # --- tubearchivist
   # --- Archivo/descarga y gestión de YouTube
@@ -706,6 +728,63 @@ services:
       - "E:/Docker_folders/dispatcharr/iptv:/data/m3us"
       - "E:/Docker_folders/epg:/data/epgs:ro"
     restart: unless-stopped
+
+  # --------------------------------------------------------
+  # --- ersatztv
+  # --- Creador de canales IPTV (M3U/XMLTV) desde bibliotecas Local/Plex/Jellyfin
+  # --- Ports: 8409 (Web UI + endpoints)
+  # --------------------------------------------------------
+  ersatztv:
+    image: ghcr.io/ersatztv/ersatztv:latest
+    container_name: ersatztv
+    restart: unless-stopped
+    depends_on:
+      - jellyfin
+    ports:
+      # Recomendación práctica con Dispatcharr/Jellyfin: publicar en la LAN para usar URL con IP (valida siempre).
+      # Si prefieres NO exponerlo en LAN, alternativa: usa una URL con FQDN que resuelva en Docker, o proxy inverso.
+      - "8409:8409"
+    environment:
+      - TZ=Europe/Madrid
+      # NVIDIA (solo si tu host lo soporta; en Docker sobre Windows/macOS no está soportado oficialmente por ErsatzTV)
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,video,utility
+    volumes:
+      # Configuración persistente
+      - "E:/Docker_folders/ersatztv/config:/config"
+      # Media (opción 1 recomendada por docs para 'Streaming From Disk' con Jellyfin: mismos mounts/paths que Jellyfin)
+      - "F:/Animacion:/media/Animacion:ro"
+      - "F:/Infantil:/media/Infantil:ro"
+      - "F:/Peliculas:/media/Peliculas:ro"
+      - "F:/Documentales:/media/Documentales:ro"
+      - "F:/Series:/media/Series:ro"
+      - "F:/MiniSeries:/media/MiniSeries:ro"
+      - "F:/Anime:/media/Anime:ro"
+      - "F:/Futbol:/media/Futbol:ro"
+      - "F:/Baloncesto:/media/Baloncesto:ro"
+      - "F:/NFL:/media/NFL:ro"
+      - "F:/Combates:/media/Combates:ro"
+      - "F:/LoL:/media/LoL:ro"
+      - "F:/Olimpiadas:/media/Olimpiadas:ro"
+      - "F:/Podcasts:/media/Podcast:ro"
+      - "E:/Animacion:/media/Animacion2:ro"
+      - "E:/Infantil:/media/Infantil2:ro"
+      - "E:/Peliculas:/media/Peliculas2:ro"
+      - "E:/Series:/media/Series2:ro"
+      - "E:/MiniSeries:/media/MiniSeries2:ro"
+      - "E:/YouTube:/media/YouTube2:ro"
+      - "E:/Anime:/media/Anime2:ro"
+      - "E:/Documentales:/media/Documentales2:ro"
+      - "E:/Futbol:/media/Futbol2:ro"
+      - "E:/Baloncesto:/media/Baloncesto2:ro"
+      - "E:/NFL:/media/NFL2:ro"
+      - "E:/Combates:/media/Combates2:ro"
+      - "E:/LoL:/media/LoL2:ro"
+      - "E:/Olimpiadas:/media/Olimpiadas2:ro"
+      - "E:/Podcasts:/media/Podcast2:ro"
+    # tmpfs recomendado por docs para limitar escrituras en disco (transcodes temporales)
+    tmpfs:
+      - /transcode
 
   nextpvr:
     image: nextpvr/nextpvr_amd64:latest
@@ -1094,6 +1173,9 @@ services:
       - SERVER_COUNTRIES=Switzerland
       - SERVER_CITIES=Zurich
       - FIREWALL_INPUT_PORTS=9191,5800,5801
+      # Permitir acceso saliente a LAN desde contenedores que comparten la red (p.ej. Dispatcharr)
+      # Ajusta a tu caso: puedes usar 192.168.1.0/24 si necesitas más hosts, o un /32 para ser más restrictivo.
+      - FIREWALL_OUTBOUND_SUBNETS=192.168.1.113/32
     ports:
       - "5800:5800"
       - "5801:5801"
