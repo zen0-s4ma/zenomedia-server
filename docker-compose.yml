@@ -1867,7 +1867,7 @@ services:
   # --------------------------------------------------------
   env-crypto:
     build:
-      context: .
+      context: "./Custom-Dockerfiles"
       dockerfile: Dockerfile.env-crypto
     container_name: env-crypto
     working_dir: /work
