@@ -137,6 +137,7 @@ services:
       - "E:/LoL:/media/LoL2"
       - "E:/Olimpiadas:/media/Olimpiadas2"
       - "E:/Podcasts:/media/Podcast2"
+      - "E:/Youtube_Podcast:/media/Youtube_podcast"
       # PATHS DE CONFIGURACION E:
       - "E:/Docker_folders/jellifyn/metadata:/config"
       - "C:/Docker_folders/jellifyn/cache:/cache"
@@ -324,27 +325,6 @@ services:
 
 
   # --------------------------------------------------------
-  # --- podsync-web
-  # --- YouTube/Vimeo/SoundCloud/Twitch -> Podcast RSS con Web UI (Podsync Web)
-  # --- Ports: 33138 (Web UI + RSS)
-  # --------------------------------------------------------
-  podsync-web:
-    image: deltathreed/podsync-web:main-30eb27e  # mejor que :latest (pin a tag)
-    container_name: podsync-web
-    restart: unless-stopped
-    ports:
-      - "192.168.1.113:33138:8080"
-    environment:
-      - TZ=Europe/Madrid
-      - PODSYNC_CONFIG_PATH=/config/config.toml
-      # Si prefieres tokens por env:
-      - PODSYNC_YOUTUBE_API_KEY=${PODSYNC_YOUTUBE_API_KEY}
-    volumes:
-      - "E:/Docker_folders/podsync-web/config:/config"
-      - "E:/Podcasts:/app/data"
-      - "E:/Docker_folders/podsync-web/db:/app/db"
-
-  # --------------------------------------------------------
   # --- tubearchivist
   # --- Archivo/descarga y gestión de YouTube
   # --- Ports: 8001 (Gui Web)
@@ -431,6 +411,102 @@ services:
       timeout: 10s
       retries: 10
       start_period: 120s
+
+
+  # --------------------------------------------------------
+  # --- tubearchivist-audio
+  # --- Instancia independiente (orientada a audio)
+  # --- Ports: 8002 (Gui Web)
+  # --------------------------------------------------------
+  tubearchivist-audio:
+    image: bbilly1/tubearchivist:latest
+    pull_policy: always
+    container_name: tubearchivist-audio
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8002:8000"
+    volumes:
+      # Carpeta SEPARADA para el contenido "audio"
+      - "E:/YouTube/Audio:/youtube"
+      - "E:/Docker_folders/tubearchivist-audio/cache:/cache"
+    environment:
+      - ES_URL=http://archivist-es-audio:9200
+      - REDIS_CON=redis://archivist-redis-audio:6379
+
+      # Puedes reutilizar las mismas vars o crear unas nuevas (ver nota abajo)
+      - TA_HOST=${TA_AUDIO_HOST}
+      - TA_USERNAME=${TA_AUDIO_USERNAME}
+      - TA_PASSWORD=${TA_AUDIO_PASSWORD}
+
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - TZ=${TZ}
+      - HOST_UID=1000
+      - HOST_GID=1000
+    depends_on:
+      - archivist-es-audio
+      - archivist-redis-audio
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/api/health/"]
+      interval: 2m
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # --------------------------------------------------------
+  # --- archivist-redis-audio
+  # --- Redis (cache/cola) para TubeArchivist AUDIO
+  # --- Ports: N/A
+  # --------------------------------------------------------
+  archivist-redis-audio:
+    image: redis:7-alpine
+    pull_policy: always
+    container_name: archivist-redis-audio
+    restart: unless-stopped
+    expose:
+      - "6379"
+    volumes:
+      - "E:/Docker_folders/tubearchivist-audio/redis:/data"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # --------------------------------------------------------
+  # --- archivist-es-audio
+  # --- Elasticsearch para TubeArchivist AUDIO
+  # --- Ports: N/A
+  # --------------------------------------------------------
+  archivist-es-audio:
+    image: bbilly1/tubearchivist-es:latest
+    pull_policy: always
+    container_name: archivist-es-audio
+    restart: unless-stopped
+    environment:
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+
+      # Ajusta si necesitas menos RAM en la instancia "audio"
+      - ES_JAVA_OPTS=-Xms2g -Xmx2g
+
+      - xpack.security.enabled=true
+      - discovery.type=single-node
+      - path.repo=/usr/share/elasticsearch/data/snapshot
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - "E:/Docker_folders/tubearchivist-audio/es:/usr/share/elasticsearch/data"
+    expose:
+      - "9200"
+    healthcheck:
+      test: ["CMD-SHELL", "(command -v curl >/dev/null 2>&1 && curl -fsS -u elastic:\"$ELASTIC_PASSWORD\" \"http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=2s\" >/dev/null) || (command -v wget >/dev/null 2>&1 && wget -qO- --user=elastic --password=\"$ELASTIC_PASSWORD\" \"http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=2s\" >/dev/null 2>&1) || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 120s
+
 
   # +++++++++++++++++++++++++++++++
   #
@@ -1127,7 +1203,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "127.0.0.1:81:81"
+      - "81:81"
     environment:
       - TZ=Europe/Madrid
       - INITIAL_ADMIN_EMAIL=${NPM_ADMIN_EMAIL}
@@ -2063,3 +2139,42 @@ services:
       - TZ=Europe/Madrid
     volumes:
       - "D:/Descargas/TorBrowser:/storage/Descargas:rw"
+
+
+  # --------------------------------------------------------
+  # --- youtube-podcast-exporter (cron)
+  # --- Convierte vídeos TubeArchivist -> MP3 + thumbnails
+  # --- Schedule: 10:00 Europe/Madrid
+  # --------------------------------------------------------
+  youtube-podcast-exporter:
+    build:
+      context: ./youtube-podcast-cron
+    container_name: youtube-podcast-exporter
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Madrid
+      - CRON_SCHEDULE=0 10,20 * * *
+      # - RUN_ON_START=true   # (opcional) ejecuta también al arrancar
+
+      # Rutas internas del contenedor
+      - SRC_ROOT=/data/src
+      - DEST_ROOT=/data/dest
+
+      # Secrets por .env
+      - YT_API_KEY=${YT_API_KEY}
+
+      # TubeArchivist
+      - TA_BASE_URL=https://tubeaudio.maripiflix.xyz
+      - TA_TOKEN=${TA_TOKEN}
+      - TA_ACTION=delete_ignore
+      - TA_VERIFY_SSL=true
+      - TA_DRY_RUN=false
+
+      # Comportamiento
+      - DELETE_VIDEO=true
+      - OVERWRITE_MP3=false
+      - OVERWRITE_IMAGES=true
+
+    volumes:
+      - "E:/YouTube/Audio:/data/src:rw"
+      - "E:/Youtube_Podcast:/data/dest:rw"
