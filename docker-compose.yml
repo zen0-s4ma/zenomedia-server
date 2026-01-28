@@ -1609,20 +1609,17 @@ services:
   gpodder:
     image: xthursdayx/gpodder-docker:latest
     container_name: gpodder
-    build:
-      context: .
-      dockerfile: ./Custom-Dockerfiles/Dockerfile.gpodder
     environment:
       - TZ=Europe/Madrid
       - PUID=1000
       - PGID=1000
       - PASSWORD=${GPODDER_PASS}
     ports:
-      - "127.0.0.1:33131:3000"     # UI web
+      - "33131:3000"     # tú ya lo tienes en 33131
     volumes:
       - "E:/Docker_folders/gpodder/config:/config"
-      - "E:/Docker_folders/gpodder/downloads:/downloads"
-      - "F:/Podcasts:/jellyfin_podcasts"
+      - "E:/Docker_folders/gpodder/downloads:/downloads"     # caché de gPodder (NO jellyfin)
+      - "F:/Podcasts:/jellyfin_podcasts"                     # salida para Jellyfin
     restart: unless-stopped
 
   # --------------------------------------------------------
