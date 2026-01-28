@@ -6,12 +6,12 @@ from pathlib import Path
 # =========================
 # CONFIG
 # =========================
-BASE_DIR = r"E:\Grabaciones\Universo Valdano"
-INPUT_TS_NAME = "Universo Valdano_20260126_05300630.ts"  # o pásalo por argv
+BASE_DIR = r"E:\Grabaciones\Volver"
+INPUT_TS_NAME = "Volver_20260126_23102346.ts"  # o pásalo por argv
 
 OUTPUT_CONTAINER = "mkv"  # "mkv" o "mp4"
 
-BORRAR_ORIGINAL = False
+BORRAR_ORIGINAL = True
 SOBRESCRIBIR_SALIDA = True
 
 MANTENER_TODOS_AUDIOS = True

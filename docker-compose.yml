@@ -138,6 +138,7 @@ services:
       - "E:/Olimpiadas:/media/Olimpiadas2"
       - "E:/Podcasts:/media/Podcast2"
       - "E:/Youtube_Podcast:/media/Youtube_podcast"
+      - "E:/YouTube_videos:/media/Youtube_videos"
       # PATHS DE CONFIGURACION E:
       - "E:/Docker_folders/jellifyn/metadata:/config"
       - "C:/Docker_folders/jellifyn/cache:/cache"
@@ -337,7 +338,7 @@ services:
     ports:
       - "127.0.0.1:8001:8000"
     volumes:
-      - "E:/YouTube/Videos:/youtube"
+      - "E:/YouTube_videos:/youtube"
       - "E:/Docker_folders/tubearchivist/cache:/cache"
     environment:
       - ES_URL=http://archivist-es:9200
@@ -2153,7 +2154,7 @@ services:
     restart: unless-stopped
     environment:
       - TZ=Europe/Madrid
-      - CRON_SCHEDULE=0 10,20 * * *
+      - CRON_SCHEDULE=0 10,21 * * *
       # - RUN_ON_START=true   # (opcional) ejecuta también al arrancar
 
       # Rutas internas del contenedor
