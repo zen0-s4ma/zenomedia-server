@@ -1036,12 +1036,7 @@ services:
       - /sys:/host/sys:ro
       - /etc/os-release:/host/etc/os-release:ro
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:19999/api/v1/info >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:19999/api/v1/info >/dev/null) || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
-      start_period: 60s
+    
 
   # --------------------------------------------------------
   # --- jellystat
