@@ -22,6 +22,9 @@ import requests
 SRC_ROOT = Path(r"E:\YouTube\Audio")
 DEST_ROOT = Path(r"E:\Youtube_Podcast")
 
+# --- NUEVO: ruta adicional SOLO para retag del TITLE ---
+RETAG_EXTRA_ROOT = Path(r"F:\Podcasts")
+
 # YouTube Data API v3 (solo para obtener títulos/fechas/miniaturas)
 YT_API_KEY = "AIzaSyA-9iJS0bDWXpCGPqvM4NzM-9EoBInli4A"
 
@@ -59,6 +62,10 @@ TA_DRY_RUN = False
 
 # --- Purga final ---
 PURGE_SHORTER_THAN_SECONDS = 5 * 60  # 5 minutos
+
+# --- Retag final (sobrescribir TITLE=nombre de fichero sin extensión) ---
+RETAG_TITLE_FROM_FILENAME = True
+
 # =========================
 
 YOUTUBE_API_CHANNELS = "https://www.googleapis.com/youtube/v3/channels"
@@ -114,14 +121,28 @@ def published_prefix(published_at: Optional[str], fallback_file: Path) -> str:
 
 def ensure_ffmpeg() -> None:
     try:
-        subprocess.run(["ffmpeg", "-version"], check=True, capture_output=True, text=True)
+        subprocess.run(
+            ["ffmpeg", "-version"],
+            check=True,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+        )
     except Exception as e:
         raise RuntimeError(f"No encuentro ffmpeg en PATH. Detalle: {e}")
 
 
 def ensure_ffprobe() -> None:
     try:
-        subprocess.run(["ffprobe", "-version"], check=True, capture_output=True, text=True)
+        subprocess.run(
+            ["ffprobe", "-version"],
+            check=True,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+        )
     except Exception as e:
         raise RuntimeError(f"No encuentro ffprobe en PATH (viene con ffmpeg). Detalle: {e}")
 
@@ -136,7 +157,7 @@ def ffmpeg_to_mp3(src_video: Path, dst_mp3: Path, overwrite: bool = False) -> No
         "-qscale:a", "4",
         str(dst_mp3),
     ]
-    p = subprocess.run(cmd, capture_output=True, text=True)
+    p = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
     if p.returncode != 0:
         raise RuntimeError(f"ffmpeg falló con {src_video.name}:\n{(p.stderr or p.stdout).strip()}")
 
@@ -222,7 +243,7 @@ def ffmpeg_tag_mp3_inplace(
         id3_args += ["-write_id3v1", "1"]
 
     def run(cmd: List[str]) -> None:
-        p = subprocess.run(cmd, capture_output=True, text=True)
+        p = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
         if p.returncode != 0:
             raise RuntimeError((p.stderr or p.stdout or "").strip())
 
@@ -251,6 +272,118 @@ def ffmpeg_tag_mp3_inplace(
         run(cmd)
 
     os.replace(tmp, mp3_path)
+
+
+# --- NUEVO: Retag final SOLO del TITLE (sin tocar el resto de tags) ---
+
+def ffmpeg_overwrite_title_tag_inplace(
+    mp3_path: Path,
+    new_title: str,
+    id3v2_version: int = 3,
+    write_id3v1: bool = True,
+) -> None:
+    """
+    Sobrescribe SOLO el tag 'title' en un MP3 SIN re-encode (-c copy),
+    preservando el resto de metadatos existentes (map_metadata 0).
+    Usa temporal + replace por seguridad.
+    """
+    tmp = mp3_path.with_suffix(".retagtitle.tmp.mp3")
+    if tmp.exists():
+        tmp.unlink(missing_ok=True)
+
+    title = sanitize_tag_value(new_title)
+
+    cmd: List[str] = [
+        "ffmpeg", "-hide_banner", "-loglevel", "error", "-y",
+        "-i", str(mp3_path),
+        "-map", "0",
+        "-c", "copy",
+        "-map_metadata", "0",
+        "-id3v2_version", str(id3v2_version),
+        "-metadata", f"title={title}",
+    ]
+    if write_id3v1:
+        cmd += ["-write_id3v1", "1"]
+
+    cmd += [str(tmp)]
+
+    p = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
+    if p.returncode != 0:
+        raise RuntimeError((p.stderr or p.stdout or "").strip())
+
+    os.replace(tmp, mp3_path)
+
+
+def ffprobe_title_tag(mp3_path: Path) -> Optional[str]:
+    """
+    Lee el tag TITLE actual del MP3 usando ffprobe.
+    Devuelve str o None si no está / falla.
+    """
+    cmd = [
+        "ffprobe",
+        "-v", "error",
+        "-show_entries", "format_tags=title",
+        "-of", "json",
+        str(mp3_path),
+    ]
+    p = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
+    if p.returncode != 0:
+        return None
+    try:
+        data = json.loads(p.stdout)
+        tags = (data.get("format", {}) or {}).get("tags", {}) or {}
+        # ffprobe puede devolver 'title' o 'TITLE' según contexto
+        t = tags.get("title")
+        if t is None:
+            t = tags.get("TITLE")
+        if t is None:
+            return None
+        return str(t)
+    except Exception:
+        return None
+
+
+def retag_title_from_filename(dest_root: Path) -> Tuple[int, int]:
+    """
+    Recorre todas las carpetas dentro de dest_root y, para cada *.mp3,
+    sobrescribe el tag TITLE con mp3.stem (nombre del fichero sin extensión)
+    SOLO si el TITLE actual NO coincide ya con mp3.stem.
+    Devuelve (retag_ok, retag_errors).
+    """
+    ensure_ffmpeg()
+    ensure_ffprobe()
+
+    retag_ok = 0
+    retag_err = 0
+
+    if not dest_root.exists():
+        return (0, 0)
+
+    channel_dirs = [d for d in dest_root.iterdir() if d.is_dir()]
+    for ch_dir in channel_dirs:
+        for mp3 in ch_dir.glob("*.mp3"):
+            desired = sanitize_tag_value(mp3.stem)
+            current_raw = ffprobe_title_tag(mp3)
+            current = sanitize_tag_value(current_raw or "")
+
+            if current == desired:
+                # Ya está actualizado, no tocar
+                continue
+
+            try:
+                ffmpeg_overwrite_title_tag_inplace(
+                    mp3_path=mp3,
+                    new_title=mp3.stem,
+                    id3v2_version=ID3V2_VERSION,
+                    write_id3v1=WRITE_ID3V1,
+                )
+                retag_ok += 1
+                print(f"[RETAG] TITLE <- {mp3.stem}")
+            except Exception as e:
+                retag_err += 1
+                print(f"[RETAG] (Aviso) No pude retaguear TITLE en {mp3.name}: {e}")
+
+    return (retag_ok, retag_err)
 
 
 def list_channel_dirs(src_root: Path) -> List[Path]:
@@ -625,7 +758,7 @@ def ffprobe_duration_seconds(mp3_path: Path) -> Optional[float]:
         "-of", "json",
         str(mp3_path),
     ]
-    p = subprocess.run(cmd, capture_output=True, text=True)
+    p = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
     if p.returncode != 0:
         return None
     try:
@@ -770,6 +903,29 @@ def main() -> int:
     except Exception as e:
         errors += 1
         print(f"\n[PURGE] ERROR: {e}\n")
+
+    # ✅ RETAG FINAL: sobrescribe TITLE = nombre del fichero (sin extensión)
+    if embed_id3_tags and RETAG_TITLE_FROM_FILENAME:
+        try:
+            print(f"\n[RETAG] Sobrescribiendo tag TITLE con el nombre del fichero (sin extensión) en {dest_root} ...\n")
+            retag_ok, retag_err = retag_title_from_filename(dest_root)
+            print(f"\n[RETAG] Hecho. Actualizados: {retag_ok}. Errores: {retag_err}.\n")
+            if retag_err:
+                errors += retag_err
+        except Exception as e:
+            errors += 1
+            print(f"\n[RETAG] ERROR: {e}\n")
+
+        # ✅ NUEVO: repetir el retag SOLO en la ruta adicional
+        try:
+            print(f"\n[RETAG] Sobrescribiendo tag TITLE con el nombre del fichero (sin extensión) en {RETAG_EXTRA_ROOT} ...\n")
+            retag_ok2, retag_err2 = retag_title_from_filename(RETAG_EXTRA_ROOT)
+            print(f"\n[RETAG] Hecho. Actualizados: {retag_ok2}. Errores: {retag_err2}.\n")
+            if retag_err2:
+                errors += retag_err2
+        except Exception as e:
+            errors += 1
+            print(f"\n[RETAG] ERROR: {e}\n")
 
     if errors:
         print(f"\nFinalizado con {errors} error(es).")

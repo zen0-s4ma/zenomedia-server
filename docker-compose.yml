@@ -87,6 +87,9 @@ services:
       - "192.168.1.113:8096:8096"
       - "192.168.1.113:8920:8920"
       - "192.168.1.113:7359:7359/udp"
+    depends_on:
+      - gluetun-swt
+      - dispatcharr
     environment:
       TZ: Europe/Madrid
       UMASK: "022"
@@ -2123,26 +2126,21 @@ services:
       - TZ=Europe/Madrid
       - CRON_SCHEDULE=0 10,21 * * *
       # - RUN_ON_START=true   # (opcional) ejecuta también al arrancar
-
       # Rutas internas del contenedor
       - SRC_ROOT=/data/src
       - DEST_ROOT=/data/dest
-
       # Secrets por .env
       - YT_API_KEY=${YT_API_KEY}
-
       # TubeArchivist
       - TA_BASE_URL=https://tubeaudio.maripiflix.xyz
       - TA_TOKEN=${TA_TOKEN}
       - TA_ACTION=delete_ignore
       - TA_VERIFY_SSL=true
       - TA_DRY_RUN=false
-
       # Comportamiento
       - DELETE_VIDEO=true
       - OVERWRITE_MP3=false
       - OVERWRITE_IMAGES=true
-
     volumes:
       - "E:/YouTube/Audio:/data/src:rw"
       - "E:/Youtube_Podcast:/data/dest:rw"

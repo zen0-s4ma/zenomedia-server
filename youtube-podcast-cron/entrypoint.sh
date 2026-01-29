@@ -5,7 +5,7 @@ set -eu
 : "${CRON_SCHEDULE:=0 10 * * *}"   # todos los días a las 10:00
 : "${RUN_ON_START:=false}"
 
-# Ajustar timezone del sistema (cron usa /etc/localtime en Debian) :contentReference[oaicite:0]{index=0}
+# Ajustar timezone del sistema (cron usa /etc/localtime en Debian) 
 if [ -f "/usr/share/zoneinfo/$TZ" ]; then
   ln -snf "/usr/share/zoneinfo/$TZ" /etc/localtime
   echo "$TZ" > /etc/timezone
@@ -21,8 +21,8 @@ fi
 
 chmod +x /usr/local/bin/run.sh || true
 
-# Cron job en /etc/cron.d (formato: incluye usuario) :contentReference[oaicite:1]{index=1}
-# Importante: redirigimos stdout/stderr al PID 1 para verlo en `docker logs` :contentReference[oaicite:2]{index=2}
+# Cron job en /etc/cron.d (formato: incluye usuario) 
+# Importante: redirigimos stdout/stderr al PID 1 para verlo en `docker logs` 
 cat > /etc/cron.d/youtube-podcast-exporter <<EOF
 SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
@@ -33,12 +33,12 @@ EOF
 chmod 0644 /etc/cron.d/youtube-podcast-exporter
 
 # Cargar el cron.d
-# (Con Debian cron, basta con dejar el fichero; el daemon lo lee y lo monitoriza) :contentReference[oaicite:3]{index=3}
+# (Con Debian cron, basta con dejar el fichero; el daemon lo lee y lo monitoriza) 
 
 if [ "$RUN_ON_START" = "true" ]; then
   echo "[entrypoint] RUN_ON_START=true -> ejecuto una vez ahora"
   /usr/local/bin/run.sh >>/proc/1/fd/1 2>>/proc/1/fd/2 || true
 fi
 
-echo "[entrypoint] Arrancando cron en foreground (mantiene el contenedor vivo)..." :contentReference[oaicite:4]{index=4}
+echo "[entrypoint] Arrancando cron en foreground (mantiene el contenedor vivo)..." 
 exec cron -f

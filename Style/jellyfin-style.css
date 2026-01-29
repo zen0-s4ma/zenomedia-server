@@ -525,3 +525,9 @@
     ) !important;
   }
 }
+
+/* Oculta el subtítulo SOLO cuando el ítem es un episodio en la Home (evita "Sxx:Exx - ...") */
+#homeTab .card[data-type="Episode"] .cardText-secondary,
+#homeTab .card[data-type="Episode"] .secondary {
+  display: none !important;
+}
