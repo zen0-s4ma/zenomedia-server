@@ -7,16 +7,16 @@ from pathlib import Path
 # CONFIGURACIÓN DEL USUARIO
 # =========================
 
-BASE_DIR = r"E:\Grabaciones\Volver"
-INPUT_FILE = "Volver_20260126_23102346.ts"  # .ts / .mkv / .mp4
+BASE_DIR = r"E:\YouTube\Videos"
+INPUT_FILE = "chimenea.mp4"  # .ts / .mkv / .mp4
 
-cortar_inicio = True
+cortar_inicio = False
 inicio_h, inicio_m, inicio_s = 0, 24, 4
 
 cortar_fin = True
-fin_h, fin_m, fin_s = 0, 55, 35
+fin_h, fin_m, fin_s = 2, 0, 0
 
-borrar_original = True  # True => reemplaza el original por el recortado (mismo nombre)
+borrar_original = False  # True => reemplaza el original por el recortado (mismo nombre)
 MODO_RAPIDO_COPY = True
 
 # =========================

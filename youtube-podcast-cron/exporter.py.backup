@@ -35,15 +35,6 @@ THUMB_KEYS_ORDER = ["maxres", "standard", "high", "medium", "default"]
 
 REQUEST_TIMEOUT = 30
 
-# --- NUEVO: Embebido de metadatos (ID3) para Jellyfin ---
-# (Jellyfin prioriza tags embebidos y si faltan puede agrupar raro en "Recientes") :contentReference[oaicite:1]{index=1}
-EMBED_ID3_TAGS = True            # escribe tags ID3 en el MP3
-EMBED_COVER_ART = True           # embebe la miniatura JPG como carátula dentro del MP3
-TAG_EXISTING_MP3 = False         # si el MP3 ya existía y se saltó conversión, NO retaguear salvo que actives esta opción
-ID3V2_VERSION = 3                # ID3v2.3 (compatibilidad alta)
-WRITE_ID3V1 = True               # añade ID3v1 footer
-PODCAST_GENRE = "Podcast"        # estilo gPodder (Genre="Podcast") :contentReference[oaicite:2]{index=2}
-
 # --- TubeArchivist (pasarela) ---
 # URL base de tu TA (la misma que usas en el navegador), sin barra final.
 TA_BASE_URL = "https://tubeaudio.maripiflix.xyz/"
@@ -139,118 +130,6 @@ def ffmpeg_to_mp3(src_video: Path, dst_mp3: Path, overwrite: bool = False) -> No
     p = subprocess.run(cmd, capture_output=True, text=True)
     if p.returncode != 0:
         raise RuntimeError(f"ffmpeg falló con {src_video.name}:\n{(p.stderr or p.stdout).strip()}")
-
-
-# --- NUEVO: helpers de tagging (ID3 + cover art) ---
-
-def sanitize_tag_value(s: str, max_len: int = 500) -> str:
-    """
-    Limpia valores para -metadata (evita saltos raros / nulos).
-    """
-    s = (s or "").replace("\x00", "").replace("\r", " ").replace("\n", " ").strip()
-    s = re.sub(r"\s+", " ", s).strip()
-    if len(s) > max_len:
-        s = s[:max_len].strip()
-    return s
-
-
-def iso_date_for_tag(published_at: Optional[object], fallback_file: Path) -> str:
-    """
-    Devuelve 'YYYY-MM-DD' (apto para tag 'date').
-    published_at suele ser '2026-01-26T09:35:00Z'
-    """
-    try:
-        if isinstance(published_at, str) and published_at:
-            dt = datetime.fromisoformat(published_at.replace("Z", "+00:00"))
-        else:
-            dt = datetime.fromtimestamp(fallback_file.stat().st_mtime, tz=timezone.utc)
-        return dt.date().isoformat()
-    except Exception:
-        return ""
-
-
-def ffmpeg_tag_mp3_inplace(
-    mp3_path: Path,
-    title: str,
-    album: str,
-    artist: str,
-    album_artist: str,
-    date_str: str,
-    genre: str,
-    comment: str,
-    cover_jpg: Optional[Path],
-    id3v2_version: int = 3,
-    write_id3v1: bool = True,
-) -> None:
-    """
-    Reescribe el MP3 (sin reencode, -c copy) embebiendo tags ID3 y, si existe, carátula.
-    Usa un temporal y luego replace para no dejar archivos rotos si falla.
-
-    Basado en ejemplos oficiales de FFmpeg:
-      - id3v2_version 3 + write_id3v1 1
-      - attach picture: -i input.mp3 -i cover.png -c copy -map 0 -map 1 ... out.mp3 :contentReference[oaicite:3]{index=3}
-    """
-    tmp = mp3_path.with_suffix(".tagtmp.mp3")
-    if tmp.exists():
-        tmp.unlink(missing_ok=True)
-
-    base_cmd = ["ffmpeg", "-hide_banner", "-loglevel", "error", "-y"]
-
-    # metadata
-    meta_args: List[str] = []
-    title = sanitize_tag_value(title)
-    album = sanitize_tag_value(album)
-    artist = sanitize_tag_value(artist)
-    album_artist = sanitize_tag_value(album_artist)
-    genre = sanitize_tag_value(genre)
-    comment = sanitize_tag_value(comment)
-    date_str = sanitize_tag_value(date_str)
-
-    meta_args += ["-metadata", f"title={title}"]
-    meta_args += ["-metadata", f"artist={artist}"]
-    meta_args += ["-metadata", f"album={album}"]
-    meta_args += ["-metadata", f"album_artist={album_artist}"]
-    if date_str:
-        meta_args += ["-metadata", f"date={date_str}"]
-    if genre:
-        meta_args += ["-metadata", f"genre={genre}"]
-    if comment:
-        meta_args += ["-metadata", f"comment={comment}"]
-
-    id3_args = ["-id3v2_version", str(id3v2_version)]
-    if write_id3v1:
-        id3_args += ["-write_id3v1", "1"]
-
-    def run(cmd: List[str]) -> None:
-        p = subprocess.run(cmd, capture_output=True, text=True)
-        if p.returncode != 0:
-            raise RuntimeError((p.stderr or p.stdout or "").strip())
-
-    if cover_jpg and cover_jpg.exists():
-        # Adjuntar carátula (cover) siguiendo el patrón oficial de FFmpeg con -map 0 -map 1 :contentReference[oaicite:4]{index=4}
-        cmd = (
-            base_cmd
-            + ["-i", str(mp3_path), "-i", str(cover_jpg)]
-            + ["-c", "copy"]
-            + ["-map", "0", "-map", "1"]
-            + id3_args
-            + meta_args
-            + ["-metadata:s:v", "title=Album cover", "-metadata:s:v", "comment=Cover (Front)"]
-            + [str(tmp)]
-        )
-        run(cmd)
-    else:
-        cmd = (
-            base_cmd
-            + ["-i", str(mp3_path)]
-            + ["-c", "copy"]
-            + id3_args
-            + meta_args
-            + [str(tmp)]
-        )
-        run(cmd)
-
-    os.replace(tmp, mp3_path)
 
 
 def list_channel_dirs(src_root: Path) -> List[Path]:
@@ -477,10 +356,6 @@ def export_channel(
     ta_token: str,
     ta_verify_ssl: bool,
     ta_dry_run: bool,
-    # --- NUEVO ---
-    embed_id3_tags: bool,
-    embed_cover_art: bool,
-    tag_existing_mp3: bool,
 ) -> None:
     videos = list_videos_in_channel(channel_dir)
     if not videos:
@@ -534,13 +409,10 @@ def export_channel(
     ta_ok = ta_enabled(ta_action, ta_base_url, ta_token)
 
     for vid, dst_video, dst_mp3, dst_jpg, thumb_urls in work_items:
-        mp3_created_now = False
-
         if dst_mp3.exists() and not overwrite_mp3:
             print(f"  SKIP MP3 (ya existe): {dst_mp3.name}")
         else:
             ffmpeg_to_mp3(dst_video, dst_mp3, overwrite=overwrite_mp3)
-            mp3_created_now = True
             print(f"  MP3: {dst_mp3.name}")
 
         if thumb_urls:
@@ -551,45 +423,6 @@ def export_channel(
                 print(f"    (No pude descargar miniatura): {dst_jpg.name}")
         else:
             print(f"    (Sin URLs de miniatura en API): {dst_jpg.name}")
-
-        # --- NUEVO: Embebido de tags ID3 + carátula (sin reencode) ---
-        if embed_id3_tags and dst_mp3.exists():
-            do_tag = mp3_created_now or tag_existing_mp3
-            if do_tag:
-                meta = meta_map.get(vid, {}) or {}
-                vtitle = str(meta.get("title") or dst_mp3.stem)
-                vpub = meta.get("publishedAt")
-
-                date_str = iso_date_for_tag(vpub, dst_mp3)
-
-                # Estilo gPodder: Album=Podcast, Artist=Podcast, Genre="Podcast", publish date :contentReference[oaicite:5]{index=5}
-                album = channel_name
-                artist = channel_name
-                album_artist = channel_name
-                genre = PODCAST_GENRE
-                comment = f"https://youtu.be/{vid}"
-
-                cover = dst_jpg if (embed_cover_art and dst_jpg.exists()) else None
-
-                try:
-                    ffmpeg_tag_mp3_inplace(
-                        mp3_path=dst_mp3,
-                        title=vtitle,
-                        album=album,
-                        artist=artist,
-                        album_artist=album_artist,
-                        date_str=date_str,
-                        genre=genre,
-                        comment=comment,
-                        cover_jpg=cover,
-                        id3v2_version=ID3V2_VERSION,
-                        write_id3v1=WRITE_ID3V1,
-                    )
-                    print(f"    TAGS: embebidos en {dst_mp3.name}")
-                    if cover:
-                        print(f"    COVER: embebida desde {cover.name}")
-                except Exception as e:
-                    print(f"    (Aviso) No pude embebir tags/caratula en {dst_mp3.name}: {e}")
 
         if delete_video_after_mp3 and dst_mp3.exists():
             dst_video.unlink(missing_ok=True)
@@ -689,11 +522,6 @@ def main() -> int:
     p.add_argument("--overwrite-mp3", action="store_true", default=OVERWRITE_MP3)
     p.add_argument("--overwrite-images", action="store_true", default=OVERWRITE_IMAGES)
 
-    # --- NUEVO: toggles de tagging/caratula ---
-    p.add_argument("--no-embed-id3", action="store_true", default=not EMBED_ID3_TAGS, help="Desactiva embebido de tags ID3 en MP3")
-    p.add_argument("--no-embed-cover", action="store_true", default=not EMBED_COVER_ART, help="Desactiva embebido de carátula (JPG) en MP3")
-    p.add_argument("--tag-existing", action="store_true", default=TAG_EXISTING_MP3, help="Retaguea también MP3 ya existentes (aunque se haya SKIP MP3)")
-
     # TubeArchivist
     p.add_argument("--ta-base-url", default=str(TA_BASE_URL))
     p.add_argument("--ta-token", default=str(TA_TOKEN))
@@ -706,10 +534,6 @@ def main() -> int:
     src_root = Path(args.src_root)
     dest_root = Path(args.dest_root)
     api_key = args.yt_api_key
-
-    embed_id3_tags = not args.no_embed_id3
-    embed_cover_art = not args.no_embed_cover
-    tag_existing_mp3 = args.tag_existing
 
     if not api_key or api_key == "PON_AQUI_TU_API_KEY":
         print("Falta API key. Edita YT_API_KEY arriba o pásala con --yt-api-key.")
@@ -753,10 +577,6 @@ def main() -> int:
                 args.ta_token,
                 ta_verify_ssl,
                 args.ta_dry_run,
-                # --- NUEVO ---
-                embed_id3_tags,
-                embed_cover_art,
-                tag_existing_mp3,
             )
         except Exception as e:
             errors += 1
