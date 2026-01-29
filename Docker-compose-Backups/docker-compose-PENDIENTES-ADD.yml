@@ -452,3 +452,15 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
+
+  tor-browser:
+    image: domistyle/tor-browser:latest
+    container_name: tor-browser
+    restart: unless-stopped
+    shm_size: "2gb"
+    ports:
+      - "127.0.0.1:33164:5800"
+    environment:
+      - TZ=Europe/Madrid
+    volumes:
+      - "D:/Descargas/TorBrowser:/storage/Descargas:rw"

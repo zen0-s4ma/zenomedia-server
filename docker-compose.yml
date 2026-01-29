@@ -143,8 +143,8 @@ services:
       - "E:/Ambience:/media/Ambience2"
       # PATHS DE CONFIGURACION E:
       - "E:/Docker_folders/jellifyn/metadata:/config"
-      - "C:/Docker_folders/jellifyn/cache:/cache"
-      - "C:/Docker_folders/jellifyn/transcodes:/transcode"
+      - "E:/Docker_folders/jellifyn/cache:/cache"
+      - "E:/Docker_folders/jellifyn/transcodes:/transcode"
       # GRABACIONES:
       - "E:/Grabaciones:/recordings"
       # SCRIPTS
@@ -2075,7 +2075,7 @@ services:
   # --------------------------------------------------------
   # --- firefox
   # --- Navegador con GUI web (noVNC)
-  # --- Ports: 33163 (Gui Web)
+  # --- Ports: Gluetun 5800
   # --------------------------------------------------------
   firefox:
     image: jlesage/firefox:latest
@@ -2090,32 +2090,25 @@ services:
       - "E:/Docker_folders/firefox:/config:rw"
       - "D:/Descargas/FirefoxVPN:/storage/Descargas:rw"
 
-  #tor-browser:
-  #  image: domistyle/tor-browser:latest
-  #  container_name: tor-browser
-  #  restart: unless-stopped
-  #  network_mode: "service:gluetun-swt"
-  #  depends_on:
-  #    - gluetun-swt
-  #  environment:
-  #    - TZ=Europe/Madrid
-  #    - WEB_LISTENING_PORT=5801
-  #  volumes:
-  #    - "D:/Descargas/TorBrowserVPN:/storage/Descargas:rw"
-
+  # --------------------------------------------------------
+  # --- Tor Browser
+  # --- Navegador TOR con GUI web (noVNC)
+  # --- Ports: Gluetun 5801
+  # --------------------------------------------------------
   tor-browser:
     image: domistyle/tor-browser:latest
     container_name: tor-browser
     restart: unless-stopped
-    shm_size: "2gb"
-    ports:
-      - "127.0.0.1:33164:5800"
+    network_mode: "service:gluetun-swt"
+    depends_on:
+      - gluetun-swt
     environment:
       - TZ=Europe/Madrid
+      - WEB_LISTENING_PORT=5801
     volumes:
-      - "D:/Descargas/TorBrowser:/storage/Descargas:rw"
+      - "D:/Descargas/TorBrowserVPN:/storage/Descargas:rw"
 
-
+  
   # --------------------------------------------------------
   # --- youtube-podcast-exporter (cron)
   # --- Convierte vídeos TubeArchivist -> MP3 + thumbnails
