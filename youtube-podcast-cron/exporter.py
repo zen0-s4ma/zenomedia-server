@@ -7,6 +7,7 @@ import os
 import re
 import shutil
 import subprocess
+import time
 from datetime import datetime, timezone
 from io import BytesIO
 from pathlib import Path
@@ -26,6 +27,7 @@ DEST_ROOT = Path(r"E:\Youtube_Podcast")
 RETAG_EXTRA_ROOT = Path(r"F:\Podcasts")
 
 # YouTube Data API v3 (solo para obtener títulos/fechas/miniaturas)
+# (Recomendado por seguridad: pásala por env var YT_API_KEY o por --yt-api-key)
 YT_API_KEY = "AIzaSyA-9iJS0bDWXpCGPqvM4NzM-9EoBInli4A"
 
 # Comportamiento local
@@ -46,21 +48,30 @@ ID3V2_VERSION = 3                # ID3v2.3 (compatibilidad alta)
 WRITE_ID3V1 = True               # añade ID3v1 footer
 PODCAST_GENRE = "Podcast"
 
-# --- TubeArchivist (pasarela) ---
+# --- TubeArchivist (Swagger/API) ---
 TA_BASE_URL = os.environ.get("TA_BASE_URL", "https://tubeaudio.maripiflix.xyz/").strip()
+
+# Token: mejor por env var TA_TOKEN o por --ta-token (NO lo hardcodees)
 TA_TOKEN = "3810bd0c7dca327ee44a169ed0fe5e481ddb90fb"
 
 # Qué hacer al terminar:
 #  - "none": no toca TA
-#  - "delete": intenta borrar
-#  - "delete_ignore": borrar + dejar persistente en ignore list (NO debe reaparecer en rescan)
+#  - "delete": borra en TA
+#  - "delete_ignore": delete -> update_subscribed -> ignore-force
 TA_ACTION = "delete_ignore"
 TA_VERIFY_SSL = True
 TA_DRY_RUN = False
 
-# --- CLAVE: verificación de ignore ---
-TA_VERIFY_IGNORE = True   # si True, NO diremos "ignored" si no podemos confirmarlo (cuando haya endpoints para confirmación)
-TA_DEBUG = True           # imprime intentos fallidos relevantes (para que veas exactamente qué endpoint funcionó)
+# --- IGNORE (TubeArchivist) ---
+TA_IGNORE_STATUS = "ignore"  # recomendado para que persista frente a rescans
+TA_VERIFY_IGNORE = True            # intenta verificar con GET /api/download/{id}/
+TA_DEBUG = True                    # logs de endpoints/respuestas clave
+
+# --- Esperas / polling (TA) ---
+TA_POLL_INTERVAL = 2.0
+TA_WAIT_DELETE_TIMEOUT = 180.0
+TA_WAIT_TASK_TIMEOUT = 900.0
+TA_WAIT_DOWNLOAD_APPEAR_TIMEOUT = 180.0
 
 # --- Purga final ---
 PURGE_SHORTER_THAN_SECONDS = 5 * 60  # 5 minutos
@@ -454,23 +465,29 @@ def yt_video_meta(api_key: str, video_ids: List[str]) -> Dict[str, Dict[str, Opt
 
 
 # =========================
-# TubeArchivist API helpers
+# TubeArchivist API helpers (ADAPTADO A TU SWAGGER)
 # =========================
 
 def ta_enabled(action: str, base_url: str, token: str) -> bool:
     return action in {"delete", "delete_ignore"} and bool(base_url) and bool(token) and token != "PON_AQUI_TU_TA_TOKEN"
 
 
-def ta_headers(token: str) -> Dict[str, str]:
-    return {
-        "Authorization": f"Token {token}",
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-    }
-
-
 def ta_url(base_url: str, path: str) -> str:
     return base_url.rstrip("/") + "/" + path.lstrip("/")
+
+
+def _ta_auth_variants(token: str) -> List[str]:
+    """
+    Tu Swagger parece aceptar 'Authorization: <token>' sin prefijo.
+    La doc suele usar 'Token <token>'.
+    Probamos ambos, en este orden: Token <token> -> <token> (si no viene ya prefijado).
+    """
+    t = (token or "").strip()
+    if not t:
+        return []
+    if t.lower().startswith(("token ", "bearer ")):
+        return [t]
+    return [f"Token {t}", t]
 
 
 def ta_request(
@@ -484,15 +501,35 @@ def ta_request(
     params: Optional[dict] = None,
 ) -> requests.Response:
     url = ta_url(base_url, path)
-    return session.request(
-        method=method.upper(),
-        url=url,
-        headers=ta_headers(token),
-        json=json_body,
-        params=params,
-        timeout=REQUEST_TIMEOUT,
-        verify=verify_ssl,
-    )
+    headers_base = {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+    }
+
+    last_resp: Optional[requests.Response] = None
+    for auth in _ta_auth_variants(token) or [""]:
+        headers = dict(headers_base)
+        if auth:
+            headers["Authorization"] = auth
+
+        resp = session.request(
+            method=method.upper(),
+            url=url,
+            headers=headers,
+            json=json_body,
+            params=params,
+            timeout=REQUEST_TIMEOUT,
+            verify=verify_ssl,
+        )
+        last_resp = resp
+
+        # si auth falla, prueba el siguiente formato
+        if resp.status_code in (401, 403):
+            continue
+        return resp
+
+    assert last_resp is not None
+    return last_resp
 
 
 def _ta_json(resp: requests.Response) -> Optional[Any]:
@@ -504,220 +541,250 @@ def _ta_json(resp: requests.Response) -> Optional[Any]:
         return None
 
 
-def _extract_video_id_from_item(item: dict) -> Optional[str]:
-    # posibles claves según versión
-    for k in ("youtube_id", "video_id", "youtubeId", "id", "yt_id"):
-        v = item.get(k)
-        if v:
-            return str(v)
-    return None
+def ta_video_get(session: requests.Session, video_id: str, base_url: str, token: str, verify_ssl: bool) -> Optional[dict]:
+    r = ta_request(session, "GET", base_url, token, f"/api/video/{video_id}/", verify_ssl)
+    if r.status_code == 404:
+        return None
+    if r.status_code != 200:
+        if TA_DEBUG:
+            print(f"    [TA] GET /api/video/{video_id}/ -> {r.status_code}: {r.text[:200]}")
+        return None
+    data = _ta_json(r)
+    return data if isinstance(data, dict) else None
 
 
-def _is_item_ignored(item: dict) -> Optional[bool]:
-    # varias formas de marcar ignore
-    for k in ("ignore", "ignored"):
-        if k in item:
-            return bool(item.get(k))
-    for k in ("status", "state", "download_status"):
-        v = item.get(k)
-        if isinstance(v, str) and v.lower() in ("ignore", "ignored", "skipped"):
+def ta_video_delete(session: requests.Session, video_id: str, base_url: str, token: str, verify_ssl: bool, dry_run: bool) -> bool:
+    if dry_run:
+        print(f"    [TA] DRY-RUN: DELETE /api/video/{video_id}/")
+        return True
+
+    r = ta_request(session, "DELETE", base_url, token, f"/api/video/{video_id}/", verify_ssl)
+    if r.status_code in (200, 202, 204):
+        if TA_DEBUG:
+            print(f"    [TA] OK DELETE /api/video/{video_id}/ -> {r.status_code}")
+        return True
+    if r.status_code == 404:
+        if TA_DEBUG:
+            print(f"    [TA] DELETE /api/video/{video_id}/ -> 404 (ya no existía)")
+        return True
+
+    if TA_DEBUG:
+        print(f"    [TA] FAIL DELETE /api/video/{video_id}/ -> {r.status_code}: {r.text[:200]}")
+    return False
+
+
+def ta_wait_video_gone(session: requests.Session, video_id: str, base_url: str, token: str, verify_ssl: bool, timeout_s: float) -> bool:
+    deadline = time.time() + timeout_s
+    while time.time() < deadline:
+        r = ta_request(session, "GET", base_url, token, f"/api/video/{video_id}/", verify_ssl)
+        if r.status_code == 404:
             return True
-    return None
+        time.sleep(TA_POLL_INTERVAL)
+    return False
 
 
-def ta_check_ignored(
+def ta_task_start_by_name(
     session: requests.Session,
-    video_id: str,
-    base_url: str,
-    token: str,
-    verify_ssl: bool,
-) -> Optional[bool]:
-    """
-    Devuelve:
-      - True  -> confirmado en ignore list / como ignored
-      - False -> confirmado NO ignorado (en ignore list endpoints)
-      - None  -> no se pudo determinar (endpoints no existen o respuesta ambigua)
-    """
-    # 1) endpoints típicos de "ignore list"
-    ignore_list_endpoints: List[Tuple[str, str]] = [
-        ("GET", "/api/ignore/"),
-        ("GET", "/api/ignored/"),
-        ("GET", "/api/ignore-list/"),
-        ("GET", "/api/ignore_list/"),
-    ]
-
-    for method, path in ignore_list_endpoints:
-        try:
-            r = ta_request(session, method, base_url, token, path, verify_ssl)
-            if r.status_code == 404:
-                continue
-            if r.status_code != 200:
-                continue
-            data = _ta_json(r)
-            # data puede ser lista o dict con results/items/data
-            items: List[dict] = []
-            if isinstance(data, list):
-                items = [x for x in data if isinstance(x, dict)]
-            elif isinstance(data, dict):
-                for key in ("results", "items", "data"):
-                    v = data.get(key)
-                    if isinstance(v, list):
-                        items = [x for x in v if isinstance(x, dict)]
-                        break
-
-            ids = {(_extract_video_id_from_item(it) or "") for it in items}
-            ids.discard("")
-            return (video_id in ids)
-        except Exception:
-            continue
-
-    # 2) endpoints de downloads queue (si el vídeo ya no está, no podemos concluir)
-    downloads_endpoints: List[Tuple[str, str, Optional[dict]]] = [
-        ("GET", "/api/download/", None),
-        ("GET", "/api/download/", {"filter": "ignored"}),
-        ("GET", "/api/download/", {"status": "ignore"}),
-        ("GET", "/api/download/", {"ignored": "1"}),
-        ("GET", "/api/download/", {"ignore": "1"}),
-    ]
-
-    for method, path, params in downloads_endpoints:
-        try:
-            r = ta_request(session, method, base_url, token, path, verify_ssl, params=params)
-            if r.status_code == 404:
-                continue
-            if r.status_code != 200:
-                continue
-            data = _ta_json(r)
-
-            items2: List[dict] = []
-            if isinstance(data, list):
-                items2 = [x for x in data if isinstance(x, dict)]
-            elif isinstance(data, dict):
-                for key in ("results", "items", "data"):
-                    v = data.get(key)
-                    if isinstance(v, list):
-                        items2 = [x for x in v if isinstance(x, dict)]
-                        break
-
-            found = False
-            for it in items2:
-                vid = _extract_video_id_from_item(it)
-                if vid == video_id:
-                    found = True
-                    ig = _is_item_ignored(it)
-                    if ig is True:
-                        return True
-                    if ig is False:
-                        return False
-                    # sin campo claro -> no concluyente
-                    return None
-
-            # si no está en la lista de downloads: puede estar borrado/retirado
-            # pero igualmente ignorado a nivel ignore-list (que no pudimos consultar).
-            if not found:
-                continue
-        except Exception:
-            continue
-
-    return None
-
-
-def ta_mark_ignore_strict(
-    session: requests.Session,
-    video_id: str,
+    task_name: str,
     base_url: str,
     token: str,
     verify_ssl: bool,
     dry_run: bool,
-) -> Tuple[bool, Optional[bool]]:
-    """
-    Intenta marcar IGNORE persistente (ignore list).
-    Devuelve (attempt_ok, verified_ignored)
-      - attempt_ok: True si algún endpoint devolvió 2xx
-      - verified_ignored: True/False/None según ta_check_ignored
-    """
+) -> Optional[str]:
     if dry_run:
-        print(f"    [TA] DRY-RUN: marcar IGNORE {video_id}")
-        return (True, True)
+        print(f"    [TA] DRY-RUN: POST /api/task/by-name/{task_name}/")
+        return "dryrun-task-id"
 
-    # Intentos: primero ignore-list explícito (si existe), luego endpoints por vídeo/download.
-    attempts: List[Tuple[str, str, Optional[dict], str]] = [
-        # ignore list explícita
-        ("POST", "/api/ignore/", {"youtube_id": video_id}, "POST /api/ignore/ {youtube_id}"),
-        ("POST", "/api/ignore/", {"video_id": video_id}, "POST /api/ignore/ {video_id}"),
-        ("POST", "/api/ignored/", {"youtube_id": video_id}, "POST /api/ignored/ {youtube_id}"),
-        ("POST", "/api/ignored/", {"video_id": video_id}, "POST /api/ignored/ {video_id}"),
+    r = ta_request(session, "POST", base_url, token, f"/api/task/by-name/{task_name}/", verify_ssl)
+    if r.status_code not in (200, 201, 202):
+        if TA_DEBUG:
+            print(f"    [TA] FAIL POST /api/task/by-name/{task_name}/ -> {r.status_code}: {r.text[:200]}")
+        return None
 
-        # endpoints por recurso
-        ("POST", f"/api/video/{video_id}/ignore/", {}, "POST /api/video/<id>/ignore/"),
-        ("POST", f"/api/download/{video_id}/ignore/", {}, "POST /api/download/<id>/ignore/"),
-        ("PATCH", f"/api/download/{video_id}/", {"status": "ignore"}, "PATCH /api/download/<id>/ {status:ignore}"),
-        ("PUT", f"/api/download/{video_id}/", {"status": "ignore"}, "PUT /api/download/<id>/ {status:ignore}"),
-    ]
-
-    ok_any = False
-    for method, path, body, label in attempts:
-        try:
-            r = ta_request(session, method, base_url, token, path, verify_ssl, json_body=body)
-            if r.status_code in (200, 201, 202, 204):
-                ok_any = True
-                if TA_DEBUG:
-                    print(f"    [TA] OK ({label}) -> {r.status_code}")
-
-                verified = ta_check_ignored(session, video_id, base_url, token, verify_ssl) if TA_VERIFY_IGNORE else None
-                return (True, verified)
-            else:
-                if TA_DEBUG and r.status_code not in (404, 405):
-                    print(f"    [TA] FAIL ({label}) -> {r.status_code}: {r.text[:200]}")
-        except Exception as e:
+    data = _ta_json(r)
+    if isinstance(data, dict):
+        tid = data.get("task_id") or data.get("taskId") or data.get("id")
+        if tid:
             if TA_DEBUG:
-                print(f"    [TA] EXC ({label}): {e}")
+                print(f"    [TA] OK start task '{task_name}' -> task_id={tid}")
+            return str(tid)
+
+    # si no viene task_id (raro), devolvemos None y haremos espera “ciega”
+    if TA_DEBUG:
+        print(f"    [TA] AVISO: task '{task_name}' started pero sin task_id en respuesta.")
+    return None
+
+
+def _task_status_str(task_json: dict) -> str:
+    for k in ("status", "state", "result", "task_status"):
+        v = task_json.get(k)
+        if isinstance(v, str) and v.strip():
+            return v.strip()
+    return ""
+
+
+def ta_task_wait(
+    session: requests.Session,
+    task_id: str,
+    base_url: str,
+    token: str,
+    verify_ssl: bool,
+    timeout_s: float,
+) -> Tuple[bool, Optional[dict]]:
+    """
+    Poll a /api/task/by-id/{task_id}/ hasta terminar.
+    """
+    terminal_ok = {"success", "succeeded", "done", "finished", "completed", "complete", "ok"}
+    terminal_fail = {"failed", "failure", "error", "revoked", "canceled", "cancelled"}
+
+    deadline = time.time() + timeout_s
+    last_json: Optional[dict] = None
+
+    while time.time() < deadline:
+        r = ta_request(session, "GET", base_url, token, f"/api/task/by-id/{task_id}/", verify_ssl)
+        if r.status_code == 404:
+            time.sleep(TA_POLL_INTERVAL)
+            continue
+        if r.status_code != 200:
+            if TA_DEBUG:
+                print(f"    [TA] FAIL GET /api/task/by-id/{task_id}/ -> {r.status_code}: {r.text[:200]}")
+            time.sleep(TA_POLL_INTERVAL)
             continue
 
-    verified2 = ta_check_ignored(session, video_id, base_url, token, verify_ssl) if TA_VERIFY_IGNORE else None
-    return (ok_any, verified2)
+        data = _ta_json(r)
+        if isinstance(data, dict):
+            last_json = data
+            st = _task_status_str(data).lower()
+            if st in terminal_ok:
+                return (True, last_json)
+            if st in terminal_fail:
+                return (False, last_json)
+
+        time.sleep(TA_POLL_INTERVAL)
+
+    return (False, last_json)
 
 
-def ta_delete_video(
+def ta_update_subscribed_and_wait(
+    session: requests.Session,
+    base_url: str,
+    token: str,
+    verify_ssl: bool,
+    dry_run: bool,
+) -> bool:
+    task_id = ta_task_start_by_name(session, "update_subscribed", base_url, token, verify_ssl, dry_run)
+    if not task_id:
+        # fallback: espera mínima “ciega”
+        if TA_DEBUG:
+            print("    [TA] Fallback: esperando 30s sin task_id...")
+        time.sleep(30)
+        return True
+
+    ok, info = ta_task_wait(session, task_id, base_url, token, verify_ssl, TA_WAIT_TASK_TIMEOUT)
+    if not ok and TA_DEBUG:
+        st = _task_status_str(info or {})
+        print(f"    [TA] update_subscribed terminó MAL o timeout. status='{st}'")
+    return ok
+
+
+def ta_download_get(session: requests.Session, video_id: str, base_url: str, token: str, verify_ssl: bool) -> Optional[dict]:
+    r = ta_request(session, "GET", base_url, token, f"/api/download/{video_id}/", verify_ssl)
+    if r.status_code == 404:
+        return None
+    if r.status_code != 200:
+        if TA_DEBUG:
+            print(f"    [TA] GET /api/download/{video_id}/ -> {r.status_code}: {r.text[:200]}")
+        return None
+    data = _ta_json(r)
+    return data if isinstance(data, dict) else None
+
+
+def ta_download_set_status(
     session: requests.Session,
     video_id: str,
+    status: str,
     base_url: str,
     token: str,
     verify_ssl: bool,
     dry_run: bool,
 ) -> bool:
     if dry_run:
-        print(f"    [TA] DRY-RUN: delete {video_id}")
+        print(f"    [TA] DRY-RUN: POST /api/download/{video_id}/ {{status:{status}}}")
         return True
 
-    attempts: List[Tuple[str, str, Optional[dict], str]] = [
-        # algunos TA usan delete action
-        ("POST", f"/api/video/{video_id}/delete/", {"delete_media": True}, "POST /api/video/<id>/delete/ {delete_media:true}"),
-        ("POST", f"/api/video/{video_id}/delete/", {}, "POST /api/video/<id>/delete/ {}"),
-        # delete clásico
-        ("DELETE", f"/api/video/{video_id}/", None, "DELETE /api/video/<id>/"),
-    ]
+    r = ta_request(
+        session,
+        "POST",
+        base_url,
+        token,
+        f"/api/download/{video_id}/",
+        verify_ssl,
+        json_body={"status": status},
+    )
+    if r.status_code in (200, 202, 204):
+        if TA_DEBUG:
+            print(f"    [TA] OK POST /api/download/{video_id}/ status={status} -> {r.status_code}")
+        return True
 
-    for method, path, body, label in attempts:
-        try:
-            r = ta_request(session, method, base_url, token, path, verify_ssl, json_body=body)
-            if r.status_code in (200, 201, 202, 204):
-                if TA_DEBUG:
-                    print(f"    [TA] OK ({label}) -> {r.status_code}")
-                return True
-            if r.status_code in (404, 405):
-                continue
-            if TA_DEBUG:
-                print(f"    [TA] FAIL ({label}) -> {r.status_code}: {r.text[:200]}")
-        except Exception as e:
-            if TA_DEBUG:
-                print(f"    [TA] EXC ({label}): {e}")
-            continue
-
+    if TA_DEBUG:
+        print(f"    [TA] FAIL POST /api/download/{video_id}/ -> {r.status_code}: {r.text[:200]}")
     return False
 
 
-def ta_delete_and_ignore_video_strict(
+def ta_download_bulk_add_ignore(
+    session: requests.Session,
+    video_id: str,
+    status: str,
+    base_url: str,
+    token: str,
+    verify_ssl: bool,
+    dry_run: bool,
+) -> bool:
+    """
+    Fallback: POST /api/download/ con AddDownloadItem {youtube_id,status}
+    (esto es lo que devuelve 'add to queue task started' en tu screenshot)
+    """
+    if dry_run:
+        print(f"    [TA] DRY-RUN: POST /api/download/ data=[{{youtube_id:{video_id}, status:{status}}}]")
+        return True
+
+    body = {"data": [{"youtube_id": video_id, "status": status}]}
+    r = ta_request(session, "POST", base_url, token, "/api/download/", verify_ssl, json_body=body)
+    if r.status_code in (200, 201, 202, 204):
+        if TA_DEBUG:
+            print(f"    [TA] OK POST /api/download/ (bulk add ignore) -> {r.status_code}")
+        return True
+
+    if TA_DEBUG:
+        print(f"    [TA] FAIL POST /api/download/ -> {r.status_code}: {r.text[:200]}")
+    return False
+
+
+def ta_wait_download_appears(
+    session: requests.Session,
+    video_id: str,
+    base_url: str,
+    token: str,
+    verify_ssl: bool,
+    timeout_s: float,
+) -> bool:
+    deadline = time.time() + timeout_s
+    while time.time() < deadline:
+        if ta_download_get(session, video_id, base_url, token, verify_ssl) is not None:
+            return True
+        time.sleep(TA_POLL_INTERVAL)
+    return False
+
+
+def _download_status_str(download_json: dict) -> str:
+    for k in ("status", "state", "download_status"):
+        v = download_json.get(k)
+        if isinstance(v, str) and v.strip():
+            return v.strip()
+    return ""
+
+
+def ta_flow_delete_update_ignore(
     session: requests.Session,
     video_id: str,
     base_url: str,
@@ -726,35 +793,59 @@ def ta_delete_and_ignore_video_strict(
     dry_run: bool,
 ) -> Tuple[bool, bool]:
     """
-    Objetivo REAL:
-      - Quede IGNORADO (persistente) para que NO reaparezca tras Rescan subscriptions
-      - Y borrar el vídeo de TA
-
-    Devuelve (deleted, ignored)
+    Flujo pedido:
+      1) delete video
+      2) wait delete
+      3) update_subscribed + wait
+      4) ignore-force (y verificación)
+    Devuelve (deleted_ok, ignored_ok)
     """
-    # 1) Marcar ignore persistente
-    ok_ignore_attempt, verified = ta_mark_ignore_strict(session, video_id, base_url, token, verify_ssl, dry_run)
+    deleted_ok = ta_video_delete(session, video_id, base_url, token, verify_ssl, dry_run)
+    if not deleted_ok:
+        return (False, False)
 
-    ignored = False
-    if TA_VERIFY_IGNORE:
-        if verified is True:
-            ignored = True
-        elif verified is False:
-            ignored = False
-        else:
-            # No se pudo verificar: si al menos algún endpoint devolvió 2xx, lo consideramos "probable"
-            ignored = ok_ignore_attempt
-            if ok_ignore_attempt:
-                print(f"    [TA] AVISO: ignore devuelto OK pero NO pude verificarlo (endpoint de verificación no disponible).")
-            else:
-                print(f"    [TA] FAIL: no pude marcar ignore por ningún endpoint conocido.")
-    else:
-        ignored = ok_ignore_attempt
+    if not dry_run:
+        gone = ta_wait_video_gone(session, video_id, base_url, token, verify_ssl, TA_WAIT_DELETE_TIMEOUT)
+        if not gone:
+            print(f"    [TA] AVISO: timeout esperando que desaparezca /api/video/{video_id}/ (puede ir lento).")
 
-    # 2) Borrar el vídeo
-    deleted = ta_delete_video(session, video_id, base_url, token, verify_ssl, dry_run)
+    upd_ok = ta_update_subscribed_and_wait(session, base_url, token, verify_ssl, dry_run)
+    if not upd_ok:
+        print("    [TA] AVISO: update_subscribed no confirmó OK (pero continúo con ignore).")
 
-    return (deleted, ignored)
+    # tras update_subscribed, el vídeo puede reaparecer en download queue: espera a que exista
+    if not dry_run:
+        appeared = ta_wait_download_appears(session, video_id, base_url, token, verify_ssl, TA_WAIT_DOWNLOAD_APPEAR_TIMEOUT)
+        if not appeared and TA_DEBUG:
+            print(f"    [TA] AVISO: /api/download/{video_id}/ no apareció a tiempo; usaré fallback bulk-add ignore.")
+
+    # intenta el ignore directo; si falla o no existe, usa bulk-add
+    ok_set = ta_download_set_status(session, video_id, TA_IGNORE_STATUS, base_url, token, verify_ssl, dry_run)
+    if not ok_set:
+        ok_set = ta_download_bulk_add_ignore(session, video_id, TA_IGNORE_STATUS, base_url, token, verify_ssl, dry_run)
+
+    if not ok_set:
+        return (True, False)
+
+    if TA_VERIFY_IGNORE and not dry_run:
+        d = ta_download_get(session, video_id, base_url, token, verify_ssl)
+        if d is None:
+            # puede ser async; reintento corto
+            time.sleep(3)
+            d = ta_download_get(session, video_id, base_url, token, verify_ssl)
+
+        if isinstance(d, dict):
+            st = _download_status_str(d).lower()
+            if st in {"ignore", "ignore-force", "ignored"}:
+                return (True, True)
+
+            print(f"    [TA] AVISO: verificación ignore: status='{st}' (esperaba ignore/ignore).")
+            return (True, False)
+
+        print("    [TA] AVISO: no pude verificar el ignore por GET /api/download/{id}/.")
+        return (True, False)
+
+    return (True, True)
 
 
 def export_channel(
@@ -887,9 +978,10 @@ def export_channel(
             dst_video.unlink(missing_ok=True)
             print(f"    Borrado vídeo (DEST): {dst_video.name}")
 
+        # ===== TA ACTION (adaptado a tu Swagger) =====
         if ta_ok and dst_mp3.exists():
             if ta_action == "delete_ignore":
-                deleted, ignored = ta_delete_and_ignore_video_strict(
+                deleted, ignored = ta_flow_delete_update_ignore(
                     session=session,
                     video_id=vid,
                     base_url=ta_base_url,
@@ -898,16 +990,14 @@ def export_channel(
                     dry_run=ta_dry_run,
                 )
                 if ignored and deleted:
-                    print(f"    [TA] OK: IGNORE persistente + borrado aplicado a {vid}")
-                elif ignored and not deleted:
-                    print(f"    [TA] AVISO: IGNORE aplicado pero NO pude borrar {vid}")
+                    print(f"    [TA] OK: delete + update_subscribed + ignore-force aplicado a {vid}")
                 elif deleted and not ignored:
-                    print(f"    [TA] FAIL: borrado SIN ignore persistente para {vid} (reaparecerá en rescan)")
+                    print(f"    [TA] AVISO: borrado OK pero ignore NO confirmado para {vid} (podría reaparecer en rescan).")
                 else:
-                    print(f"    [TA] FAIL: no se pudo ignorar ni borrar {vid}")
+                    print(f"    [TA] FAIL: no se pudo completar flujo TA para {vid}")
 
             elif ta_action == "delete":
-                ok_del = ta_delete_video(
+                ok_del = ta_video_delete(
                     session=session,
                     video_id=vid,
                     base_url=ta_base_url,
