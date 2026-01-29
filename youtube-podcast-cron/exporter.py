@@ -10,7 +10,7 @@ import subprocess
 from datetime import datetime, timezone
 from io import BytesIO
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Any
 
 import requests
 
@@ -38,27 +38,29 @@ THUMB_KEYS_ORDER = ["maxres", "standard", "high", "medium", "default"]
 
 REQUEST_TIMEOUT = 30
 
-# --- NUEVO: Embebido de metadatos (ID3) para Jellyfin ---
-# (Jellyfin prioriza tags embebidos y si faltan puede agrupar raro en "Recientes") :contentReference[oaicite:1]{index=1}
+# --- Embebido de metadatos (ID3) para Jellyfin ---
 EMBED_ID3_TAGS = True            # escribe tags ID3 en el MP3
 EMBED_COVER_ART = True           # embebe la miniatura JPG como carátula dentro del MP3
 TAG_EXISTING_MP3 = False         # si el MP3 ya existía y se saltó conversión, NO retaguear salvo que actives esta opción
 ID3V2_VERSION = 3                # ID3v2.3 (compatibilidad alta)
 WRITE_ID3V1 = True               # añade ID3v1 footer
-PODCAST_GENRE = "Podcast"        # estilo gPodder (Genre="Podcast") :contentReference[oaicite:2]{index=2}
+PODCAST_GENRE = "Podcast"
 
 # --- TubeArchivist (pasarela) ---
-# URL base de tu TA (la misma que usas en el navegador), sin barra final.
-TA_BASE_URL = "https://tubeaudio.maripiflix.xyz/"
-# Token: Settings -> (Application/Integrations/API Token) en tu TA.
+TA_BASE_URL = os.environ.get("TA_BASE_URL", "https://tubeaudio.maripiflix.xyz/").strip()
 TA_TOKEN = "3810bd0c7dca327ee44a169ed0fe5e481ddb90fb"
+
 # Qué hacer al terminar:
 #  - "none": no toca TA
-#  - "delete": intenta borrar (y puede que ignore dependa de tu versión/config)
-#  - "delete_ignore": intenta el equivalente de "Delete and ignore"
+#  - "delete": intenta borrar
+#  - "delete_ignore": borrar + dejar persistente en ignore list (NO debe reaparecer en rescan)
 TA_ACTION = "delete_ignore"
 TA_VERIFY_SSL = True
 TA_DRY_RUN = False
+
+# --- CLAVE: verificación de ignore ---
+TA_VERIFY_IGNORE = True   # si True, NO diremos "ignored" si no podemos confirmarlo (cuando haya endpoints para confirmación)
+TA_DEBUG = True           # imprime intentos fallidos relevantes (para que veas exactamente qué endpoint funcionó)
 
 # --- Purga final ---
 PURGE_SHORTER_THAN_SECONDS = 5 * 60  # 5 minutos
@@ -108,10 +110,6 @@ def unique_path(path: Path) -> Path:
 
 
 def published_prefix(published_at: Optional[str], fallback_file: Path) -> str:
-    """
-    published_at: '2026-01-26T09:35:00Z' (UTC)
-    Si no viene (privado/eliminado), usa la mtime del fichero como fallback (UTC).
-    """
     if published_at:
         dt = datetime.fromisoformat(published_at.replace("Z", "+00:00"))
     else:
@@ -162,12 +160,7 @@ def ffmpeg_to_mp3(src_video: Path, dst_mp3: Path, overwrite: bool = False) -> No
         raise RuntimeError(f"ffmpeg falló con {src_video.name}:\n{(p.stderr or p.stdout).strip()}")
 
 
-# --- NUEVO: helpers de tagging (ID3 + cover art) ---
-
 def sanitize_tag_value(s: str, max_len: int = 500) -> str:
-    """
-    Limpia valores para -metadata (evita saltos raros / nulos).
-    """
     s = (s or "").replace("\x00", "").replace("\r", " ").replace("\n", " ").strip()
     s = re.sub(r"\s+", " ", s).strip()
     if len(s) > max_len:
@@ -176,10 +169,6 @@ def sanitize_tag_value(s: str, max_len: int = 500) -> str:
 
 
 def iso_date_for_tag(published_at: Optional[object], fallback_file: Path) -> str:
-    """
-    Devuelve 'YYYY-MM-DD' (apto para tag 'date').
-    published_at suele ser '2026-01-26T09:35:00Z'
-    """
     try:
         if isinstance(published_at, str) and published_at:
             dt = datetime.fromisoformat(published_at.replace("Z", "+00:00"))
@@ -203,21 +192,12 @@ def ffmpeg_tag_mp3_inplace(
     id3v2_version: int = 3,
     write_id3v1: bool = True,
 ) -> None:
-    """
-    Reescribe el MP3 (sin reencode, -c copy) embebiendo tags ID3 y, si existe, carátula.
-    Usa un temporal y luego replace para no dejar archivos rotos si falla.
-
-    Basado en ejemplos oficiales de FFmpeg:
-      - id3v2_version 3 + write_id3v1 1
-      - attach picture: -i input.mp3 -i cover.png -c copy -map 0 -map 1 ... out.mp3 :contentReference[oaicite:3]{index=3}
-    """
     tmp = mp3_path.with_suffix(".tagtmp.mp3")
     if tmp.exists():
         tmp.unlink(missing_ok=True)
 
     base_cmd = ["ffmpeg", "-hide_banner", "-loglevel", "error", "-y"]
 
-    # metadata
     meta_args: List[str] = []
     title = sanitize_tag_value(title)
     album = sanitize_tag_value(album)
@@ -248,7 +228,6 @@ def ffmpeg_tag_mp3_inplace(
             raise RuntimeError((p.stderr or p.stdout or "").strip())
 
     if cover_jpg and cover_jpg.exists():
-        # Adjuntar carátula (cover) siguiendo el patrón oficial de FFmpeg con -map 0 -map 1 :contentReference[oaicite:4]{index=4}
         cmd = (
             base_cmd
             + ["-i", str(mp3_path), "-i", str(cover_jpg)]
@@ -274,19 +253,12 @@ def ffmpeg_tag_mp3_inplace(
     os.replace(tmp, mp3_path)
 
 
-# --- NUEVO: Retag final SOLO del TITLE (sin tocar el resto de tags) ---
-
 def ffmpeg_overwrite_title_tag_inplace(
     mp3_path: Path,
     new_title: str,
     id3v2_version: int = 3,
     write_id3v1: bool = True,
 ) -> None:
-    """
-    Sobrescribe SOLO el tag 'title' en un MP3 SIN re-encode (-c copy),
-    preservando el resto de metadatos existentes (map_metadata 0).
-    Usa temporal + replace por seguridad.
-    """
     tmp = mp3_path.with_suffix(".retagtitle.tmp.mp3")
     if tmp.exists():
         tmp.unlink(missing_ok=True)
@@ -315,10 +287,6 @@ def ffmpeg_overwrite_title_tag_inplace(
 
 
 def ffprobe_title_tag(mp3_path: Path) -> Optional[str]:
-    """
-    Lee el tag TITLE actual del MP3 usando ffprobe.
-    Devuelve str o None si no está / falla.
-    """
     cmd = [
         "ffprobe",
         "-v", "error",
@@ -332,7 +300,6 @@ def ffprobe_title_tag(mp3_path: Path) -> Optional[str]:
     try:
         data = json.loads(p.stdout)
         tags = (data.get("format", {}) or {}).get("tags", {}) or {}
-        # ffprobe puede devolver 'title' o 'TITLE' según contexto
         t = tags.get("title")
         if t is None:
             t = tags.get("TITLE")
@@ -344,12 +311,6 @@ def ffprobe_title_tag(mp3_path: Path) -> Optional[str]:
 
 
 def retag_title_from_filename(dest_root: Path) -> Tuple[int, int]:
-    """
-    Recorre todas las carpetas dentro de dest_root y, para cada *.mp3,
-    sobrescribe el tag TITLE con mp3.stem (nombre del fichero sin extensión)
-    SOLO si el TITLE actual NO coincide ya con mp3.stem.
-    Devuelve (retag_ok, retag_errors).
-    """
     ensure_ffmpeg()
     ensure_ffprobe()
 
@@ -367,7 +328,6 @@ def retag_title_from_filename(dest_root: Path) -> Tuple[int, int]:
             current = sanitize_tag_value(current_raw or "")
 
             if current == desired:
-                # Ya está actualizado, no tocar
                 continue
 
             try:
@@ -410,11 +370,6 @@ def iter_thumb_urls(thumbnails: Dict) -> List[str]:
 
 
 def download_image_as_jpg(urls: List[str], dst_jpg: Path, overwrite: bool) -> bool:
-    """
-    Intenta descargar de una lista de URLs (de mayor a menor calidad).
-    Guarda como JPEG (si PIL está disponible y hace falta convertir).
-    Devuelve True si guardó algo.
-    """
     if dst_jpg.exists() and not overwrite:
         return True
 
@@ -432,7 +387,6 @@ def download_image_as_jpg(urls: List[str], dst_jpg: Path, overwrite: bool) -> bo
                 dst_jpg.write_bytes(data)
                 return True
 
-            # Convertir con Pillow si está instalado
             try:
                 from PIL import Image  # type: ignore
                 img = Image.open(BytesIO(data)).convert("RGB")
@@ -453,9 +407,6 @@ def download_image_as_jpg(urls: List[str], dst_jpg: Path, overwrite: bool) -> bo
 
 
 def yt_channel_meta(api_key: str, channel_ids: List[str]) -> Dict[str, Dict[str, Optional[Dict]]]:
-    """
-    Devuelve: { channel_id: {"title": "...", "thumbnails": {...}} }
-    """
     out: Dict[str, Dict[str, Optional[Dict]]] = {}
     for batch in chunked(channel_ids, 50):
         params = {
@@ -479,9 +430,6 @@ def yt_channel_meta(api_key: str, channel_ids: List[str]) -> Dict[str, Dict[str,
 
 
 def yt_video_meta(api_key: str, video_ids: List[str]) -> Dict[str, Dict[str, Optional[object]]]:
-    """
-    Devuelve: { video_id: {"title": "...", "publishedAt": "...Z", "thumbnails": {...}} }
-    """
     out: Dict[str, Dict[str, Optional[object]]] = {}
     for batch in chunked(video_ids, 50):
         params = {
@@ -508,6 +456,7 @@ def yt_video_meta(api_key: str, video_ids: List[str]) -> Dict[str, Dict[str, Opt
 # =========================
 # TubeArchivist API helpers
 # =========================
+
 def ta_enabled(action: str, base_url: str, token: str) -> bool:
     return action in {"delete", "delete_ignore"} and bool(base_url) and bool(token) and token != "PON_AQUI_TU_TA_TOKEN"
 
@@ -532,6 +481,7 @@ def ta_request(
     path: str,
     verify_ssl: bool,
     json_body: Optional[dict] = None,
+    params: Optional[dict] = None,
 ) -> requests.Response:
     url = ta_url(base_url, path)
     return session.request(
@@ -539,43 +489,212 @@ def ta_request(
         url=url,
         headers=ta_headers(token),
         json=json_body,
+        params=params,
         timeout=REQUEST_TIMEOUT,
         verify=verify_ssl,
     )
 
 
-def ta_delete_or_ignore_video(
+def _ta_json(resp: requests.Response) -> Optional[Any]:
+    try:
+        if not resp.text:
+            return None
+        return resp.json()
+    except Exception:
+        return None
+
+
+def _extract_video_id_from_item(item: dict) -> Optional[str]:
+    # posibles claves según versión
+    for k in ("youtube_id", "video_id", "youtubeId", "id", "yt_id"):
+        v = item.get(k)
+        if v:
+            return str(v)
+    return None
+
+
+def _is_item_ignored(item: dict) -> Optional[bool]:
+    # varias formas de marcar ignore
+    for k in ("ignore", "ignored"):
+        if k in item:
+            return bool(item.get(k))
+    for k in ("status", "state", "download_status"):
+        v = item.get(k)
+        if isinstance(v, str) and v.lower() in ("ignore", "ignored", "skipped"):
+            return True
+    return None
+
+
+def ta_check_ignored(
     session: requests.Session,
     video_id: str,
-    action: str,
+    base_url: str,
+    token: str,
+    verify_ssl: bool,
+) -> Optional[bool]:
+    """
+    Devuelve:
+      - True  -> confirmado en ignore list / como ignored
+      - False -> confirmado NO ignorado (en ignore list endpoints)
+      - None  -> no se pudo determinar (endpoints no existen o respuesta ambigua)
+    """
+    # 1) endpoints típicos de "ignore list"
+    ignore_list_endpoints: List[Tuple[str, str]] = [
+        ("GET", "/api/ignore/"),
+        ("GET", "/api/ignored/"),
+        ("GET", "/api/ignore-list/"),
+        ("GET", "/api/ignore_list/"),
+    ]
+
+    for method, path in ignore_list_endpoints:
+        try:
+            r = ta_request(session, method, base_url, token, path, verify_ssl)
+            if r.status_code == 404:
+                continue
+            if r.status_code != 200:
+                continue
+            data = _ta_json(r)
+            # data puede ser lista o dict con results/items/data
+            items: List[dict] = []
+            if isinstance(data, list):
+                items = [x for x in data if isinstance(x, dict)]
+            elif isinstance(data, dict):
+                for key in ("results", "items", "data"):
+                    v = data.get(key)
+                    if isinstance(v, list):
+                        items = [x for x in v if isinstance(x, dict)]
+                        break
+
+            ids = {(_extract_video_id_from_item(it) or "") for it in items}
+            ids.discard("")
+            return (video_id in ids)
+        except Exception:
+            continue
+
+    # 2) endpoints de downloads queue (si el vídeo ya no está, no podemos concluir)
+    downloads_endpoints: List[Tuple[str, str, Optional[dict]]] = [
+        ("GET", "/api/download/", None),
+        ("GET", "/api/download/", {"filter": "ignored"}),
+        ("GET", "/api/download/", {"status": "ignore"}),
+        ("GET", "/api/download/", {"ignored": "1"}),
+        ("GET", "/api/download/", {"ignore": "1"}),
+    ]
+
+    for method, path, params in downloads_endpoints:
+        try:
+            r = ta_request(session, method, base_url, token, path, verify_ssl, params=params)
+            if r.status_code == 404:
+                continue
+            if r.status_code != 200:
+                continue
+            data = _ta_json(r)
+
+            items2: List[dict] = []
+            if isinstance(data, list):
+                items2 = [x for x in data if isinstance(x, dict)]
+            elif isinstance(data, dict):
+                for key in ("results", "items", "data"):
+                    v = data.get(key)
+                    if isinstance(v, list):
+                        items2 = [x for x in v if isinstance(x, dict)]
+                        break
+
+            found = False
+            for it in items2:
+                vid = _extract_video_id_from_item(it)
+                if vid == video_id:
+                    found = True
+                    ig = _is_item_ignored(it)
+                    if ig is True:
+                        return True
+                    if ig is False:
+                        return False
+                    # sin campo claro -> no concluyente
+                    return None
+
+            # si no está en la lista de downloads: puede estar borrado/retirado
+            # pero igualmente ignorado a nivel ignore-list (que no pudimos consultar).
+            if not found:
+                continue
+        except Exception:
+            continue
+
+    return None
+
+
+def ta_mark_ignore_strict(
+    session: requests.Session,
+    video_id: str,
+    base_url: str,
+    token: str,
+    verify_ssl: bool,
+    dry_run: bool,
+) -> Tuple[bool, Optional[bool]]:
+    """
+    Intenta marcar IGNORE persistente (ignore list).
+    Devuelve (attempt_ok, verified_ignored)
+      - attempt_ok: True si algún endpoint devolvió 2xx
+      - verified_ignored: True/False/None según ta_check_ignored
+    """
+    if dry_run:
+        print(f"    [TA] DRY-RUN: marcar IGNORE {video_id}")
+        return (True, True)
+
+    # Intentos: primero ignore-list explícito (si existe), luego endpoints por vídeo/download.
+    attempts: List[Tuple[str, str, Optional[dict], str]] = [
+        # ignore list explícita
+        ("POST", "/api/ignore/", {"youtube_id": video_id}, "POST /api/ignore/ {youtube_id}"),
+        ("POST", "/api/ignore/", {"video_id": video_id}, "POST /api/ignore/ {video_id}"),
+        ("POST", "/api/ignored/", {"youtube_id": video_id}, "POST /api/ignored/ {youtube_id}"),
+        ("POST", "/api/ignored/", {"video_id": video_id}, "POST /api/ignored/ {video_id}"),
+
+        # endpoints por recurso
+        ("POST", f"/api/video/{video_id}/ignore/", {}, "POST /api/video/<id>/ignore/"),
+        ("POST", f"/api/download/{video_id}/ignore/", {}, "POST /api/download/<id>/ignore/"),
+        ("PATCH", f"/api/download/{video_id}/", {"status": "ignore"}, "PATCH /api/download/<id>/ {status:ignore}"),
+        ("PUT", f"/api/download/{video_id}/", {"status": "ignore"}, "PUT /api/download/<id>/ {status:ignore}"),
+    ]
+
+    ok_any = False
+    for method, path, body, label in attempts:
+        try:
+            r = ta_request(session, method, base_url, token, path, verify_ssl, json_body=body)
+            if r.status_code in (200, 201, 202, 204):
+                ok_any = True
+                if TA_DEBUG:
+                    print(f"    [TA] OK ({label}) -> {r.status_code}")
+
+                verified = ta_check_ignored(session, video_id, base_url, token, verify_ssl) if TA_VERIFY_IGNORE else None
+                return (True, verified)
+            else:
+                if TA_DEBUG and r.status_code not in (404, 405):
+                    print(f"    [TA] FAIL ({label}) -> {r.status_code}: {r.text[:200]}")
+        except Exception as e:
+            if TA_DEBUG:
+                print(f"    [TA] EXC ({label}): {e}")
+            continue
+
+    verified2 = ta_check_ignored(session, video_id, base_url, token, verify_ssl) if TA_VERIFY_IGNORE else None
+    return (ok_any, verified2)
+
+
+def ta_delete_video(
+    session: requests.Session,
+    video_id: str,
     base_url: str,
     token: str,
     verify_ssl: bool,
     dry_run: bool,
 ) -> bool:
     if dry_run:
-        print(f"    [TA] DRY-RUN: {action} {video_id}")
+        print(f"    [TA] DRY-RUN: delete {video_id}")
         return True
 
-    try:
-        r0 = ta_request(session, "GET", base_url, token, f"/api/video/{video_id}/", verify_ssl)
-        if r0.status_code == 404:
-            print(f"    [TA] No existe en TA (404): {video_id}")
-            return False
-    except Exception as e:
-        print(f"    [TA] Aviso: no pude comprobar existencia de {video_id}: {e}")
-
-    attempts: List[Tuple[str, str, Optional[dict], str]] = []
-    if action == "delete_ignore":
-        attempts += [
-            ("POST", f"/api/video/{video_id}/delete/", {"delete_type": "delete_ignore"}, "POST /api/video/<id>/delete/ {delete_type:delete_ignore}"),
-            ("POST", f"/api/video/{video_id}/delete/", {"delete_media": True, "ignore": True}, "POST /api/video/<id>/delete/ {delete_media,ignore}"),
-            ("POST", f"/api/video/{video_id}/delete-ignore/", {}, "POST /api/video/<id>/delete-ignore/"),
-            ("POST", f"/api/video/{video_id}/delete_ignore/", {}, "POST /api/video/<id>/delete_ignore/"),
-            ("DELETE", f"/api/video/{video_id}/?ignore=1", None, "DELETE /api/video/<id>/?ignore=1"),
-        ]
-
-    attempts += [
+    attempts: List[Tuple[str, str, Optional[dict], str]] = [
+        # algunos TA usan delete action
+        ("POST", f"/api/video/{video_id}/delete/", {"delete_media": True}, "POST /api/video/<id>/delete/ {delete_media:true}"),
+        ("POST", f"/api/video/{video_id}/delete/", {}, "POST /api/video/<id>/delete/ {}"),
+        # delete clásico
         ("DELETE", f"/api/video/{video_id}/", None, "DELETE /api/video/<id>/"),
     ]
 
@@ -583,16 +702,59 @@ def ta_delete_or_ignore_video(
         try:
             r = ta_request(session, method, base_url, token, path, verify_ssl, json_body=body)
             if r.status_code in (200, 201, 202, 204):
-                print(f"    [TA] OK ({label}) -> {r.status_code}")
+                if TA_DEBUG:
+                    print(f"    [TA] OK ({label}) -> {r.status_code}")
                 return True
             if r.status_code in (404, 405):
                 continue
-            print(f"    [TA] FAIL ({label}) -> {r.status_code}: {r.text[:200]}")
-        except Exception:
+            if TA_DEBUG:
+                print(f"    [TA] FAIL ({label}) -> {r.status_code}: {r.text[:200]}")
+        except Exception as e:
+            if TA_DEBUG:
+                print(f"    [TA] EXC ({label}): {e}")
             continue
 
-    print(f"    [TA] No pude aplicar '{action}' para {video_id}.")
     return False
+
+
+def ta_delete_and_ignore_video_strict(
+    session: requests.Session,
+    video_id: str,
+    base_url: str,
+    token: str,
+    verify_ssl: bool,
+    dry_run: bool,
+) -> Tuple[bool, bool]:
+    """
+    Objetivo REAL:
+      - Quede IGNORADO (persistente) para que NO reaparezca tras Rescan subscriptions
+      - Y borrar el vídeo de TA
+
+    Devuelve (deleted, ignored)
+    """
+    # 1) Marcar ignore persistente
+    ok_ignore_attempt, verified = ta_mark_ignore_strict(session, video_id, base_url, token, verify_ssl, dry_run)
+
+    ignored = False
+    if TA_VERIFY_IGNORE:
+        if verified is True:
+            ignored = True
+        elif verified is False:
+            ignored = False
+        else:
+            # No se pudo verificar: si al menos algún endpoint devolvió 2xx, lo consideramos "probable"
+            ignored = ok_ignore_attempt
+            if ok_ignore_attempt:
+                print(f"    [TA] AVISO: ignore devuelto OK pero NO pude verificarlo (endpoint de verificación no disponible).")
+            else:
+                print(f"    [TA] FAIL: no pude marcar ignore por ningún endpoint conocido.")
+    else:
+        ignored = ok_ignore_attempt
+
+    # 2) Borrar el vídeo
+    deleted = ta_delete_video(session, video_id, base_url, token, verify_ssl, dry_run)
+
+    return (deleted, ignored)
 
 
 def export_channel(
@@ -610,7 +772,6 @@ def export_channel(
     ta_token: str,
     ta_verify_ssl: bool,
     ta_dry_run: bool,
-    # --- NUEVO ---
     embed_id3_tags: bool,
     embed_cover_art: bool,
     tag_existing_mp3: bool,
@@ -685,7 +846,6 @@ def export_channel(
         else:
             print(f"    (Sin URLs de miniatura en API): {dst_jpg.name}")
 
-        # --- NUEVO: Embebido de tags ID3 + carátula (sin reencode) ---
         if embed_id3_tags and dst_mp3.exists():
             do_tag = mp3_created_now or tag_existing_mp3
             if do_tag:
@@ -695,7 +855,6 @@ def export_channel(
 
                 date_str = iso_date_for_tag(vpub, dst_mp3)
 
-                # Estilo gPodder: Album=Podcast, Artist=Podcast, Genre="Podcast", publish date :contentReference[oaicite:5]{index=5}
                 album = channel_name
                 artist = channel_name
                 album_artist = channel_name
@@ -729,28 +888,42 @@ def export_channel(
             print(f"    Borrado vídeo (DEST): {dst_video.name}")
 
         if ta_ok and dst_mp3.exists():
-            ok_ta = ta_delete_or_ignore_video(
-                session=session,
-                video_id=vid,
-                action=ta_action,
-                base_url=ta_base_url,
-                token=ta_token,
-                verify_ssl=ta_verify_ssl,
-                dry_run=ta_dry_run,
-            )
-            if ok_ta:
-                print(f"    [TA] Limpieza aplicada a {vid}")
-            else:
-                print(f"    [TA] No se pudo limpiar {vid} (se deja en TA)")
+            if ta_action == "delete_ignore":
+                deleted, ignored = ta_delete_and_ignore_video_strict(
+                    session=session,
+                    video_id=vid,
+                    base_url=ta_base_url,
+                    token=ta_token,
+                    verify_ssl=ta_verify_ssl,
+                    dry_run=ta_dry_run,
+                )
+                if ignored and deleted:
+                    print(f"    [TA] OK: IGNORE persistente + borrado aplicado a {vid}")
+                elif ignored and not deleted:
+                    print(f"    [TA] AVISO: IGNORE aplicado pero NO pude borrar {vid}")
+                elif deleted and not ignored:
+                    print(f"    [TA] FAIL: borrado SIN ignore persistente para {vid} (reaparecerá en rescan)")
+                else:
+                    print(f"    [TA] FAIL: no se pudo ignorar ni borrar {vid}")
+
+            elif ta_action == "delete":
+                ok_del = ta_delete_video(
+                    session=session,
+                    video_id=vid,
+                    base_url=ta_base_url,
+                    token=ta_token,
+                    verify_ssl=ta_verify_ssl,
+                    dry_run=ta_dry_run,
+                )
+                if ok_del:
+                    print(f"    [TA] OK: borrado aplicado a {vid}")
+                else:
+                    print(f"    [TA] FAIL: no se pudo borrar {vid}")
 
     print(f"\n[{channel_id}] Hecho.")
 
 
 def ffprobe_duration_seconds(mp3_path: Path) -> Optional[float]:
-    """
-    Devuelve duración en segundos usando ffprobe.
-    Si falla, devuelve None.
-    """
     cmd = [
         "ffprobe",
         "-v", "error",
@@ -772,12 +945,6 @@ def ffprobe_duration_seconds(mp3_path: Path) -> Optional[float]:
 
 
 def purge_short_mp3s(dest_root: Path, min_seconds: int) -> Tuple[int, int]:
-    """
-    Recorre todas las carpetas dentro de dest_root y borra:
-      - *.mp3 con duración < min_seconds
-      - su *.jpg correspondiente (mismo nombre) si existe
-    Devuelve (borrados_mp3, borrados_jpg)
-    """
     ensure_ffprobe()
 
     deleted_mp3 = 0
@@ -791,7 +958,6 @@ def purge_short_mp3s(dest_root: Path, min_seconds: int) -> Tuple[int, int]:
         for mp3 in ch_dir.glob("*.mp3"):
             dur = ffprobe_duration_seconds(mp3)
             if dur is None:
-                # Si no podemos leer duración, no borramos por seguridad
                 continue
             if dur < float(min_seconds):
                 jpg = mp3.with_suffix(".jpg")
@@ -822,12 +988,10 @@ def main() -> int:
     p.add_argument("--overwrite-mp3", action="store_true", default=OVERWRITE_MP3)
     p.add_argument("--overwrite-images", action="store_true", default=OVERWRITE_IMAGES)
 
-    # --- NUEVO: toggles de tagging/caratula ---
     p.add_argument("--no-embed-id3", action="store_true", default=not EMBED_ID3_TAGS, help="Desactiva embebido de tags ID3 en MP3")
     p.add_argument("--no-embed-cover", action="store_true", default=not EMBED_COVER_ART, help="Desactiva embebido de carátula (JPG) en MP3")
     p.add_argument("--tag-existing", action="store_true", default=TAG_EXISTING_MP3, help="Retaguea también MP3 ya existentes (aunque se haya SKIP MP3)")
 
-    # TubeArchivist
     p.add_argument("--ta-base-url", default=str(TA_BASE_URL))
     p.add_argument("--ta-token", default=str(TA_TOKEN))
     p.add_argument("--ta-action", choices=["none", "delete", "delete_ignore"], default=str(TA_ACTION))
@@ -844,7 +1008,7 @@ def main() -> int:
     embed_cover_art = not args.no_embed_cover
     tag_existing_mp3 = args.tag_existing
 
-    if not api_key or api_key == "PON_AQUI_TU_API_KEY":
+    if not api_key or api_key in {"PON_AQUI_TU_API_KEY", "PON_AQUI_TU_YT_API_KEY"}:
         print("Falta API key. Edita YT_API_KEY arriba o pásala con --yt-api-key.")
         return 2
 
@@ -886,7 +1050,6 @@ def main() -> int:
                 args.ta_token,
                 ta_verify_ssl,
                 args.ta_dry_run,
-                # --- NUEVO ---
                 embed_id3_tags,
                 embed_cover_art,
                 tag_existing_mp3,
@@ -895,7 +1058,6 @@ def main() -> int:
             errors += 1
             print(f"\n[{cid}] ERROR: {e}\n")
 
-    # ✅ PURGA FINAL (muy importante: al final, como pediste)
     try:
         print(f"\n[PURGE] Revisando MP3 en {dest_root} y borrando los < {PURGE_SHORTER_THAN_SECONDS}s ...\n")
         deleted_mp3, deleted_jpg = purge_short_mp3s(dest_root, PURGE_SHORTER_THAN_SECONDS)
@@ -904,7 +1066,6 @@ def main() -> int:
         errors += 1
         print(f"\n[PURGE] ERROR: {e}\n")
 
-    # ✅ RETAG FINAL: sobrescribe TITLE = nombre del fichero (sin extensión)
     if embed_id3_tags and RETAG_TITLE_FROM_FILENAME:
         try:
             print(f"\n[RETAG] Sobrescribiendo tag TITLE con el nombre del fichero (sin extensión) en {dest_root} ...\n")
@@ -916,7 +1077,6 @@ def main() -> int:
             errors += 1
             print(f"\n[RETAG] ERROR: {e}\n")
 
-        # ✅ NUEVO: repetir el retag SOLO en la ruta adicional
         try:
             print(f"\n[RETAG] Sobrescribiendo tag TITLE con el nombre del fichero (sin extensión) en {RETAG_EXTRA_ROOT} ...\n")
             retag_ok2, retag_err2 = retag_title_from_filename(RETAG_EXTRA_ROOT)
