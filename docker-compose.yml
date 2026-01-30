@@ -2119,8 +2119,8 @@ services:
     restart: unless-stopped
     environment:
       - TZ=Europe/Madrid
-      - CRON_SCHEDULE= 0 */6 * * *
-      - RUN_ON_START=true
+      - CRON_SCHEDULE=0 1,10,18 * * *
+      - RUN_ON_START=true   # (opcional) ejecuta también al arrancar
       # Rutas internas del contenedor
       - SRC_ROOT=/data/src
       - DEST_ROOT=/data/dest
