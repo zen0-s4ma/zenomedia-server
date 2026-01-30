@@ -1194,6 +1194,25 @@ def _parse_published_dt(published_at: Optional[str]) -> Optional[datetime]:
         return None
 
 
+# --- CAMBIO APLICADO: fallback de fecha por prefijo YYYYMMDD-HHMMSS- del nombre del archivo ---
+def _parse_prefix_dt_from_filename(p: Path) -> Optional[datetime]:
+    """
+    Fallback de fecha SIN usar mtime/ctime:
+    Tus ficheros se nombran como: YYYYMMDD-HHMMSS-titulo.mp3
+    Ese prefijo viene de publishedAt (o de tu fallback antiguo),
+    así que es válido para ordenar por “antiguo -> reciente”.
+    """
+    stem = p.stem  # sin extensión
+    m = re.match(r"^(\d{8}-\d{6})-", stem)
+    if not m:
+        return None
+    try:
+        dt = datetime.strptime(m.group(1), "%Y%m%d-%H%M%S").replace(tzinfo=timezone.utc)
+        return dt
+    except Exception:
+        return None
+
+
 def purge_max_files_per_channel(
     dest_root: Path,
     api_key: str,
@@ -1248,13 +1267,25 @@ def purge_max_files_per_channel(
                 meta = meta_map.get(vid, {}) or {}
                 it["publishedAt"] = meta.get("publishedAt")
 
-        dt_max = datetime.max.replace(tzinfo=timezone.utc)
+        # --- CAMBIO APLICADO: ordenar por publishedAt; fallback a prefijo filename; y si no hay nada => MUY antiguo ---
+        dt_min = datetime.min.replace(tzinfo=timezone.utc)
 
-        def sort_key(it: Dict[str, Any]) -> Tuple[bool, datetime, str]:
-            dt = _parse_published_dt(it.get("publishedAt") if isinstance(it.get("publishedAt"), str) else None)
+        def sort_key(it: Dict[str, Any]) -> Tuple[int, datetime, str]:
+            pub_raw = it.get("publishedAt") if isinstance(it.get("publishedAt"), str) else None
+
+            # 1) Primero: fecha real de YouTube (publishedAt)
+            dt = _parse_published_dt(pub_raw)
+
+            # 2) Fallback: prefijo YYYYMMDD-HHMMSS- del nombre del fichero (NO fecha del archivo)
             if dt is None:
-                return (True, dt_max, str(it["mp3"].name))
-            return (False, dt, str(it["mp3"].name))
+                dt = _parse_prefix_dt_from_filename(it["mp3"])
+
+            # 3) Si sigue sin fecha: trátalo como MUY antiguo para purgar antes
+            if dt is None:
+                return (0, dt_min, str(it["mp3"].name))
+
+            # 4) Con fecha: ordenar de antiguo->reciente
+            return (1, dt, str(it["mp3"].name))
 
         items_sorted = sorted(items, key=sort_key)
         to_delete = items_sorted[: max(0, len(items_sorted) - max_keep)]

@@ -7,11 +7,11 @@ from pathlib import Path
 # CONFIGURACIÓN DEL USUARIO
 # =========================
 
-BASE_DIR = r"E:\YouTube\Videos"
-INPUT_FILE = "chimenea.mp4"  # .ts / .mkv / .mp4
+BASE_DIR = r"E:\Grabaciones\Matar al presidente"
+INPUT_FILE = "Matar al presidente_20260130_10361127.mkv"  # .ts / .mkv / .mp4
 
-cortar_inicio = False
-inicio_h, inicio_m, inicio_s = 0, 24, 4
+cortar_inicio = True
+inicio_h, inicio_m, inicio_s = 0, 17, 10
 
 cortar_fin = True
 fin_h, fin_m, fin_s = 2, 0, 0

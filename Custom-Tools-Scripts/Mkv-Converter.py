@@ -6,8 +6,8 @@ from pathlib import Path
 # =========================
 # CONFIG
 # =========================
-BASE_DIR = r"E:\Grabaciones\Volver"
-INPUT_TS_NAME = "Volver_20260126_23102346.ts"  # o pásalo por argv
+BASE_DIR = r"E:\Grabaciones\Kroos. La familia y el fútbol"
+INPUT_TS_NAME = "Kroos. La familia y el fútbol_20260130_14251540.ts"  # o pásalo por argv
 
 OUTPUT_CONTAINER = "mkv"  # "mkv" o "mp4"
 
