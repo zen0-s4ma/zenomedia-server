@@ -76,6 +76,9 @@ TA_WAIT_DOWNLOAD_APPEAR_TIMEOUT = 180.0
 # --- Purga final ---
 PURGE_SHORTER_THAN_SECONDS = 5 * 60  # 5 minutos
 
+# --- Purga final por cantidad (máximo de MP3 por canal) ---
+MAX_FILES_PER_CHANNEL = 15
+
 # --- Retag final (sobrescribir TITLE=nombre de fichero sin extensión) ---
 RETAG_TITLE_FROM_FILENAME = True
 
@@ -848,6 +851,53 @@ def ta_flow_delete_update_ignore(
     return (True, True)
 
 
+# --- NUEVO (cambio mínimo): aplicar IGNORE (post-update_subscribed) por vídeo ---
+def ta_apply_ignore_only(
+    session: requests.Session,
+    video_id: str,
+    base_url: str,
+    token: str,
+    verify_ssl: bool,
+    dry_run: bool,
+) -> bool:
+    """
+    Aplicar ignore (y verificación) SIN lanzar update_subscribed.
+    Pensado para usarlo al FINAL del canal, tras un único update_subscribed.
+    """
+    # tras update_subscribed, el vídeo puede reaparecer en download queue: espera a que exista
+    if not dry_run:
+        appeared = ta_wait_download_appears(session, video_id, base_url, token, verify_ssl, TA_WAIT_DOWNLOAD_APPEAR_TIMEOUT)
+        if not appeared and TA_DEBUG:
+            print(f"    [TA] AVISO: /api/download/{video_id}/ no apareció a tiempo; usaré fallback bulk-add ignore.")
+
+    # intenta el ignore directo; si falla o no existe, usa bulk-add
+    ok_set = ta_download_set_status(session, video_id, TA_IGNORE_STATUS, base_url, token, verify_ssl, dry_run)
+    if not ok_set:
+        ok_set = ta_download_bulk_add_ignore(session, video_id, TA_IGNORE_STATUS, base_url, token, verify_ssl, dry_run)
+
+    if not ok_set:
+        return False
+
+    if TA_VERIFY_IGNORE and not dry_run:
+        d = ta_download_get(session, video_id, base_url, token, verify_ssl)
+        if d is None:
+            time.sleep(3)
+            d = ta_download_get(session, video_id, base_url, token, verify_ssl)
+
+        if isinstance(d, dict):
+            st = _download_status_str(d).lower()
+            if st in {"ignore", "ignore-force", "ignored"}:
+                return True
+
+            print(f"    [TA] AVISO: verificación ignore: status='{st}' (esperaba ignore/ignore).")
+            return False
+
+        print("    [TA] AVISO: no pude verificar el ignore por GET /api/download/{id}/.")
+        return False
+
+    return True
+
+
 def export_channel(
     channel_id: str,
     channel_name: str,
@@ -918,6 +968,9 @@ def export_channel(
     session = requests.Session()
     ta_ok = ta_enabled(ta_action, ta_base_url, ta_token)
 
+    # --- NUEVO (cambio mínimo): acumular IDs borrados en TA para IGNORE al final del canal ---
+    ta_deleted_ids_for_ignore: List[str] = []
+
     for vid, dst_video, dst_mp3, dst_jpg, thumb_urls in work_items:
         mp3_created_now = False
 
@@ -981,7 +1034,8 @@ def export_channel(
         # ===== TA ACTION (adaptado a tu Swagger) =====
         if ta_ok and dst_mp3.exists():
             if ta_action == "delete_ignore":
-                deleted, ignored = ta_flow_delete_update_ignore(
+                # --- CAMBIO MÍNIMO: aquí SOLO delete (por vídeo). update_subscribed + ignore se hace al final del canal ---
+                deleted_ok = ta_video_delete(
                     session=session,
                     video_id=vid,
                     base_url=ta_base_url,
@@ -989,12 +1043,14 @@ def export_channel(
                     verify_ssl=ta_verify_ssl,
                     dry_run=ta_dry_run,
                 )
-                if ignored and deleted:
-                    print(f"    [TA] OK: delete + update_subscribed + ignore-force aplicado a {vid}")
-                elif deleted and not ignored:
-                    print(f"    [TA] AVISO: borrado OK pero ignore NO confirmado para {vid} (podría reaparecer en rescan).")
+                if not deleted_ok:
+                    print(f"    [TA] FAIL: no se pudo borrar {vid}")
                 else:
-                    print(f"    [TA] FAIL: no se pudo completar flujo TA para {vid}")
+                    if not ta_dry_run:
+                        gone = ta_wait_video_gone(session, vid, ta_base_url, ta_token, ta_verify_ssl, TA_WAIT_DELETE_TIMEOUT)
+                        if not gone:
+                            print(f"    [TA] AVISO: timeout esperando que desaparezca /api/video/{vid}/ (puede ir lento).")
+                    ta_deleted_ids_for_ignore.append(vid)
 
             elif ta_action == "delete":
                 ok_del = ta_video_delete(
@@ -1009,6 +1065,26 @@ def export_channel(
                     print(f"    [TA] OK: borrado aplicado a {vid}")
                 else:
                     print(f"    [TA] FAIL: no se pudo borrar {vid}")
+
+    # --- CAMBIO MÍNIMO: al FINAL del canal, un solo update_subscribed y luego ignore de todos los IDs borrados ---
+    if ta_ok and ta_action == "delete_ignore" and ta_deleted_ids_for_ignore:
+        upd_ok = ta_update_subscribed_and_wait(session, ta_base_url, ta_token, ta_verify_ssl, ta_dry_run)
+        if not upd_ok:
+            print("    [TA] AVISO: update_subscribed no confirmó OK (pero continúo con ignore).")
+
+        for vid in ta_deleted_ids_for_ignore:
+            ignored_ok = ta_apply_ignore_only(
+                session=session,
+                video_id=vid,
+                base_url=ta_base_url,
+                token=ta_token,
+                verify_ssl=ta_verify_ssl,
+                dry_run=ta_dry_run,
+            )
+            if ignored_ok:
+                print(f"    [TA] OK: delete + update_subscribed + ignore-force aplicado a {vid}")
+            else:
+                print(f"    [TA] AVISO: borrado OK pero ignore NO confirmado para {vid} (podría reaparecer en rescan).")
 
     print(f"\n[{channel_id}] Hecho.")
 
@@ -1066,6 +1142,187 @@ def purge_short_mp3s(dest_root: Path, min_seconds: int) -> Tuple[int, int]:
                     pass
 
     return (deleted_mp3, deleted_jpg)
+
+
+def ffprobe_comment_tag(mp3_path: Path) -> Optional[str]:
+    cmd = [
+        "ffprobe",
+        "-v", "error",
+        "-show_entries", "format_tags=comment",
+        "-of", "json",
+        str(mp3_path),
+    ]
+    p = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
+    if p.returncode != 0:
+        return None
+    try:
+        data = json.loads(p.stdout)
+        tags = (data.get("format", {}) or {}).get("tags", {}) or {}
+        c = tags.get("comment")
+        if c is None:
+            c = tags.get("COMMENT")
+        if c is None:
+            return None
+        return str(c)
+    except Exception:
+        return None
+
+
+def extract_video_id_from_text(text: str) -> Optional[str]:
+    s = (text or "").strip()
+    if not s:
+        return None
+    m = re.search(r"(?:youtu\.be/|youtube\.com/watch\?v=|youtube\.com/shorts/)([A-Za-z0-9_-]{6,})", s)
+    if not m:
+        return None
+    return m.group(1)
+
+
+def extract_video_id_from_mp3(mp3_path: Path) -> Optional[str]:
+    c = ffprobe_comment_tag(mp3_path)
+    if not c:
+        return None
+    return extract_video_id_from_text(c)
+
+
+def _parse_published_dt(published_at: Optional[str]) -> Optional[datetime]:
+    if not published_at:
+        return None
+    try:
+        return datetime.fromisoformat(published_at.replace("Z", "+00:00"))
+    except Exception:
+        return None
+
+
+def purge_max_files_per_channel(
+    dest_root: Path,
+    api_key: str,
+    max_keep: int,
+    ta_action: str,
+    ta_base_url: str,
+    ta_token: str,
+    ta_verify_ssl: bool,
+    ta_dry_run: bool,
+) -> Tuple[int, int, int]:
+    ensure_ffprobe()
+
+    deleted_mp3 = 0
+    deleted_jpg = 0
+    ta_processed = 0
+
+    if not dest_root.exists():
+        return (0, 0, 0)
+
+    session = requests.Session()
+    ta_ok = ta_enabled(ta_action, ta_base_url, ta_token)
+
+    channel_dirs = [d for d in dest_root.iterdir() if d.is_dir()]
+    for ch_dir in channel_dirs:
+        mp3s = sorted(list(ch_dir.glob("*.mp3")))
+        if len(mp3s) <= max_keep:
+            continue
+
+        items: List[Dict[str, Any]] = []
+        ids: List[str] = []
+        for mp3 in mp3s:
+            vid = extract_video_id_from_mp3(mp3)
+            if vid:
+                ids.append(vid)
+            items.append(
+                {
+                    "mp3": mp3,
+                    "jpg": mp3.with_suffix(".jpg"),
+                    "vid": vid,
+                    "publishedAt": None,
+                }
+            )
+
+        meta_map: Dict[str, Dict[str, Optional[object]]] = {}
+        if ids:
+            uniq_ids = list(dict.fromkeys(ids))
+            meta_map = yt_video_meta(api_key, uniq_ids)
+
+        for it in items:
+            vid = it.get("vid")
+            if isinstance(vid, str) and vid:
+                meta = meta_map.get(vid, {}) or {}
+                it["publishedAt"] = meta.get("publishedAt")
+
+        dt_max = datetime.max.replace(tzinfo=timezone.utc)
+
+        def sort_key(it: Dict[str, Any]) -> Tuple[bool, datetime, str]:
+            dt = _parse_published_dt(it.get("publishedAt") if isinstance(it.get("publishedAt"), str) else None)
+            if dt is None:
+                return (True, dt_max, str(it["mp3"].name))
+            return (False, dt, str(it["mp3"].name))
+
+        items_sorted = sorted(items, key=sort_key)
+        to_delete = items_sorted[: max(0, len(items_sorted) - max_keep)]
+
+        if not to_delete:
+            continue
+
+        ta_deleted_ids_for_ignore: List[str] = []
+
+        for it in to_delete:
+            mp3_path: Path = it["mp3"]
+            jpg_path: Path = it["jpg"]
+            vid = it.get("vid")
+
+            try:
+                mp3_path.unlink(missing_ok=True)
+                deleted_mp3 += 1
+                print(f"[PURGE-MAX] Borrado MP3 (>{max_keep}/canal): {mp3_path}")
+            except Exception:
+                pass
+
+            try:
+                if jpg_path.exists():
+                    jpg_path.unlink(missing_ok=True)
+                    deleted_jpg += 1
+                    print(f"[PURGE-MAX] Borrado JPG asociado: {jpg_path}")
+            except Exception:
+                pass
+
+            if ta_ok and ta_action == "delete_ignore" and isinstance(vid, str) and vid:
+                ok_del = ta_video_delete(
+                    session=session,
+                    video_id=vid,
+                    base_url=ta_base_url,
+                    token=ta_token,
+                    verify_ssl=ta_verify_ssl,
+                    dry_run=ta_dry_run,
+                )
+                if ok_del:
+                    if not ta_dry_run:
+                        gone = ta_wait_video_gone(session, vid, ta_base_url, ta_token, ta_verify_ssl, TA_WAIT_DELETE_TIMEOUT)
+                        if not gone:
+                            print(f"    [TA] AVISO: timeout esperando que desaparezca /api/video/{vid}/ (puede ir lento).")
+                    ta_deleted_ids_for_ignore.append(vid)
+                    ta_processed += 1
+                else:
+                    print(f"    [TA] FAIL: no se pudo borrar {vid}")
+
+        if ta_ok and ta_action == "delete_ignore" and ta_deleted_ids_for_ignore:
+            upd_ok = ta_update_subscribed_and_wait(session, ta_base_url, ta_token, ta_verify_ssl, ta_dry_run)
+            if not upd_ok:
+                print("    [TA] AVISO: update_subscribed no confirmó OK (pero continúo con ignore).")
+
+            for vid in ta_deleted_ids_for_ignore:
+                ignored_ok = ta_apply_ignore_only(
+                    session=session,
+                    video_id=vid,
+                    base_url=ta_base_url,
+                    token=ta_token,
+                    verify_ssl=ta_verify_ssl,
+                    dry_run=ta_dry_run,
+                )
+                if ignored_ok:
+                    print(f"    [TA] OK: delete + update_subscribed + ignore-force aplicado a {vid}")
+                else:
+                    print(f"    [TA] AVISO: borrado OK pero ignore NO confirmado para {vid} (podría reaparecer en rescan).")
+
+    return (deleted_mp3, deleted_jpg, ta_processed)
 
 
 def main() -> int:
@@ -1176,6 +1433,23 @@ def main() -> int:
         except Exception as e:
             errors += 1
             print(f"\n[RETAG] ERROR: {e}\n")
+
+    try:
+        print(f"\n[PURGE-MAX] Limitando a {MAX_FILES_PER_CHANNEL} MP3 por canal (fecha publicación YouTube) en {dest_root} ...\n")
+        dmp3, djpg, ta_cnt = purge_max_files_per_channel(
+            dest_root=dest_root,
+            api_key=api_key,
+            max_keep=MAX_FILES_PER_CHANNEL,
+            ta_action=args.ta_action,
+            ta_base_url=args.ta_base_url,
+            ta_token=args.ta_token,
+            ta_verify_ssl=ta_verify_ssl,
+            ta_dry_run=args.ta_dry_run,
+        )
+        print(f"\n[PURGE-MAX] Hecho. Borrados: {dmp3} mp3 y {djpg} jpg. TA procesados: {ta_cnt}.\n")
+    except Exception as e:
+        errors += 1
+        print(f"\n[PURGE-MAX] ERROR: {e}\n")
 
     if errors:
         print(f"\nFinalizado con {errors} error(es).")
