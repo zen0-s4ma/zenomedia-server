@@ -21,9 +21,7 @@ EWMA_ALPHA="${EWMA_ALPHA:-0.25}"                    # suavizado ETA (0..1)
 # Barra viva: reescribe en la misma línea
 LIVE_PROGRESS="${LIVE_PROGRESS:-1}"                 # 1=on, 0=off
 
-# Flags
-DO_PULL=0
-DO_BUILD=0
+# Filtro opcional de grupos
 ONLY_GROUPS=""     # ej: "db,vpn,vpn_clients"
 
 # =========================
@@ -41,7 +39,7 @@ DONE_SERVICES=0
 EWMA_SEC_PER_SVC=""
 LAST_SVC_START_TS=""
 
-# Lista de servicios levantados (opcional, por si quieres imprimir resumen al final)
+# Lista de servicios levantados
 declare -a DONE_NAMES=()
 
 fmt_hms() {
@@ -128,7 +126,6 @@ progress_text() {
 render_progress() {
   if [[ "${LIVE_PROGRESS}" == "1" ]]; then
     local txt; txt="$(progress_text)"
-    # 160 chars por si el terminal es ancho; evita restos cuando la línea se acorta
     printf "\r%-160s" "$txt"
   else
     echo
@@ -328,11 +325,6 @@ up_group_sequential() {
   log "Servicios: ${services[*]}"
   log "=============================="
 
-  if [[ $DO_PULL -eq 1 ]]; then
-    log "Pull imágenes del grupo ${group_name}"
-    dc pull "${services[@]}" || true
-  fi
-
   local count="${#services[@]}"
   local i=0
 
@@ -343,11 +335,8 @@ up_group_sequential() {
     render_progress
     LAST_SVC_START_TS="$(now_ts)"
 
-    if [[ $DO_BUILD -eq 1 ]]; then
-      dc up -d --build "$s"
-    else
-      dc up -d "$s"
-    fi
+    # ✅ SOLO UP -D (SIN PULL, SIN BUILD)
+    dc up -d "$s"
 
     wait_ready "$s" "$TIMEOUT_DEFAULT"
 
@@ -371,7 +360,7 @@ up_group_sequential() {
 usage() {
   cat <<EOF
 Uso:
-  ./stack-up.sh [--pull] [--build] [--only db,vpn,vpn_clients,...]
+  ./stack-up.sh [--only db,vpn,vpn_clients,...]
 
 Env útiles:
   TIMEOUT_DEFAULT=420
@@ -384,12 +373,10 @@ EOF
 }
 
 # =========================
-# Args
+# Args (sin --pull ni --build)
 # =========================
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --pull) DO_PULL=1; shift;;
-    --build) DO_BUILD=1; shift;;
     --only) ONLY_GROUPS="${2:-}"; shift 2;;
     -h|--help) usage; exit 0;;
     *) die "Argumento desconocido: $1";;
