@@ -160,7 +160,7 @@ services:
       retries: 5
       start_period: 60s
 
-
+ 
   # --------------------------------------------------------
   # --- jfa-go
   # --- Gestión de usuarios Jellyfin
@@ -1218,12 +1218,12 @@ services:
       - TZ=Europe/Madrid
       - VPN_SERVICE_PROVIDER=mullvad
       - VPN_TYPE=wireguard
-      - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY_SWT}
-      - WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESSES_SWT}
-      - DNS_ADDRESS=${DNS_ADDRESS_SWT}
-      # salida SWITZERLAND/ZURICH
-      - SERVER_COUNTRIES=Switzerland
-      - SERVER_CITIES=Zurich
+      - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY_FIN}
+      - WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESSES_FIN}
+      - DNS_ADDRESS=${DNS_ADDRESS_FIN}
+      # salida 
+      - SERVER_COUNTRIES=Finland
+      - SERVER_CITIES=Helsinki
       - FIREWALL_INPUT_PORTS=9191,5800,5801
       # Permitir acceso saliente a LAN desde contenedores que comparten la red (p.ej. Dispatcharr)
       # Ajusta a tu caso: puedes usar 192.168.1.0/24 si necesitas más hosts, o un /32 para ser más restrictivo.
