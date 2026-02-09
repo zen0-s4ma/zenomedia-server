@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT="${1:-}"
+if [[ -z "${SCRIPT}" ]]; then
+  echo "[run-ps1] Usage: run-ps1 /scripts/your_script.ps1 [args...]" >&2
+  exit 2
+fi
+shift || true
+
+if ! command -v pwsh >/dev/null 2>&1; then
+  echo "[run-ps1] ERROR: pwsh not installed in this image (WITH_POWERSHELL=false?)" >&2
+  exit 2
+fi
+
+if [[ ! -f "${SCRIPT}" ]]; then
+  echo "[run-ps1] ERROR: Script not found: ${SCRIPT}" >&2
+  exit 2
+fi
+
+exec pwsh -NoLogo -NoProfile -ExecutionPolicy Bypass -File "${SCRIPT}" "$@"

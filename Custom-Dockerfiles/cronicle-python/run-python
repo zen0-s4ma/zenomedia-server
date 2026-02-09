@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT="${1:-}"
+if [[ -z "${SCRIPT}" ]]; then
+  echo "[run-python] Usage: run-python /scripts/your_script.py [args...]" >&2
+  exit 2
+fi
+shift || true
+
+if [[ ! -f "${SCRIPT}" ]]; then
+  echo "[run-python] ERROR: Script not found: ${SCRIPT}" >&2
+  exit 2
+fi
+
+PY_RUNNER_MODE="${PY_RUNNER_MODE:-venv}"  # venv | system
+VENV_DIR="${PY_VENV_DIR:-/opt/cronicle/data/python/venv}"
+PIP_CACHE_DIR="${PY_PIP_CACHE_DIR:-/opt/cronicle/data/python/pip-cache}"
+STATE_DIR="${PY_STATE_DIR:-/opt/cronicle/data/python/state}"
+PIP_EXTRA_ARGS="${PIP_EXTRA_ARGS:-}"
+
+mkdir -p "${PIP_CACHE_DIR}" "${STATE_DIR}"
+export PIP_CACHE_DIR
+export PYTHONUNBUFFERED=1
+
+SCRIPT_DIR="$(cd "$(dirname "${SCRIPT}")" && pwd)"
+
+REQ_FILE=""
+if [[ -n "${PY_REQUIREMENTS_FILE:-}" && -f "${PY_REQUIREMENTS_FILE}" ]]; then
+  REQ_FILE="${PY_REQUIREMENTS_FILE}"
+elif [[ -f "${SCRIPT}.requirements.txt" ]]; then
+  REQ_FILE="${SCRIPT}.requirements.txt"
+elif [[ -f "${SCRIPT_DIR}/requirements.txt" ]]; then
+  REQ_FILE="${SCRIPT_DIR}/requirements.txt"
+fi
+
+PY_BIN="python3"
+if [[ "${PY_RUNNER_MODE}" == "venv" ]]; then
+  if [[ ! -x "${VENV_DIR}/bin/python" ]]; then
+    echo "[run-python] Creating venv at: ${VENV_DIR}"
+    mkdir -p "$(dirname "${VENV_DIR}")"
+    python3 -m venv --copies "${VENV_DIR}"
+    "${VENV_DIR}/bin/pip" install --upgrade pip setuptools wheel
+  fi
+  PY_BIN="${VENV_DIR}/bin/python"
+fi
+
+if [[ -n "${REQ_FILE}" ]]; then
+  echo "[run-python] requirements: ${REQ_FILE}"
+  SCRIPT_ID="$(printf "%s" "${SCRIPT}" | sha256sum | awk '{print $1}')"
+  HASH_FILE="${STATE_DIR}/${SCRIPT_ID}.requirements.sha256"
+
+  REQ_HASH="$(sha256sum "${REQ_FILE}" | awk '{print $1}')"
+  PREV_HASH=""
+  [[ -f "${HASH_FILE}" ]] && PREV_HASH="$(cat "${HASH_FILE}" || true)"
+
+  if [[ "${REQ_HASH}" != "${PREV_HASH}" ]]; then
+    echo "[run-python] Installing/updating deps (hash changed)"
+    if [[ "${PY_RUNNER_MODE}" == "venv" ]]; then
+      "${VENV_DIR}/bin/pip" install ${PIP_EXTRA_ARGS} -r "${REQ_FILE}"
+    else
+      python3 -m pip install ${PIP_EXTRA_ARGS} -r "${REQ_FILE}"
+    fi
+    echo "${REQ_HASH}" > "${HASH_FILE}"
+  else
+    echo "[run-python] Deps OK (hash match)"
+  fi
+fi
+
+echo "[run-python] Running: ${PY_BIN} ${SCRIPT} $*"
+exec "${PY_BIN}" "${SCRIPT}" "$@"

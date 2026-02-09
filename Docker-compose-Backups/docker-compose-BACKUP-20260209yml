@@ -1,9 +1,9 @@
 # ZENOMEDIA SERVER V0.1 (hardened)
 #
-# Esta versiÃ³n del dockerâ€‘compose aplica medidas de hardening centradas en:
+# Esta versión del docker‑compose aplica medidas de hardening centradas en:
 #  - Restringir exposiciones de puertos: todos los servicios con interfaz web o
-#    API se exponen Ãºnicamente a la interfaz de loopback (127.0.0.1) o, si
-#    necesitan compartir recursos en red local, a la IPÂ LAN del host
+#    API se exponen únicamente a la interfaz de loopback (127.0.0.1) o, si
+#    necesitan compartir recursos en red local, a la IP LAN del host
 #    (192.168.1.113). De este modo no hay servicios escuchando en todas las
 #    interfaces del host, reduciendo la superficie de ataque.
 
@@ -56,7 +56,7 @@ services:
     ports:
       - "127.0.0.1:7575:7575"
     environment:
-      # clave encriptaciÃ³n gestionada en .env
+      # clave encriptación gestionada en .env
       - SECRET_ENCRYPTION_KEY=${HOMARR_SECRET_ENCRYPTION_KEY}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -82,7 +82,7 @@ services:
   jellyfin:
     image: jellyfin/jellyfin:10.11.4
     container_name: jellyfin
-    # limita exposiciÃ³n a la LAN
+    # limita exposición a la LAN
     ports:
       - "192.168.1.113:8096:8096"
       - "192.168.1.113:8920:8920"
@@ -160,14 +160,14 @@ services:
  
   # --------------------------------------------------------
   # --- jfa-go
-  # --- GestiÃ³n de usuarios Jellyfin
+  # --- Gestión de usuarios Jellyfin
   # --- Ports: 8056 (Gui Web)
   # --------------------------------------------------------
   jfa-go:
     image: hrfee/jfa-go:latest
     container_name: jfa-go
     depends_on: [jellyfin]
-    # expone la UI sÃ³lo local
+    # expone la UI sólo local
     ports:
       - "127.0.0.1:8056:8056"
     environment:
@@ -186,7 +186,7 @@ services:
 
   # --------------------------------------------------------
   # --- komga
-  # --- Biblioteca de cÃ³mics/manga (servidor)
+  # --- Biblioteca de cómics/manga (servidor)
   # --- Ports: 33083 (Gui Web)
   # --------------------------------------------------------
   komga:
@@ -209,7 +209,7 @@ services:
 
   # --------------------------------------------------------
   # --- calibre
-  # --- GestiÃ³n de biblioteca de ebooks (GUI web/noVNC)
+  # --- Gestión de biblioteca de ebooks (GUI web/noVNC)
   # --- Ports: 33084 (Gui Web)
   # --------------------------------------------------------
   calibre:
@@ -248,9 +248,9 @@ services:
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
     ports:
-      # UI web sÃ³lo local
+      # UI web sólo local
       - "127.0.0.1:8080:8080"
-      # puertos P2P mantienen exposiciÃ³n para el trÃ¡fico torrent
+      # puertos P2P mantienen exposición para el tráfico torrent
       - "6881:6881"
       - "6881:6881/udp"
     environment:
@@ -284,7 +284,7 @@ services:
       - "127.0.0.1:8081:8081"          # UI web de MeTube
     environment:
       - TZ=Europe/Madrid
-      # Opcional: explÃ­cito, pero por defecto ya usan /downloads
+      # Opcional: explícito, pero por defecto ya usan /downloads
       - DOWNLOAD_DIR=/downloads
       - AUDIO_DOWNLOAD_DIR=/downloads/Music
     volumes:
@@ -302,7 +302,7 @@ services:
 
   # --------------------------------------------------------
   # --- tubearchivist
-  # --- Archivo/descarga y gestiÃ³n de YouTube
+  # --- Archivo/descarga y gestión de YouTube
   # --- Ports: 8001 (Gui Web)
   # --------------------------------------------------------
   tubearchivist:
@@ -492,7 +492,7 @@ services:
 
   # --------------------------------------------------------
   # --- sonarr
-  # --- AutomatizaciÃ³n de series (Arr)
+  # --- Automatización de series (Arr)
   # --- Ports: 33074 (Gui Web)
   # --------------------------------------------------------
   sonarr:
@@ -519,7 +519,7 @@ services:
 
   # --------------------------------------------------------
   # --- radarr
-  # --- AutomatizaciÃ³n de pelÃ­culas (Arr)
+  # --- Automatización de películas (Arr)
   # --- Ports: 33075 (Gui Web)
   # --------------------------------------------------------
   radarr:
@@ -545,7 +545,7 @@ services:
 
   # --------------------------------------------------------
   # --- bazarr
-  # --- SubtÃ­tulos (Arr)
+  # --- Subtítulos (Arr)
   # --- Ports: 33076 (Gui Web)
   # --------------------------------------------------------
   bazarr:
@@ -572,7 +572,7 @@ services:
 
   # --------------------------------------------------------
   # --- lidarr
-  # --- AutomatizaciÃ³n de mÃºsica (Arr)
+  # --- Automatización de música (Arr)
   # --- Ports: 33077 (Gui Web)
   # --------------------------------------------------------
   lidarr:
@@ -597,7 +597,7 @@ services:
 
   # --------------------------------------------------------
   # --- readarr
-  # --- AutomatizaciÃ³n de libros (Arr)
+  # --- Automatización de libros (Arr)
   # --- Ports: 33078 (Gui Web)
   # --------------------------------------------------------
   readarr:
@@ -697,7 +697,7 @@ services:
 
   # --------------------------------------------------------
   # --- recyclarr
-  # --- SincronizaciÃ³n de perfiles/quality para Arr
+  # --- Sincronización de perfiles/quality para Arr
   # --- Ports: N/A
   # --------------------------------------------------------
   recyclarr:
@@ -712,7 +712,7 @@ services:
 
   # --------------------------------------------------------
   # --- notifiarr
-  # --- Notificaciones e integraciÃ³n con stack multimedia
+  # --- Notificaciones e integración con stack multimedia
   # --- Ports: 5454 (Gui Web)
   # --------------------------------------------------------
   notifiarr:
@@ -742,7 +742,7 @@ services:
 
   # --------------------------------------------------------
   # --- webgrabplus
-  # --- GeneraciÃ³n/captura de EPG
+  # --- Generación/captura de EPG
   # --- Ports: N/A
   # --------------------------------------------------------
   webgrabplus:
@@ -783,7 +783,7 @@ services:
 
   # --------------------------------------------------------
   # --- threadfin
-  # --- M3U proxy / â€œxTeVe forkâ€ para Live TV (Plex/Emby/Jellyfin)
+  # --- M3U proxy / “xTeVe fork” para Live TV (Plex/Emby/Jellyfin)
   # --- Va bajo VPN (gluetun-swt)
   # --- UI: http://<host>:34400/web   (importante el /web)
   # --------------------------------------------------------
@@ -822,18 +822,18 @@ services:
     depends_on:
       - jellyfin
     ports:
-      # RecomendaciÃ³n prÃ¡ctica con Dispatcharr/Jellyfin: publicar en la LAN para usar URL con IP (valida siempre).
+      # Recomendación práctica con Dispatcharr/Jellyfin: publicar en la LAN para usar URL con IP (valida siempre).
       # Si prefieres NO exponerlo en LAN, alternativa: usa una URL con FQDN que resuelva en Docker, o proxy inverso.
       - "8409:8409"
     environment:
       - TZ=Europe/Madrid
-      # NVIDIA (solo si tu host lo soporta; en Docker sobre Windows/macOS no estÃ¡ soportado oficialmente por ErsatzTV)
+      # NVIDIA (solo si tu host lo soporta; en Docker sobre Windows/macOS no está soportado oficialmente por ErsatzTV)
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=compute,video,utility
     volumes:
-      # ConfiguraciÃ³n persistente
+      # Configuración persistente
       - "E:/Docker_folders/ersatztv/config:/config"
-      # Media (opciÃ³n 1 recomendada por docs para 'Streaming From Disk' con Jellyfin: mismos mounts/paths que Jellyfin)
+      # Media (opción 1 recomendada por docs para 'Streaming From Disk' con Jellyfin: mismos mounts/paths que Jellyfin)
       - "F:/Animacion:/media/Animacion:ro"
       - "F:/Infantil:/media/Infantil:ro"
       - "F:/Peliculas:/media/Peliculas:ro"
@@ -895,7 +895,7 @@ services:
     restart: unless-stopped
     environment:
       - TZ=Europe/Madrid
-      # IMPORTANTE: usa el mismo host/puerto con el que abrirÃ¡s la UI en el navegador
+      # IMPORTANTE: usa el mismo host/puerto con el que abrirás la UI en el navegador
       - CLIENT_URL=http://localhost:33195
     expose:
       - "3000"
@@ -926,7 +926,7 @@ services:
 
   # --------------------------------------------------------
   # --- unmanic
-  # --- TranscodificaciÃ³n/optimizaciÃ³n automÃ¡tica
+  # --- Transcodificación/optimización automática
   # --- Ports: 8888 (Gui Web)
   # --------------------------------------------------------
   unmanic:
@@ -1037,7 +1037,7 @@ services:
 
   # --------------------------------------------------------
   # --- netdata
-  # --- MonitorizaciÃ³n del host / mÃ©tricas
+  # --- Monitorización del host / métricas
   # --- Ports: 19999 (Gui Web)
   # --------------------------------------------------------
   netdata:
@@ -1066,7 +1066,7 @@ services:
 
   # --------------------------------------------------------
   # --- jellystat
-  # --- EstadÃ­sticas avanzadas Jellyfin
+  # --- Estadísticas avanzadas Jellyfin
   # --- Ports: 3000 (Gui Web)
   # --------------------------------------------------------
   jellystat:
@@ -1096,7 +1096,7 @@ services:
 
   # --------------------------------------------------------
   # --- vpn-ip-check
-  # --- ComprobaciÃ³n de IP/VPN (logs)
+  # --- Comprobación de IP/VPN (logs)
   # --- Ports: N/A
   # --------------------------------------------------------
   vpn-ip-check:
@@ -1151,7 +1151,7 @@ services:
 
   # --------------------------------------------------------
   # --- portainer
-  # --- GestiÃ³n de Docker
+  # --- Gestión de Docker
   # --- Ports: 9443 (Gui Web)
   # --------------------------------------------------------
   portainer:
@@ -1195,7 +1195,7 @@ services:
 
   # --------------------------------------------------------
   # --- nginx-proxy-manager
-  # --- Reverse proxy + gestiÃ³n de hosts/SSL
+  # --- Reverse proxy + gestión de hosts/SSL
   # --- Ports: 81 (Gui Web)
   # --------------------------------------------------------
   nginx-proxy-manager:
@@ -1257,7 +1257,7 @@ services:
       - "5801:5801"
       - "9191:9191"
       - "34400:34400"
-      # (recomendaciÃ³n hardening) si solo lo quieres local:
+      # (recomendación hardening) si solo lo quieres local:
       # - "127.0.0.1:34400:34400"
     restart: unless-stopped
 
@@ -1510,7 +1510,7 @@ services:
 
   # --------------------------------------------------------
   # --- n8n
-  # --- AutomatizaciÃ³n de workflows
+  # --- Automatización de workflows
   # --- Ports: 5678 (Gui Web)
   # --------------------------------------------------------
   n8n:
@@ -1562,7 +1562,7 @@ services:
 
   # --------------------------------------------------------
   # --- gpodder
-  # --- GestiÃ³n/descarga de podcasts
+  # --- Gestión/descarga de podcasts
   # --- Ports: 33131 (Gui Web)
   # --------------------------------------------------------
   gpodder:
@@ -1574,16 +1574,16 @@ services:
       - PGID=1000
       - PASSWORD=${GPODDER_PASS}
     ports:
-      - "33131:3000"     # tÃº ya lo tienes en 33131
+      - "33131:3000"     # tú ya lo tienes en 33131
     volumes:
       - "E:/Docker_folders/gpodder/config:/config"
-      - "E:/Docker_folders/gpodder/downloads:/downloads"     # cachÃ© de gPodder (NO jellyfin)
+      - "E:/Docker_folders/gpodder/downloads:/downloads"     # caché de gPodder (NO jellyfin)
       - "F:/Podcasts:/jellyfin_podcasts"                     # salida para Jellyfin
     restart: unless-stopped
 
   # --------------------------------------------------------
   # --- beets
-  # --- OrganizaciÃ³n/tagging de mÃºsica (integraciÃ³n Jellyfin)
+  # --- Organización/tagging de música (integración Jellyfin)
   # --- Ports: 8337 (Gui Web)
   # --------------------------------------------------------
   beets:
@@ -1860,14 +1860,14 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Madrid
-      # Auth bÃ¡sica opcional (recomendable al menos en LAN)
+      # Auth básica opcional (recomendable al menos en LAN)
       - CUSTOM_USER=${GHD_USER}
       - PASSWORD=${GHD_PASS}
     volumes:
       - "E:/Docker_folders/github-desktop/config:/config"
       - "E:/Docker_folders/repos:/repos"
     ports:
-      - "127.0.0.1:33192:3000"   # HTTP (pensado para ir detrÃ¡s de proxy)
+      - "127.0.0.1:33192:3000"   # HTTP (pensado para ir detrás de proxy)
       - "127.0.0.1:33193:3001"   # HTTPS directo (cert self-signed)
     shm_size: "1gb"
     cap_add:
@@ -1898,7 +1898,7 @@ services:
 
   # --------------------------------------------------------
   # --- guacamole
-  # --- Acceso remoto vÃ­a web (RDP/VNC/SSH)
+  # --- Acceso remoto vía web (RDP/VNC/SSH)
   # --- Ports: 33170 (Gui Web)
   # --------------------------------------------------------
   guacamole:
@@ -1946,7 +1946,7 @@ services:
 
   # --------------------------------------------------------
   # --- bitwarden-lite
-  # --- Gestor de contraseÃ±as (servido por proxy)
+  # --- Gestor de contraseñas (servido por proxy)
   # --- Ports: N/A
   # --------------------------------------------------------
   bitwarden-lite:
@@ -1966,7 +1966,7 @@ services:
       BW_DB_DATABASE: bitwarden
       BW_DB_USERNAME: bitwarden
       BW_DB_PASSWORD: ${BW_DB_PASSWORD}
-      # InstalaciÃ³n Bitwarden
+      # Instalación Bitwarden
       BW_INSTALLATION_ID: ${BW_INSTALLATION_ID}
       BW_INSTALLATION_KEY: ${BW_INSTALLATION_KEY}
       # IMPORTANTE: primero "false" para crear tu usuario, luego lo pones "true"
@@ -2095,7 +2095,7 @@ services:
   
   # --------------------------------------------------------
   # --- youtube-podcast-exporter (cron)
-  # --- Convierte vÃ­deos TubeArchivist -> MP3 + thumbnails
+  # --- Convierte vídeos TubeArchivist -> MP3 + thumbnails
   # --- Schedule: 10:00 Europe/Madrid
   # --------------------------------------------------------
   youtube-podcast-exporter:
@@ -2106,7 +2106,7 @@ services:
     environment:
       - TZ=Europe/Madrid
       - CRON_SCHEDULE=0 1,10,18 * * *
-      - RUN_ON_START=true   # (opcional) ejecuta tambiÃ©n al arrancar
+      - RUN_ON_START=true   # (opcional) ejecuta también al arrancar
       # Rutas internas del contenedor
       - SRC_ROOT=/data/src
       - DEST_ROOT=/data/dest
@@ -2131,42 +2131,4 @@ services:
   # --- Scheduler / job runner con UI
   # --- Ports: 3012 (Gui Web)
   # --------------------------------------------------------
-  cronicle:
-    build:
-      context: .
-      dockerfile: ./Custom-Dockerfiles/cronicle-python/Dockerfile
-      args:
-        CRONICLE_TAG: "0.9.80"
-        WITH_RUST: "true"
-        WITH_POWERSHELL: "true"
-        PWSH_VERSION: "7.5.4"
-    image: cronicle-python:0.9.80
-    container_name: cronicle
-    hostname: cronicle
-    ports:
-      - "3012:3012"
-    environment:
-      TZ: "Europe/Madrid"
-      CRONICLE_base_app_url: "http://localhost:3012"
-      PY_RUNNER_MODE: "venv"
-      PY_VENV_DIR: "/opt/cronicle/data/python/venv"
-      PY_PIP_CACHE_DIR: "/opt/cronicle/data/python/pip-cache"
-      PY_STATE_DIR: "/opt/cronicle/data/python/state"
-      RUST_CACHE_DIR: "/opt/cronicle/data/rust"
-      ARTIFACTS_DIR: "/artifacts"
-      PYTHONUNBUFFERED: "1"
-    volumes:
-      - "E:/Docker_folders/cronicle/data:/opt/cronicle/data"
-      - "E:/Docker_folders/cronicle/logs:/opt/cronicle/logs"
-      - "E:/Docker_folders/cronicle/plugins:/opt/cronicle/plugins"
-      - "E:/Docker_folders/cronicle/artifacts:/artifacts"
-      - "E:/Docker_folders/_scripts:/scripts"
-      - "D:/:/host/D"
-      - "E:/:/host/E"
-      - "F:/:/host/F"
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "curl -fsS http://localhost:3012/api/app/ping >/dev/null || exit 1"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
+  

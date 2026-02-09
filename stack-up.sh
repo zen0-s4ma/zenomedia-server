@@ -302,9 +302,6 @@ GROUP_ARR=(
 
 GROUP_UI_MISC=(
   heimdall
-  homarr
-  komga
-  calibre
   uptime-kuma
   dozzle
   netdata
@@ -312,21 +309,29 @@ GROUP_UI_MISC=(
   swagger-ui
   swagger-editor
   github-desktop
-  searxng
-  qdrant
-  rss-bridge
   gpodder
   sftpgo
   filestash_wopi
   filestash
   filezilla
-  unmanic
-  beets
   webgrabplus
-  iptvnator-backend
-  iptvnator
   nextpvr
 )
+
+GROUP_UI_OTHERS=(
+  homarr
+  komga
+  calibre
+  searxng
+  qdrant
+  rss-bridge
+  unmanic
+  beets
+  iptvnator-backend
+  iptvnator
+)
+
+
 
 # =========================
 # Ejecución (90s entre grupos)
@@ -339,6 +344,7 @@ group_pause
 
 # Grupo VPN (gluetun) — el OK incluye Mullvad gate
 up_group_sequential_clean "3" "${GROUP_VPN[@]}"
+group_pause
 group_pause
 
 # Los clientes pegados ya solo arrancan cuando Mullvad fue OK en el grupo 3
@@ -354,10 +360,13 @@ group_pause
 up_group_sequential_clean "7" "${GROUP_TUBEARCHIVIST[@]}"
 group_pause
 
-up_group_sequential_clean "8" "${GROUP_ARR[@]}"
-group_pause
+# up_group_sequential_clean "8" "${GROUP_ARR[@]}"
+# group_pause
 
 up_group_sequential_clean "9" "${GROUP_UI_MISC[@]}"
+group_pause
+
+# up_group_sequential_clean "9" "${GROUP_UI_OTHERS[@]}"
 
 echo
 echo "FIN ✅"
