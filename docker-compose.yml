@@ -2158,6 +2158,7 @@ services:
       RUST_CACHE_DIR: "/opt/cronicle/data/rust"
       ARTIFACTS_DIR: "/artifacts"
       PYTHONUNBUFFERED: "1"
+      DOCKER_HOST: "unix:///var/run/docker.sock"
     volumes:
       - "E:/Docker_folders/cronicle/data:/opt/cronicle/data"
       - "E:/Docker_folders/cronicle/logs:/opt/cronicle/logs"
@@ -2167,9 +2168,11 @@ services:
       - "D:/:/host/D"
       - "E:/:/host/E"
       - "F:/:/host/F"
+      - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS http://localhost:3012/api/app/ping >/dev/null || exit 1"]
       interval: 30s
       timeout: 5s
       retries: 5
+

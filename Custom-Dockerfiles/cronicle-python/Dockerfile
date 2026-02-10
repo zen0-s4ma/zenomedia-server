@@ -14,7 +14,7 @@ RUN set -eux; \
   apk add --no-cache \
     bash ca-certificates curl jq coreutils tzdata dos2unix \
     python3 py3-pip py3-virtualenv py3-setuptools py3-wheel \
-    ffmpeg \
+    ffmpeg docker-cli \
     rust cargo \
     icu-libs krb5-libs libgcc libstdc++ zlib ncurses-terminfo-base less \
   ; \
