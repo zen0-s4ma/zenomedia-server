@@ -2136,8 +2136,8 @@ services:
   # --------------------------------------------------------
   cronicle:
     build:
-      context: .
-      dockerfile: ./Custom-Dockerfiles/cronicle-python/Dockerfile
+      context: ./Custom-Dockerfiles/cronicle-python
+      dockerfile: Dockerfile
       args:
         CRONICLE_TAG: "0.9.80"
         WITH_RUST: "true"

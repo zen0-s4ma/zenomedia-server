@@ -1,25 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [[ $# -lt 1 ]]; then
-  echo "[run-shell] Usage:"
-  echo "  run-shell /scripts/do_something.sh"
-  echo "  run-shell -- 'echo hello && ls -la'"
-  exit 2
-fi
-
-if [[ "${1}" == "--" ]]; then
-  shift
-  exec bash -lc "$*"
-fi
-
-SCRIPT="${1}"
+SCRIPT="${1:-}"
 shift || true
 
-if [[ ! -f "${SCRIPT}" ]]; then
-  echo "[run-shell] ERROR: Script not found: ${SCRIPT}" >&2
-  exit 2
+if [[ -z "${SCRIPT}" || ! -f "${SCRIPT}" ]]; then
+  echo "[run-shell] ERROR: script not found: ${SCRIPT}" >&2
+  exit 66
 fi
 
-chmod +x "${SCRIPT}" || true
+dos2unix -q "${SCRIPT}" 2>/dev/null || true
 exec bash "${SCRIPT}" "$@"
