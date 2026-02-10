@@ -2064,15 +2064,18 @@ services:
   firefox:
     image: jlesage/firefox:latest
     container_name: firefox
-    restart: unless-stopped
-    network_mode: "service:gluetun-swt"
-    depends_on:
-      - gluetun-swt
+    network_mode: service:gluetun-swt
     environment:
       - TZ=Europe/Madrid
+      - WEB_LISTENING_PORT=5800
+      - VNC_LISTENING_PORT=5900
     volumes:
-      - "E:/Docker_folders/firefox:/config:rw"
-      - "D:/Descargas/FirefoxVPN:/storage/Descargas:rw"
+      - E:/Docker_folders/firefox:/config:rw
+      - D:/Descargas/FirefoxVPN:/storage/Descargas:rw
+    depends_on:
+      - gluetun-swt
+    restart: unless-stopped
+
 
   # --------------------------------------------------------
   # --- Tor Browser
@@ -2080,18 +2083,18 @@ services:
   # --- Ports: Gluetun 5801
   # --------------------------------------------------------
   tor-browser:
-    image: domistyle/tor-browser:latest
-    container_name: tor-browser
-    restart: unless-stopped
-    network_mode: "service:gluetun-swt"
-    depends_on:
-      - gluetun-swt
-    environment:
-      - TZ=Europe/Madrid
-      - WEB_LISTENING_PORT=5801
-    volumes:
-      - "D:/Descargas/TorBrowserVPN:/storage/Descargas:rw"
-
+      image: domistyle/tor-browser:latest
+      container_name: tor-browser
+      network_mode: service:gluetun-swt
+      environment:
+        - TZ=Europe/Madrid
+        - WEB_LISTENING_PORT=5801
+        - VNC_LISTENING_PORT=5901
+      volumes:
+        - D:/Descargas/TorBrowserVPN:/storage/Descargas:rw
+      depends_on:
+        - gluetun-swt
+      restart: unless-stopped
   
   # --------------------------------------------------------
   # --- youtube-podcast-exporter (cron)

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -u -o pipefail
+# ^ quitamos -e para que no se corte el script ante un fallo puntual
 
 # =========================
 # Config general
@@ -14,8 +15,51 @@ SLEEP_STEP="${SLEEP_STEP:-2}"                       # polling interno readiness
 INTER_GROUP_SLEEP="${INTER_GROUP_SLEEP:-90}"        # 1m30 entre grupos
 INTER_SERVICE_SLEEP="${INTER_SERVICE_SLEEP:-5}"     # 5s entre servicios (dentro del grupo)
 
+# Si quieres volver al modo "corta al primer fallo": FAIL_FAST=true
+FAIL_FAST="${FAIL_FAST:-false}"
+
 # Filtro opcional de grupos
 ONLY_GROUPS=""     # ej: "db,vpn,vpn_clients"
+
+# =========================
+# Estado / resumen
+# =========================
+declare -a OK_SERVICES=()
+declare -a FAIL_SERVICES=()
+declare -A FAIL_REASON=()
+
+log()  { echo "$@"; }
+warn() { echo "WARN: $*" >&2; }
+err()  { echo "ERROR: $*" >&2; }
+
+die() {
+  err "$*"
+  exit 1
+}
+
+fail() {
+  # En modo normal: no aborta, solo devuelve error
+  # En FAIL_FAST=true: aborta como antes
+  local msg="$1"
+  if [[ "${FAIL_FAST}" == "true" ]]; then
+    die "$msg"
+  else
+    warn "$msg"
+    return 1
+  fi
+}
+
+mark_ok() {
+  local svc="$1"
+  OK_SERVICES+=("$svc")
+}
+
+mark_fail() {
+  local svc="$1"
+  local reason="$2"
+  FAIL_SERVICES+=("$svc")
+  FAIL_REASON["$svc"]="$reason"
+}
 
 # =========================
 # Helpers
@@ -28,11 +72,6 @@ fmt_ms() {
   local m=$((s/60))
   local ss=$((s%60))
   printf "%d:%02d" "$m" "$ss"
-}
-
-die() {
-  echo "ERROR: $*" >&2
-  exit 1
 }
 
 load_env() {
@@ -86,14 +125,18 @@ wait_ready() {
     hs="$(health_status "$svc")"
     rs="$(run_status "$svc")"
 
-    # Si hay healthcheck, exigimos healthy
+    # Si el contenedor murió / salió, no esperes 420s para nada
+    if [[ "$rs" == "exited" || "$rs" == "dead" ]]; then
+      return 1
+    fi
+
     if has_healthcheck "$svc"; then
       if [[ "$hs" == "healthy" ]]; then
         return 0
       fi
       if [[ "$hs" == "unhealthy" ]]; then
-        # Mantengo la lógica anterior: intento restart automático ante unhealthy
-        dc restart "$svc" >/dev/null || true
+        # intento restart automático ante unhealthy
+        dc restart "$svc" >/dev/null 2>&1 || true
         sleep 5
       fi
     else
@@ -106,13 +149,16 @@ wait_ready() {
     sleep "$SLEEP_STEP"
   done
 
-  die "${svc} no alcanzó READY en ${timeout}s (health=$(health_status "$svc"), run=$(run_status "$svc"))"
+  return 1
 }
 
 http_get_in_container() {
   local svc="$1"
   local url="$2"
-  docker exec "$svc" sh -lc "
+  local cid; cid="$(container_id "$svc")"
+  [[ -n "$cid" ]] || return 1
+
+  docker exec "$cid" sh -lc "
     if command -v curl >/dev/null 2>&1; then
       curl -fsSL '$url'
     elif command -v wget >/dev/null 2>&1; then
@@ -130,15 +176,18 @@ wait_gluetun_mullvad() {
   local start="$SECONDS"
   local end=$((start + timeout))
 
-  # primero: contenedor "ready" (running/healthy)
-  wait_ready "$svc" "$timeout"
+  # primero: contenedor "ready"
+  if ! wait_ready "$svc" "$timeout"; then
+    return 1
+  fi
 
   # luego: gate mullvad_exit_ip=true
   while (( SECONDS < end )); do
     local body
     body="$(http_get_in_container "$svc" "https://am.i.mullvad.net/json" 2>/dev/null || true)"
+
     if [[ "$body" == "NO_HTTP_CLIENT" ]]; then
-      die "${svc}: no hay curl ni wget dentro del contenedor para consultar Mullvad"
+      return 1
     fi
 
     if echo "$body" | grep -q '"mullvad_exit_ip"[[:space:]]*:[[:space:]]*true'; then
@@ -148,16 +197,11 @@ wait_gluetun_mullvad() {
     sleep "$SLEEP_STEP"
   done
 
-  die "${svc} no confirmó Mullvad (mullvad_exit_ip=true) en ${timeout}s"
+  return 1
 }
 
-group_pause() {
-  sleep "${INTER_GROUP_SLEEP}"
-}
-
-service_pause() {
-  sleep "${INTER_SERVICE_SLEEP}"
-}
+group_pause() { sleep "${INTER_GROUP_SLEEP}"; }
+service_pause() { sleep "${INTER_SERVICE_SLEEP}"; }
 
 should_run_group() {
   local group_name="$1"
@@ -167,7 +211,7 @@ should_run_group() {
   return 1
 }
 
-# Arranque secuencial con salida "limpia" por grupo
+# Arranque secuencial por grupo (continúa aunque haya fallos)
 up_group_sequential_clean() {
   local group_label="$1"; shift
   local services=("$@")
@@ -176,56 +220,78 @@ up_group_sequential_clean() {
     return 0
   fi
 
-  echo
-  echo "GRUPO ${group_label}:"
+  log
+  log "GRUPO ${group_label}:"
 
   local count="${#services[@]}"
   local i=0
 
   for s in "${services[@]}"; do
     i=$((i+1))
-    echo "${s} -> Arrancando..."
+    log "${s} -> Arrancando..."
 
     local t0; t0="$(ts_now)"
 
-    # ✅ SOLO up -d. SIN pull, SIN build.
-    dc up -d "$s" >/dev/null
+    # ✅ SOLO up -d (si falla, no abortamos todo)
+    if ! dc up -d "$s" >/dev/null 2>&1; then
+      local t1; t1="$(ts_now)"
+      local dt=$((t1 - t0))
+      err "${s} -> FAIL (docker compose up falló) (t = $(fmt_ms "$dt"))"
+      mark_fail "$s" "up_failed"
+      [[ $i -lt $count ]] && service_pause
+      continue
+    fi
 
-    # READY
-    wait_ready "$s" "$TIMEOUT_DEFAULT"
+    # READY (si falla por timeout o exit, seguimos)
+    if ! wait_ready "$s" "$TIMEOUT_DEFAULT"; then
+      local hs rs
+      hs="$(health_status "$s")"
+      rs="$(run_status "$s")"
+      local t1; t1="$(ts_now)"
+      local dt=$((t1 - t0))
+      err "${s} -> FAIL (no READY en ${TIMEOUT_DEFAULT}s | health=${hs} run=${rs}) (t = $(fmt_ms "$dt"))"
+      mark_fail "$s" "timeout_ready health=${hs} run=${rs}"
+      [[ $i -lt $count ]] && service_pause
+      continue
+    fi
 
-    # Si es gluetun, además esperamos Mullvad antes de marcar OK
+    # Si es gluetun, además esperamos Mullvad (si falla, no aborta)
     if [[ "$s" == "gluetun-swt" ]]; then
-      wait_gluetun_mullvad "$TIMEOUT_DEFAULT"
+      if ! wait_gluetun_mullvad "$TIMEOUT_DEFAULT"; then
+        local t1; t1="$(ts_now)"
+        local dt=$((t1 - t0))
+        err "${s} -> FAIL (no confirmó Mullvad en ${TIMEOUT_DEFAULT}s) (t = $(fmt_ms "$dt"))"
+        mark_fail "$s" "mullvad_gate_failed"
+        [[ $i -lt $count ]] && service_pause
+        continue
+      fi
     fi
 
     local t1; t1="$(ts_now)"
     local dt=$((t1 - t0))
+    log "${s} -> OK (t = $(fmt_ms "$dt"))"
+    mark_ok "$s"
 
-    echo "${s} -> OK (t = $(fmt_ms "$dt"))"
-
-    # pausa entre servicios salvo el último
-    if [[ $i -lt $count ]]; then
-      service_pause
-    fi
+    [[ $i -lt $count ]] && service_pause
   done
 }
 
 usage() {
   cat <<EOF
 Uso:
-  ./stack-up.sh [--only db,vpn,vpn_clients,...]
+  ./stack-up.sh [--only 1,2,3...]
 
 Env útiles:
   TIMEOUT_DEFAULT=420
   INTER_GROUP_SLEEP=90
   INTER_SERVICE_SLEEP=5
   COMPOSE_PROFILES=gpu-nvidia
+  FAIL_FAST=false   # si lo pones en true, se para al primer fallo (como antes)
 EOF
 }
 
 # =========================
-# Args (sin pull/build)
+# Args
 # =========================
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -239,7 +305,7 @@ cd "$PROJECT_DIR"
 load_env
 
 # =========================
-# Grupos (misma lógica que antes)
+# Grupos
 # =========================
 GROUP_DB=(
   postgres
@@ -273,18 +339,19 @@ GROUP_DB_APPS=(
   guacamole
   bitwarden-lite
   romm
+  heimdall
 )
 
 GROUP_MEDIA=(
-  jellyfin
+  tubearchivist
   ersatztv
   jfa-go
-)
-
-GROUP_TUBEARCHIVIST=(
-  tubearchivist
+  webgrabplus
+  nextpvr
   tubearchivist-audio
 )
+
+GROUP_JELLYFIN=( jellyfin )
 
 GROUP_ARR=(
   qbittorrent
@@ -301,7 +368,6 @@ GROUP_ARR=(
 )
 
 GROUP_UI_MISC=(
-  heimdall
   uptime-kuma
   dozzle
   netdata
@@ -314,8 +380,6 @@ GROUP_UI_MISC=(
   filestash_wopi
   filestash
   filezilla
-  webgrabplus
-  nextpvr
 )
 
 GROUP_UI_OTHERS=(
@@ -331,42 +395,35 @@ GROUP_UI_OTHERS=(
   iptvnator
 )
 
-
-
 # =========================
-# Ejecución (90s entre grupos)
+# Ejecución
 # =========================
 up_group_sequential_clean "1" "${GROUP_DB[@]}"
-group_pause
-
 up_group_sequential_clean "2" "${GROUP_NET[@]}"
-group_pause
-
-# Grupo VPN (gluetun) — el OK incluye Mullvad gate
 up_group_sequential_clean "3" "${GROUP_VPN[@]}"
-group_pause
-group_pause
-
-# Los clientes pegados ya solo arrancan cuando Mullvad fue OK en el grupo 3
 up_group_sequential_clean "4" "${GROUP_VPN_CLIENTS[@]}"
-group_pause
-
 up_group_sequential_clean "5" "${GROUP_DB_APPS[@]}"
-group_pause
-
 up_group_sequential_clean "6" "${GROUP_MEDIA[@]}"
-group_pause
-
-up_group_sequential_clean "7" "${GROUP_TUBEARCHIVIST[@]}"
-group_pause
-
+up_group_sequential_clean "7" "${GROUP_JELLYFIN[@]}"
 # up_group_sequential_clean "8" "${GROUP_ARR[@]}"
-# group_pause
-
 up_group_sequential_clean "9" "${GROUP_UI_MISC[@]}"
-group_pause
+# up_group_sequential_clean "10" "${GROUP_UI_OTHERS[@]}"
 
-# up_group_sequential_clean "9" "${GROUP_UI_OTHERS[@]}"
+log
+log "FIN ✅"
+log "Resumen:"
+log "  OK:   ${#OK_SERVICES[@]}"
+log "  FAIL: ${#FAIL_SERVICES[@]}"
 
-echo
-echo "FIN ✅"
+if (( ${#FAIL_SERVICES[@]} > 0 )); then
+  log
+  log "Fallaron (pero el script siguió):"
+  for s in "${FAIL_SERVICES[@]}"; do
+    log "  - ${s}: ${FAIL_REASON[$s]}"
+  done
+fi
+
+# No forzamos exit 1 por defecto (para que no “rompa” tu flujo)
+# Si quieres que devuelva error cuando haya fallos:
+# (( ${#FAIL_SERVICES[@]} > 0 )) && exit 2
+exit 0

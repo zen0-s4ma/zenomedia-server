@@ -531,3 +531,13 @@
 #homeTab .card[data-type="Episode"] .secondary {
   display: none !important;
 }
+
+#itemDetailPage #childrenCollapsible #childrenContent .childrenItemsContainer.itemsContainer.vertical-list {
+  flex-direction: column-reverse;
+}
+#itemDetailPage #childrenCollapsible #childrenContent .childrenItemsContainer.itemsContainer.vertical-wrap {
+  flex-direction: row-reverse;
+  flex-wrap: wrap-reverse;
+  justify-content: start;
+}
+
