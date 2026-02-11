@@ -80,7 +80,7 @@ services:
   # --- Ports: 8096 (Gui Web)
   # --------------------------------------------------------
   jellyfin:
-    image: jellyfin/jellyfin:10.11.4
+    image: jellyfin/jellyfin:latest
     container_name: jellyfin
     # limita exposiciÃ³n a la LAN
     ports:
