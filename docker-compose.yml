@@ -142,6 +142,7 @@ services:
       - "E:/Youtube_Podcast:/media/Youtube_podcast"
       - "E:/YouTube_videos:/media/Youtube_videos"
       - "E:/Ambience:/media/Ambience2"
+      - "E:/Conciertos:/media/Conciertos2"
       # PATHS DE CONFIGURACION E:
       - "E:/Docker_folders/jellifyn/metadata:/config"
       - "E:/Docker_folders/jellifyn/cache:/cache"

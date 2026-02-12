@@ -305,6 +305,20 @@ cd "$PROJECT_DIR"
 load_env
 
 # =========================
+# STOP GLOBAL (TODO Docker)
+# =========================
+log
+log "STOP GLOBAL: parando TODOS los contenedores de Docker..."
+ALL_IDS="$(docker ps -q || true)"
+
+if [[ -n "$ALL_IDS" ]]; then
+  echo "$ALL_IDS" | xargs -r docker stop -t 20 >/dev/null 2>&1 || true
+  log "✅ Todos los contenedores parados."
+else
+  log "ℹ️ No había contenedores corriendo."
+fi
+
+# =========================
 # Grupos
 # =========================
 GROUP_DB=(
