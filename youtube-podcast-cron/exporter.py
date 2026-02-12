@@ -11,7 +11,7 @@ import time
 from datetime import datetime, timezone
 from io import BytesIO
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Any
+from typing import Dict, List, Optional, Tuple, Any, Set
 
 import requests
 
@@ -19,21 +19,26 @@ import requests
 # CONFIGURACIÓN (EDITA AQUÍ)
 # =========================
 
-# Origen/destino
+# Origen/destino (export audio -> mp3)
 SRC_ROOT = Path(r"E:\YouTube\Audio")
 DEST_ROOT = Path(r"E:\Youtube_Podcast")
 
-# --- NUEVO: ruta adicional SOLO para retag del TITLE ---
+# Ruta adicional (gPodder) — retag + purge/purge-max
 RETAG_EXTRA_ROOT = Path(r"F:\Podcasts")
 
-# YouTube Data API v3 (solo para obtener títulos/fechas/miniaturas)
-# (Recomendado por seguridad: pásala por env var YT_API_KEY o por --yt-api-key)
+# Paths extra a purgar con OTRO TubeArchivist (TA2)
+TA2_PURGE_PATHS: List[Path] = [
+    Path(r"E:\YouTube_videos\UC9n5BQmNLHGlbHSZoGXLPdQ"),
+    Path(r"E:\YouTube_videos\UCzWr3fmdEWwk6fl5dWJACIQ"),
+]
+
+# YouTube Data API v3 (misma key para todo)
 YT_API_KEY = "AIzaSyA-9iJS0bDWXpCGPqvM4NzM-9EoBInli4A"
 
 # Comportamiento local
-DELETE_VIDEO_AFTER_MP3 = True     # borra el vídeo COPIADO (en DEST) tras crear el mp3
-OVERWRITE_MP3 = False            # sobrescribe mp3 si ya existe
-OVERWRITE_IMAGES = True          # sobrescribe jpg si ya existe (thumbnails + poster)
+DELETE_VIDEO_AFTER_MP3 = True
+OVERWRITE_MP3 = False
+OVERWRITE_IMAGES = True
 
 # Orden de preferencia de miniaturas de YouTube
 THUMB_KEYS_ORDER = ["maxres", "standard", "high", "medium", "default"]
@@ -41,31 +46,37 @@ THUMB_KEYS_ORDER = ["maxres", "standard", "high", "medium", "default"]
 REQUEST_TIMEOUT = 30
 
 # --- Embebido de metadatos (ID3) para Jellyfin ---
-EMBED_ID3_TAGS = True            # escribe tags ID3 en el MP3
-EMBED_COVER_ART = True           # embebe la miniatura JPG como carátula dentro del MP3
-TAG_EXISTING_MP3 = False         # si el MP3 ya existía y se saltó conversión, NO retaguear salvo que actives esta opción
-ID3V2_VERSION = 3                # ID3v2.3 (compatibilidad alta)
-WRITE_ID3V1 = True               # añade ID3v1 footer
+EMBED_ID3_TAGS = True
+EMBED_COVER_ART = True
+TAG_EXISTING_MP3 = False
+ID3V2_VERSION = 3
+WRITE_ID3V1 = True
 PODCAST_GENRE = "Podcast"
 
-# --- TubeArchivist (Swagger/API) ---
+# --- TubeArchivist #1 (TA1) ---
 TA_BASE_URL = os.environ.get("TA_BASE_URL", "https://tubeaudio.maripiflix.xyz/").strip()
-
-# Token: mejor por env var TA_TOKEN o por --ta-token (NO lo hardcodees)
-TA_TOKEN = "3810bd0c7dca327ee44a169ed0fe5e481ddb90fb"
-
-# Qué hacer al terminar:
-#  - "none": no toca TA
-#  - "delete": borra en TA
-#  - "delete_ignore": delete -> update_subscribed -> ignore-force
-TA_ACTION = "delete_ignore"
+TA_TOKEN = os.environ.get("TA_TOKEN", "3810bd0c7dca327ee44a169ed0fe5e481ddb90fb").strip()
+TA_ACTION = "delete_ignore"  # none|delete|delete_ignore
 TA_VERIFY_SSL = True
 TA_DRY_RUN = False
 
+# --- TubeArchivist #2 (TA2) ---
+TA2_BASE_URL = os.environ.get("TA2_BASE_URL", TA_BASE_URL).strip()
+TA2_TOKEN = os.environ.get("TA2_TOKEN", "f61fdf72627042c9bd1cf4105790b366d4f24c5e").strip()
+TA2_ACTION = "delete_ignore"
+TA2_VERIFY_SSL = True
+TA2_DRY_RUN = False
+
 # --- IGNORE (TubeArchivist) ---
-TA_IGNORE_STATUS = "ignore"  # recomendado para que persista frente a rescans
-TA_VERIFY_IGNORE = True            # intenta verificar con GET /api/download/{id}/
-TA_DEBUG = True                    # logs de endpoints/respuestas clave
+# IMPORTANTE:
+# - En tu TA, el endpoint /api/download/{id}/ acepta "ignore" (lo vemos en tu log).
+# - Pero el endpoint bulk /api/download/ te respondió que "ignore" NO es válido.
+# Así que probamos varios valores según endpoint.
+TA_IGNORE_STATUSES_ITEM = ["ignore", "ignore-force"]      # para POST /api/download/{id}/
+TA_IGNORE_STATUSES_BULK = ["ignore-force", "ignore"]      # para POST /api/download/ (bulk)
+
+TA_VERIFY_IGNORE = True
+TA_DEBUG = True
 
 # --- Esperas / polling (TA) ---
 TA_POLL_INTERVAL = 2.0
@@ -76,18 +87,30 @@ TA_WAIT_DOWNLOAD_APPEAR_TIMEOUT = 180.0
 # --- Purga final ---
 PURGE_SHORTER_THAN_SECONDS = 5 * 60  # 5 minutos
 
-# --- Purga final por cantidad (máximo de MP3 por canal) ---
+# --- Purga final por cantidad ---
 MAX_FILES_PER_CHANNEL = 15
 
-# --- Retag final (sobrescribir TITLE=nombre de fichero sin extensión) ---
+# --- Retag final ---
 RETAG_TITLE_FROM_FILENAME = True
 
 # =========================
 
 YOUTUBE_API_CHANNELS = "https://www.googleapis.com/youtube/v3/channels"
 YOUTUBE_API_VIDEOS = "https://www.googleapis.com/youtube/v3/videos"
-VIDEO_EXTS = {".mp4", ".mkv", ".webm", ".m4v"}
 
+VIDEO_EXTS = {".mp4", ".mkv", ".webm", ".m4v"}
+AUDIO_EXTS = {".mp3"}
+
+# Extensiones que se purgan en roots “audio”
+PURGE_EXTS_AUDIO: Set[str] = set(AUDIO_EXTS)
+
+# Extensiones que se purgan en TA2 paths (audio + vídeo)
+PURGE_EXTS_TA2: Set[str] = set(AUDIO_EXTS) | set(VIDEO_EXTS)
+
+
+# =========================
+# Helpers básicos
+# =========================
 
 def chunked(items: List[str], n: int) -> List[List[str]]:
     return [items[i:i + n] for i in range(0, len(items), n)]
@@ -158,6 +181,10 @@ def ensure_ffprobe() -> None:
     except Exception as e:
         raise RuntimeError(f"No encuentro ffprobe en PATH (viene con ffmpeg). Detalle: {e}")
 
+
+# =========================
+# MP3 conversion + tagging
+# =========================
 
 def ffmpeg_to_mp3(src_video: Path, dst_mp3: Path, overwrite: bool = False) -> None:
     cmd = ["ffmpeg", "-hide_banner", "-loglevel", "error"]
@@ -324,6 +351,34 @@ def ffprobe_title_tag(mp3_path: Path) -> Optional[str]:
         return None
 
 
+def _root_looks_like_channel_dir(root: Path) -> bool:
+    try:
+        if not root.exists() or not root.is_dir():
+            return False
+        for p in root.iterdir():
+            if p.is_file() and p.suffix.lower() in (AUDIO_EXTS | VIDEO_EXTS):
+                return True
+        return False
+    except Exception:
+        return False
+
+
+def iter_channel_dirs_for_root(root: Path) -> List[Path]:
+    """
+    Admite dos formas:
+      A) root tiene subcarpetas (cada una “canal”) -> devuelve subcarpetas
+      B) root ES la carpeta del canal (contiene mp3/mp4 directamente) -> devuelve [root]
+    """
+    if not root.exists():
+        return []
+    if _root_looks_like_channel_dir(root):
+        return [root]
+    try:
+        return sorted([d for d in root.iterdir() if d.is_dir()])
+    except Exception:
+        return []
+
+
 def retag_title_from_filename(dest_root: Path) -> Tuple[int, int]:
     ensure_ffmpeg()
     ensure_ffprobe()
@@ -334,7 +389,7 @@ def retag_title_from_filename(dest_root: Path) -> Tuple[int, int]:
     if not dest_root.exists():
         return (0, 0)
 
-    channel_dirs = [d for d in dest_root.iterdir() if d.is_dir()]
+    channel_dirs = iter_channel_dirs_for_root(dest_root)
     for ch_dir in channel_dirs:
         for mp3 in ch_dir.glob("*.mp3"):
             desired = sanitize_tag_value(mp3.stem)
@@ -359,6 +414,10 @@ def retag_title_from_filename(dest_root: Path) -> Tuple[int, int]:
 
     return (retag_ok, retag_err)
 
+
+# =========================
+# YouTube API helpers
+# =========================
 
 def list_channel_dirs(src_root: Path) -> List[Path]:
     return sorted([d for d in src_root.iterdir() if d.is_dir()])
@@ -468,7 +527,7 @@ def yt_video_meta(api_key: str, video_ids: List[str]) -> Dict[str, Dict[str, Opt
 
 
 # =========================
-# TubeArchivist API helpers (ADAPTADO A TU SWAGGER)
+# TubeArchivist API helpers (robustos)
 # =========================
 
 def ta_enabled(action: str, base_url: str, token: str) -> bool:
@@ -480,11 +539,6 @@ def ta_url(base_url: str, path: str) -> str:
 
 
 def _ta_auth_variants(token: str) -> List[str]:
-    """
-    Tu Swagger parece aceptar 'Authorization: <token>' sin prefijo.
-    La doc suele usar 'Token <token>'.
-    Probamos ambos, en este orden: Token <token> -> <token> (si no viene ya prefijado).
-    """
     t = (token or "").strip()
     if not t:
         return []
@@ -504,10 +558,7 @@ def ta_request(
     params: Optional[dict] = None,
 ) -> requests.Response:
     url = ta_url(base_url, path)
-    headers_base = {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-    }
+    headers_base = {"Accept": "application/json", "Content-Type": "application/json"}
 
     last_resp: Optional[requests.Response] = None
     for auth in _ta_auth_variants(token) or [""]:
@@ -526,7 +577,6 @@ def ta_request(
         )
         last_resp = resp
 
-        # si auth falla, prueba el siguiente formato
         if resp.status_code in (401, 403):
             continue
         return resp
@@ -544,45 +594,51 @@ def _ta_json(resp: requests.Response) -> Optional[Any]:
         return None
 
 
-def ta_video_get(session: requests.Session, video_id: str, base_url: str, token: str, verify_ssl: bool) -> Optional[dict]:
-    r = ta_request(session, "GET", base_url, token, f"/api/video/{video_id}/", verify_ssl)
-    if r.status_code == 404:
-        return None
-    if r.status_code != 200:
-        if TA_DEBUG:
-            print(f"    [TA] GET /api/video/{video_id}/ -> {r.status_code}: {r.text[:200]}")
-        return None
-    data = _ta_json(r)
-    return data if isinstance(data, dict) else None
-
-
-def ta_video_delete(session: requests.Session, video_id: str, base_url: str, token: str, verify_ssl: bool, dry_run: bool) -> bool:
+def ta_video_delete(
+    session: requests.Session,
+    video_id: str,
+    base_url: str,
+    token: str,
+    verify_ssl: bool,
+    dry_run: bool,
+    log_prefix: str = "TA",
+) -> bool:
     if dry_run:
-        print(f"    [TA] DRY-RUN: DELETE /api/video/{video_id}/")
+        print(f"    [{log_prefix}] DRY-RUN: DELETE /api/video/{video_id}/")
         return True
 
     r = ta_request(session, "DELETE", base_url, token, f"/api/video/{video_id}/", verify_ssl)
     if r.status_code in (200, 202, 204):
         if TA_DEBUG:
-            print(f"    [TA] OK DELETE /api/video/{video_id}/ -> {r.status_code}")
+            print(f"    [{log_prefix}] OK DELETE /api/video/{video_id}/ -> {r.status_code}")
         return True
     if r.status_code == 404:
         if TA_DEBUG:
-            print(f"    [TA] DELETE /api/video/{video_id}/ -> 404 (ya no existía)")
+            print(f"    [{log_prefix}] DELETE /api/video/{video_id}/ -> 404 (ya no existía)")
         return True
 
     if TA_DEBUG:
-        print(f"    [TA] FAIL DELETE /api/video/{video_id}/ -> {r.status_code}: {r.text[:200]}")
+        print(f"    [{log_prefix}] FAIL DELETE /api/video/{video_id}/ -> {r.status_code}: {r.text[:200]}")
     return False
 
 
-def ta_wait_video_gone(session: requests.Session, video_id: str, base_url: str, token: str, verify_ssl: bool, timeout_s: float) -> bool:
+def ta_wait_video_gone(
+    session: requests.Session,
+    video_id: str,
+    base_url: str,
+    token: str,
+    verify_ssl: bool,
+    timeout_s: float,
+    log_prefix: str = "TA",
+) -> bool:
     deadline = time.time() + timeout_s
     while time.time() < deadline:
         r = ta_request(session, "GET", base_url, token, f"/api/video/{video_id}/", verify_ssl)
         if r.status_code == 404:
             return True
         time.sleep(TA_POLL_INTERVAL)
+    if TA_DEBUG:
+        print(f"    [{log_prefix}] AVISO: timeout esperando /api/video/{video_id}/ -> 404")
     return False
 
 
@@ -593,15 +649,16 @@ def ta_task_start_by_name(
     token: str,
     verify_ssl: bool,
     dry_run: bool,
+    log_prefix: str = "TA",
 ) -> Optional[str]:
     if dry_run:
-        print(f"    [TA] DRY-RUN: POST /api/task/by-name/{task_name}/")
+        print(f"    [{log_prefix}] DRY-RUN: POST /api/task/by-name/{task_name}/")
         return "dryrun-task-id"
 
     r = ta_request(session, "POST", base_url, token, f"/api/task/by-name/{task_name}/", verify_ssl)
     if r.status_code not in (200, 201, 202):
         if TA_DEBUG:
-            print(f"    [TA] FAIL POST /api/task/by-name/{task_name}/ -> {r.status_code}: {r.text[:200]}")
+            print(f"    [{log_prefix}] FAIL POST /api/task/by-name/{task_name}/ -> {r.status_code}: {r.text[:200]}")
         return None
 
     data = _ta_json(r)
@@ -609,12 +666,11 @@ def ta_task_start_by_name(
         tid = data.get("task_id") or data.get("taskId") or data.get("id")
         if tid:
             if TA_DEBUG:
-                print(f"    [TA] OK start task '{task_name}' -> task_id={tid}")
+                print(f"    [{log_prefix}] OK start task '{task_name}' -> task_id={tid}")
             return str(tid)
 
-    # si no viene task_id (raro), devolvemos None y haremos espera “ciega”
     if TA_DEBUG:
-        print(f"    [TA] AVISO: task '{task_name}' started pero sin task_id en respuesta.")
+        print(f"    [{log_prefix}] AVISO: task '{task_name}' started pero sin task_id en respuesta.")
     return None
 
 
@@ -633,10 +689,8 @@ def ta_task_wait(
     token: str,
     verify_ssl: bool,
     timeout_s: float,
+    log_prefix: str = "TA",
 ) -> Tuple[bool, Optional[dict]]:
-    """
-    Poll a /api/task/by-id/{task_id}/ hasta terminar.
-    """
     terminal_ok = {"success", "succeeded", "done", "finished", "completed", "complete", "ok"}
     terminal_fail = {"failed", "failure", "error", "revoked", "canceled", "cancelled"}
 
@@ -650,7 +704,7 @@ def ta_task_wait(
             continue
         if r.status_code != 200:
             if TA_DEBUG:
-                print(f"    [TA] FAIL GET /api/task/by-id/{task_id}/ -> {r.status_code}: {r.text[:200]}")
+                print(f"    [{log_prefix}] FAIL GET /api/task/by-id/{task_id}/ -> {r.status_code}: {r.text[:200]}")
             time.sleep(TA_POLL_INTERVAL)
             continue
 
@@ -665,6 +719,9 @@ def ta_task_wait(
 
         time.sleep(TA_POLL_INTERVAL)
 
+    if TA_DEBUG:
+        st = _task_status_str(last_json or {})
+        print(f"    [{log_prefix}] AVISO: timeout esperando task {task_id}. last_status='{st}'")
     return (False, last_json)
 
 
@@ -674,93 +731,36 @@ def ta_update_subscribed_and_wait(
     token: str,
     verify_ssl: bool,
     dry_run: bool,
+    log_prefix: str = "TA",
 ) -> bool:
-    task_id = ta_task_start_by_name(session, "update_subscribed", base_url, token, verify_ssl, dry_run)
+    task_id = ta_task_start_by_name(session, "update_subscribed", base_url, token, verify_ssl, dry_run, log_prefix)
     if not task_id:
-        # fallback: espera mínima “ciega”
         if TA_DEBUG:
-            print("    [TA] Fallback: esperando 30s sin task_id...")
+            print(f"    [{log_prefix}] Fallback: esperando 30s sin task_id...")
         time.sleep(30)
         return True
 
-    ok, info = ta_task_wait(session, task_id, base_url, token, verify_ssl, TA_WAIT_TASK_TIMEOUT)
+    ok, info = ta_task_wait(session, task_id, base_url, token, verify_ssl, TA_WAIT_TASK_TIMEOUT, log_prefix)
     if not ok and TA_DEBUG:
         st = _task_status_str(info or {})
-        print(f"    [TA] update_subscribed terminó MAL o timeout. status='{st}'")
+        print(f"    [{log_prefix}] update_subscribed terminó MAL o timeout. status='{st}'")
     return ok
 
 
-def ta_download_get(session: requests.Session, video_id: str, base_url: str, token: str, verify_ssl: bool) -> Optional[dict]:
+def ta_download_get(
+    session: requests.Session,
+    video_id: str,
+    base_url: str,
+    token: str,
+    verify_ssl: bool,
+) -> Optional[dict]:
     r = ta_request(session, "GET", base_url, token, f"/api/download/{video_id}/", verify_ssl)
     if r.status_code == 404:
         return None
     if r.status_code != 200:
-        if TA_DEBUG:
-            print(f"    [TA] GET /api/download/{video_id}/ -> {r.status_code}: {r.text[:200]}")
         return None
     data = _ta_json(r)
     return data if isinstance(data, dict) else None
-
-
-def ta_download_set_status(
-    session: requests.Session,
-    video_id: str,
-    status: str,
-    base_url: str,
-    token: str,
-    verify_ssl: bool,
-    dry_run: bool,
-) -> bool:
-    if dry_run:
-        print(f"    [TA] DRY-RUN: POST /api/download/{video_id}/ {{status:{status}}}")
-        return True
-
-    r = ta_request(
-        session,
-        "POST",
-        base_url,
-        token,
-        f"/api/download/{video_id}/",
-        verify_ssl,
-        json_body={"status": status},
-    )
-    if r.status_code in (200, 202, 204):
-        if TA_DEBUG:
-            print(f"    [TA] OK POST /api/download/{video_id}/ status={status} -> {r.status_code}")
-        return True
-
-    if TA_DEBUG:
-        print(f"    [TA] FAIL POST /api/download/{video_id}/ -> {r.status_code}: {r.text[:200]}")
-    return False
-
-
-def ta_download_bulk_add_ignore(
-    session: requests.Session,
-    video_id: str,
-    status: str,
-    base_url: str,
-    token: str,
-    verify_ssl: bool,
-    dry_run: bool,
-) -> bool:
-    """
-    Fallback: POST /api/download/ con AddDownloadItem {youtube_id,status}
-    (esto es lo que devuelve 'add to queue task started' en tu screenshot)
-    """
-    if dry_run:
-        print(f"    [TA] DRY-RUN: POST /api/download/ data=[{{youtube_id:{video_id}, status:{status}}}]")
-        return True
-
-    body = {"data": [{"youtube_id": video_id, "status": status}]}
-    r = ta_request(session, "POST", base_url, token, "/api/download/", verify_ssl, json_body=body)
-    if r.status_code in (200, 201, 202, 204):
-        if TA_DEBUG:
-            print(f"    [TA] OK POST /api/download/ (bulk add ignore) -> {r.status_code}")
-        return True
-
-    if TA_DEBUG:
-        print(f"    [TA] FAIL POST /api/download/ -> {r.status_code}: {r.text[:200]}")
-    return False
 
 
 def ta_wait_download_appears(
@@ -787,71 +787,74 @@ def _download_status_str(download_json: dict) -> str:
     return ""
 
 
-def ta_flow_delete_update_ignore(
+def ta_download_set_status_once(
     session: requests.Session,
     video_id: str,
+    status: str,
     base_url: str,
     token: str,
     verify_ssl: bool,
     dry_run: bool,
-) -> Tuple[bool, bool]:
+    log_prefix: str = "TA",
+) -> bool:
     """
-    Flujo pedido:
-      1) delete video
-      2) wait delete
-      3) update_subscribed + wait
-      4) ignore-force (y verificación)
-    Devuelve (deleted_ok, ignored_ok)
+    POST /api/download/{id}/ con un status concreto.
     """
-    deleted_ok = ta_video_delete(session, video_id, base_url, token, verify_ssl, dry_run)
-    if not deleted_ok:
-        return (False, False)
+    if dry_run:
+        print(f"    [{log_prefix}] DRY-RUN: POST /api/download/{video_id}/ {{status:{status}}}")
+        return True
 
-    if not dry_run:
-        gone = ta_wait_video_gone(session, video_id, base_url, token, verify_ssl, TA_WAIT_DELETE_TIMEOUT)
-        if not gone:
-            print(f"    [TA] AVISO: timeout esperando que desaparezca /api/video/{video_id}/ (puede ir lento).")
+    r = ta_request(
+        session,
+        "POST",
+        base_url,
+        token,
+        f"/api/download/{video_id}/",
+        verify_ssl,
+        json_body={"status": status},
+    )
+    if r.status_code in (200, 202, 204):
+        if TA_DEBUG:
+            print(f"    [{log_prefix}] OK POST /api/download/{video_id}/ status={status} -> {r.status_code}")
+        return True
 
-    upd_ok = ta_update_subscribed_and_wait(session, base_url, token, verify_ssl, dry_run)
-    if not upd_ok:
-        print("    [TA] AVISO: update_subscribed no confirmó OK (pero continúo con ignore).")
-
-    # tras update_subscribed, el vídeo puede reaparecer en download queue: espera a que exista
-    if not dry_run:
-        appeared = ta_wait_download_appears(session, video_id, base_url, token, verify_ssl, TA_WAIT_DOWNLOAD_APPEAR_TIMEOUT)
-        if not appeared and TA_DEBUG:
-            print(f"    [TA] AVISO: /api/download/{video_id}/ no apareció a tiempo; usaré fallback bulk-add ignore.")
-
-    # intenta el ignore directo; si falla o no existe, usa bulk-add
-    ok_set = ta_download_set_status(session, video_id, TA_IGNORE_STATUS, base_url, token, verify_ssl, dry_run)
-    if not ok_set:
-        ok_set = ta_download_bulk_add_ignore(session, video_id, TA_IGNORE_STATUS, base_url, token, verify_ssl, dry_run)
-
-    if not ok_set:
-        return (True, False)
-
-    if TA_VERIFY_IGNORE and not dry_run:
-        d = ta_download_get(session, video_id, base_url, token, verify_ssl)
-        if d is None:
-            # puede ser async; reintento corto
-            time.sleep(3)
-            d = ta_download_get(session, video_id, base_url, token, verify_ssl)
-
-        if isinstance(d, dict):
-            st = _download_status_str(d).lower()
-            if st in {"ignore", "ignore-force", "ignored"}:
-                return (True, True)
-
-            print(f"    [TA] AVISO: verificación ignore: status='{st}' (esperaba ignore/ignore).")
-            return (True, False)
-
-        print("    [TA] AVISO: no pude verificar el ignore por GET /api/download/{id}/.")
-        return (True, False)
-
-    return (True, True)
+    if TA_DEBUG:
+        # OJO: algunos errores vienen en HTML (500)
+        txt = (r.text or "").strip()
+        print(f"    [{log_prefix}] FAIL POST /api/download/{video_id}/ -> {r.status_code}: {txt[:200]}")
+    return False
 
 
-# --- NUEVO (cambio mínimo): aplicar IGNORE (post-update_subscribed) por vídeo ---
+def ta_download_bulk_add_ignore_once(
+    session: requests.Session,
+    video_id: str,
+    status: str,
+    base_url: str,
+    token: str,
+    verify_ssl: bool,
+    dry_run: bool,
+    log_prefix: str = "TA",
+) -> bool:
+    """
+    POST /api/download/ (bulk) con AddDownloadItem {youtube_id,status}
+    """
+    if dry_run:
+        print(f"    [{log_prefix}] DRY-RUN: POST /api/download/ data=[{{youtube_id:{video_id}, status:{status}}}]")
+        return True
+
+    body = {"data": [{"youtube_id": video_id, "status": status}]}
+    r = ta_request(session, "POST", base_url, token, "/api/download/", verify_ssl, json_body=body)
+    if r.status_code in (200, 201, 202, 204):
+        if TA_DEBUG:
+            print(f"    [{log_prefix}] OK POST /api/download/ (bulk add) status={status} -> {r.status_code}")
+        return True
+
+    if TA_DEBUG:
+        txt = (r.text or "").strip()
+        print(f"    [{log_prefix}] FAIL POST /api/download/ -> {r.status_code}: {txt[:200]}")
+    return False
+
+
 def ta_apply_ignore_only(
     session: requests.Session,
     video_id: str,
@@ -859,21 +862,38 @@ def ta_apply_ignore_only(
     token: str,
     verify_ssl: bool,
     dry_run: bool,
+    log_prefix: str = "TA",
 ) -> bool:
     """
-    Aplicar ignore (y verificación) SIN lanzar update_subscribed.
-    Pensado para usarlo al FINAL del canal, tras un único update_subscribed.
+    APLICAR IGNORE con comportamiento robusto:
+      1) Espera a que exista /api/download/{id}/
+      2) Si existe -> intenta POST /api/download/{id}/ con statuses item (ignore, ignore-force)
+      3) Si NO existe -> NO llama al endpoint /api/download/{id}/ (evita 500) y usa bulk-add con statuses bulk
+      4) Verifica con GET /api/download/{id}/ si procede
     """
-    # tras update_subscribed, el vídeo puede reaparecer en download queue: espera a que exista
     if not dry_run:
         appeared = ta_wait_download_appears(session, video_id, base_url, token, verify_ssl, TA_WAIT_DOWNLOAD_APPEAR_TIMEOUT)
-        if not appeared and TA_DEBUG:
-            print(f"    [TA] AVISO: /api/download/{video_id}/ no apareció a tiempo; usaré fallback bulk-add ignore.")
+    else:
+        appeared = True
 
-    # intenta el ignore directo; si falla o no existe, usa bulk-add
-    ok_set = ta_download_set_status(session, video_id, TA_IGNORE_STATUS, base_url, token, verify_ssl, dry_run)
+    ok_set = False
+
+    if appeared:
+        # Endpoint por-id (cuando existe): prueba "ignore" primero (lo que te funcionaba) y luego "ignore-force"
+        for st in TA_IGNORE_STATUSES_ITEM:
+            if ta_download_set_status_once(session, video_id, st, base_url, token, verify_ssl, dry_run, log_prefix):
+                ok_set = True
+                break
+    else:
+        if TA_DEBUG:
+            print(f"    [{log_prefix}] AVISO: /api/download/{video_id}/ no apareció a tiempo; NO usaré POST /api/download/{{id}} para evitar 500. Iré a bulk-add.")
+
     if not ok_set:
-        ok_set = ta_download_bulk_add_ignore(session, video_id, TA_IGNORE_STATUS, base_url, token, verify_ssl, dry_run)
+        # Fallback bulk-add: prueba ignore-force primero (tu server dijo que "ignore" no era válido aquí)
+        for st in TA_IGNORE_STATUSES_BULK:
+            if ta_download_bulk_add_ignore_once(session, video_id, st, base_url, token, verify_ssl, dry_run, log_prefix):
+                ok_set = True
+                break
 
     if not ok_set:
         return False
@@ -888,15 +908,18 @@ def ta_apply_ignore_only(
             st = _download_status_str(d).lower()
             if st in {"ignore", "ignore-force", "ignored"}:
                 return True
-
-            print(f"    [TA] AVISO: verificación ignore: status='{st}' (esperaba ignore/ignore).")
+            print(f"    [{log_prefix}] AVISO: verificación ignore: status='{st}' (esperaba ignore/ignore-force).")
             return False
 
-        print("    [TA] AVISO: no pude verificar el ignore por GET /api/download/{id}/.")
+        print(f"    [{log_prefix}] AVISO: no pude verificar el ignore por GET /api/download/{{id}}/.")
         return False
 
     return True
 
+
+# =========================
+# Export Channel (audio -> mp3) + TA1 delete/ignore
+# =========================
 
 def export_channel(
     channel_id: str,
@@ -945,9 +968,9 @@ def export_channel(
     for v in videos:
         vid = v.stem
         meta = meta_map.get(vid, {})
-        title = (meta.get("title") or vid)  # type: ignore[assignment]
+        title = (meta.get("title") or vid)
 
-        prefix = published_prefix(meta.get("publishedAt"), v)  # type: ignore[arg-type]
+        prefix = published_prefix(meta.get("publishedAt"), v)
         safe_title = sanitize_windows(str(title), max_len=140 - len(prefix) - 1)
 
         dst_video = unique_path(dest_channel_dir / f"{prefix}-{safe_title}{v.suffix.lower()}")
@@ -956,7 +979,7 @@ def export_channel(
         dst_mp3 = dst_video.with_suffix(".mp3")
         dst_jpg = dst_mp3.with_suffix(".jpg")
 
-        thumbs = meta.get("thumbnails") or {}  # type: ignore[assignment]
+        thumbs = meta.get("thumbnails") or {}
         thumb_urls = iter_thumb_urls(thumbs if isinstance(thumbs, dict) else {})
 
         work_items.append((vid, dst_video, dst_mp3, dst_jpg, thumb_urls))
@@ -968,7 +991,6 @@ def export_channel(
     session = requests.Session()
     ta_ok = ta_enabled(ta_action, ta_base_url, ta_token)
 
-    # --- NUEVO (cambio mínimo): acumular IDs borrados en TA para IGNORE al final del canal ---
     ta_deleted_ids_for_ignore: List[str] = []
 
     for vid, dst_video, dst_mp3, dst_jpg, thumb_urls in work_items:
@@ -996,7 +1018,6 @@ def export_channel(
                 meta = meta_map.get(vid, {}) or {}
                 vtitle = str(meta.get("title") or dst_mp3.stem)
                 vpub = meta.get("publishedAt")
-
                 date_str = iso_date_for_tag(vpub, dst_mp3)
 
                 album = channel_name
@@ -1031,72 +1052,41 @@ def export_channel(
             dst_video.unlink(missing_ok=True)
             print(f"    Borrado vídeo (DEST): {dst_video.name}")
 
-        # ===== TA ACTION (adaptado a tu Swagger) =====
         if ta_ok and dst_mp3.exists():
             if ta_action == "delete_ignore":
-                # --- CAMBIO MÍNIMO: aquí SOLO delete (por vídeo). update_subscribed + ignore se hace al final del canal ---
-                deleted_ok = ta_video_delete(
-                    session=session,
-                    video_id=vid,
-                    base_url=ta_base_url,
-                    token=ta_token,
-                    verify_ssl=ta_verify_ssl,
-                    dry_run=ta_dry_run,
-                )
+                deleted_ok = ta_video_delete(session, vid, ta_base_url, ta_token, ta_verify_ssl, ta_dry_run, log_prefix="TA1")
                 if not deleted_ok:
-                    print(f"    [TA] FAIL: no se pudo borrar {vid}")
+                    print(f"    [TA1] FAIL: no se pudo borrar {vid}")
                 else:
                     if not ta_dry_run:
-                        gone = ta_wait_video_gone(session, vid, ta_base_url, ta_token, ta_verify_ssl, TA_WAIT_DELETE_TIMEOUT)
-                        if not gone:
-                            print(f"    [TA] AVISO: timeout esperando que desaparezca /api/video/{vid}/ (puede ir lento).")
+                        ta_wait_video_gone(session, vid, ta_base_url, ta_token, ta_verify_ssl, TA_WAIT_DELETE_TIMEOUT, log_prefix="TA1")
                     ta_deleted_ids_for_ignore.append(vid)
 
             elif ta_action == "delete":
-                ok_del = ta_video_delete(
-                    session=session,
-                    video_id=vid,
-                    base_url=ta_base_url,
-                    token=ta_token,
-                    verify_ssl=ta_verify_ssl,
-                    dry_run=ta_dry_run,
-                )
-                if ok_del:
-                    print(f"    [TA] OK: borrado aplicado a {vid}")
-                else:
-                    print(f"    [TA] FAIL: no se pudo borrar {vid}")
+                ok_del = ta_video_delete(session, vid, ta_base_url, ta_token, ta_verify_ssl, ta_dry_run, log_prefix="TA1")
+                print(f"    [TA1] {'OK' if ok_del else 'FAIL'}: borrado aplicado a {vid}")
 
-    # --- CAMBIO MÍNIMO: al FINAL del canal, un solo update_subscribed y luego ignore de todos los IDs borrados ---
     if ta_ok and ta_action == "delete_ignore" and ta_deleted_ids_for_ignore:
-        upd_ok = ta_update_subscribed_and_wait(session, ta_base_url, ta_token, ta_verify_ssl, ta_dry_run)
+        upd_ok = ta_update_subscribed_and_wait(session, ta_base_url, ta_token, ta_verify_ssl, ta_dry_run, log_prefix="TA1")
         if not upd_ok:
-            print("    [TA] AVISO: update_subscribed no confirmó OK (pero continúo con ignore).")
+            print("    [TA1] AVISO: update_subscribed no confirmó OK (pero continúo con ignore).")
 
         for vid in ta_deleted_ids_for_ignore:
-            ignored_ok = ta_apply_ignore_only(
-                session=session,
-                video_id=vid,
-                base_url=ta_base_url,
-                token=ta_token,
-                verify_ssl=ta_verify_ssl,
-                dry_run=ta_dry_run,
-            )
+            ignored_ok = ta_apply_ignore_only(session, vid, ta_base_url, ta_token, ta_verify_ssl, ta_dry_run, log_prefix="TA1")
             if ignored_ok:
-                print(f"    [TA] OK: delete + update_subscribed + ignore-force aplicado a {vid}")
+                print(f"    [TA1] OK: delete + update_subscribed + ignore aplicado a {vid}")
             else:
-                print(f"    [TA] AVISO: borrado OK pero ignore NO confirmado para {vid} (podría reaparecer en rescan).")
+                print(f"    [TA1] AVISO: borrado OK pero ignore NO confirmado para {vid} (podría reaparecer).")
 
     print(f"\n[{channel_id}] Hecho.")
 
 
-def ffprobe_duration_seconds(mp3_path: Path) -> Optional[float]:
-    cmd = [
-        "ffprobe",
-        "-v", "error",
-        "-show_entries", "format=duration",
-        "-of", "json",
-        str(mp3_path),
-    ]
+# =========================
+# Purge (corto + max), genérico para mp3 + vídeo
+# =========================
+
+def ffprobe_duration_seconds(media_path: Path) -> Optional[float]:
+    cmd = ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "json", str(media_path)]
     p = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
     if p.returncode != 0:
         return None
@@ -1110,48 +1100,8 @@ def ffprobe_duration_seconds(mp3_path: Path) -> Optional[float]:
         return None
 
 
-def purge_short_mp3s(dest_root: Path, min_seconds: int) -> Tuple[int, int]:
-    ensure_ffprobe()
-
-    deleted_mp3 = 0
-    deleted_jpg = 0
-
-    if not dest_root.exists():
-        return (0, 0)
-
-    channel_dirs = [d for d in dest_root.iterdir() if d.is_dir()]
-    for ch_dir in channel_dirs:
-        for mp3 in ch_dir.glob("*.mp3"):
-            dur = ffprobe_duration_seconds(mp3)
-            if dur is None:
-                continue
-            if dur < float(min_seconds):
-                jpg = mp3.with_suffix(".jpg")
-                try:
-                    mp3.unlink(missing_ok=True)
-                    deleted_mp3 += 1
-                    print(f"[PURGE] Borrado MP3 (<{min_seconds}s): {mp3}")
-                except Exception:
-                    pass
-                try:
-                    if jpg.exists():
-                        jpg.unlink(missing_ok=True)
-                        deleted_jpg += 1
-                        print(f"[PURGE] Borrado JPG asociado: {jpg}")
-                except Exception:
-                    pass
-
-    return (deleted_mp3, deleted_jpg)
-
-
 def ffprobe_comment_tag(mp3_path: Path) -> Optional[str]:
-    cmd = [
-        "ffprobe",
-        "-v", "error",
-        "-show_entries", "format_tags=comment",
-        "-of", "json",
-        str(mp3_path),
-    ]
+    cmd = ["ffprobe", "-v", "error", "-show_entries", "format_tags=comment", "-of", "json", str(mp3_path)]
     p = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
     if p.returncode != 0:
         return None
@@ -1185,6 +1135,37 @@ def extract_video_id_from_mp3(mp3_path: Path) -> Optional[str]:
     return extract_video_id_from_text(c)
 
 
+def extract_video_id_from_filename(name: str) -> Optional[str]:
+    s = (name or "").strip()
+    if not s:
+        return None
+    if re.fullmatch(r"[A-Za-z0-9_-]{11}", s):
+        return s
+    m = re.search(r"(?:^|[^A-Za-z0-9_-])([A-Za-z0-9_-]{11})(?:$|[^A-Za-z0-9_-])", s)
+    if m:
+        return m.group(1)
+    return None
+
+
+def extract_video_id_from_media(media_path: Path) -> Optional[str]:
+    ext = media_path.suffix.lower()
+    if ext == ".mp3":
+        vid = extract_video_id_from_mp3(media_path)
+        if vid:
+            return vid
+    vid = extract_video_id_from_filename(media_path.stem)
+    if vid:
+        return vid
+    return extract_video_id_from_filename(media_path.name)
+
+
+def list_media_files_in_channel_dir(ch_dir: Path, exts: Set[str]) -> List[Path]:
+    out: List[Path] = []
+    for ext in exts:
+        out.extend(list(ch_dir.glob(f"*{ext}")))
+    return sorted([p for p in out if p.is_file()])
+
+
 def _parse_published_dt(published_at: Optional[str]) -> Optional[datetime]:
     if not published_at:
         return None
@@ -1194,67 +1175,124 @@ def _parse_published_dt(published_at: Optional[str]) -> Optional[datetime]:
         return None
 
 
-# --- CAMBIO APLICADO: fallback de fecha por prefijo YYYYMMDD-HHMMSS- del nombre del archivo ---
 def _parse_prefix_dt_from_filename(p: Path) -> Optional[datetime]:
-    """
-    Fallback de fecha SIN usar mtime/ctime:
-    Tus ficheros se nombran como: YYYYMMDD-HHMMSS-titulo.mp3
-    Ese prefijo viene de publishedAt (o de tu fallback antiguo),
-    así que es válido para ordenar por “antiguo -> reciente”.
-    """
-    stem = p.stem  # sin extensión
+    stem = p.stem
     m = re.match(r"^(\d{8}-\d{6})-", stem)
     if not m:
         return None
     try:
-        dt = datetime.strptime(m.group(1), "%Y%m%d-%H%M%S").replace(tzinfo=timezone.utc)
-        return dt
+        return datetime.strptime(m.group(1), "%Y%m%d-%H%M%S").replace(tzinfo=timezone.utc)
     except Exception:
         return None
 
 
-def purge_max_files_per_channel(
-    dest_root: Path,
-    api_key: str,
-    max_keep: int,
+def purge_short_media_files(
+    root: Path,
+    min_seconds: int,
+    media_exts: Set[str],
     ta_action: str,
     ta_base_url: str,
     ta_token: str,
     ta_verify_ssl: bool,
     ta_dry_run: bool,
+    log_prefix: str,
 ) -> Tuple[int, int, int]:
     ensure_ffprobe()
 
-    deleted_mp3 = 0
+    deleted_media = 0
     deleted_jpg = 0
     ta_processed = 0
 
-    if not dest_root.exists():
+    if not root.exists():
         return (0, 0, 0)
 
     session = requests.Session()
     ta_ok = ta_enabled(ta_action, ta_base_url, ta_token)
 
-    channel_dirs = [d for d in dest_root.iterdir() if d.is_dir()]
+    channel_dirs = iter_channel_dirs_for_root(root)
     for ch_dir in channel_dirs:
-        mp3s = sorted(list(ch_dir.glob("*.mp3")))
-        if len(mp3s) <= max_keep:
+        ta_deleted_ids_for_ignore: List[str] = []
+
+        media_files = list_media_files_in_channel_dir(ch_dir, media_exts)
+        for mf in media_files:
+            dur = ffprobe_duration_seconds(mf)
+            if dur is None or dur >= float(min_seconds):
+                continue
+
+            jpg = mf.with_suffix(".jpg")
+            vid = extract_video_id_from_media(mf)
+
+            try:
+                mf.unlink(missing_ok=True)
+                deleted_media += 1
+                print(f"[PURGE] Borrado (<{min_seconds}s): {mf}")
+            except Exception:
+                pass
+
+            try:
+                if jpg.exists():
+                    jpg.unlink(missing_ok=True)
+                    deleted_jpg += 1
+                    print(f"[PURGE] Borrado JPG asociado: {jpg}")
+            except Exception:
+                pass
+
+            if ta_ok and ta_action == "delete_ignore" and isinstance(vid, str) and vid:
+                ok_del = ta_video_delete(session, vid, ta_base_url, ta_token, ta_verify_ssl, ta_dry_run, log_prefix=log_prefix)
+                if ok_del:
+                    if not ta_dry_run:
+                        ta_wait_video_gone(session, vid, ta_base_url, ta_token, ta_verify_ssl, TA_WAIT_DELETE_TIMEOUT, log_prefix=log_prefix)
+                    ta_deleted_ids_for_ignore.append(vid)
+                    ta_processed += 1
+
+        if ta_ok and ta_action == "delete_ignore" and ta_deleted_ids_for_ignore:
+            ta_update_subscribed_and_wait(session, ta_base_url, ta_token, ta_verify_ssl, ta_dry_run, log_prefix=log_prefix)
+            for vid in ta_deleted_ids_for_ignore:
+                ignored_ok = ta_apply_ignore_only(session, vid, ta_base_url, ta_token, ta_verify_ssl, ta_dry_run, log_prefix=log_prefix)
+                if not ignored_ok:
+                    print(f"    [{log_prefix}] AVISO: borrado OK pero ignore NO confirmado para {vid} (podría reaparecer).")
+
+    return (deleted_media, deleted_jpg, ta_processed)
+
+
+def purge_max_files_per_channel(
+    root: Path,
+    api_key: str,
+    max_keep: int,
+    media_exts: Set[str],
+    ta_action: str,
+    ta_base_url: str,
+    ta_token: str,
+    ta_verify_ssl: bool,
+    ta_dry_run: bool,
+    log_prefix: str,
+) -> Tuple[int, int, int]:
+    ensure_ffprobe()
+
+    deleted_media = 0
+    deleted_jpg = 0
+    ta_processed = 0
+
+    if not root.exists():
+        return (0, 0, 0)
+
+    session = requests.Session()
+    ta_ok = ta_enabled(ta_action, ta_base_url, ta_token)
+
+    channel_dirs = iter_channel_dirs_for_root(root)
+    for ch_dir in channel_dirs:
+        media_files = list_media_files_in_channel_dir(ch_dir, media_exts)
+        if len(media_files) <= max_keep:
             continue
 
         items: List[Dict[str, Any]] = []
         ids: List[str] = []
-        for mp3 in mp3s:
-            vid = extract_video_id_from_mp3(mp3)
+
+        for mf in media_files:
+            vid = extract_video_id_from_media(mf)
             if vid:
                 ids.append(vid)
-            items.append(
-                {
-                    "mp3": mp3,
-                    "jpg": mp3.with_suffix(".jpg"),
-                    "vid": vid,
-                    "publishedAt": None,
-                }
-            )
+            items.append({"media": mf, "jpg": mf.with_suffix(".jpg"), "vid": vid, "publishedAt": None})
 
         meta_map: Dict[str, Dict[str, Optional[object]]] = {}
         if ids:
@@ -1267,94 +1305,65 @@ def purge_max_files_per_channel(
                 meta = meta_map.get(vid, {}) or {}
                 it["publishedAt"] = meta.get("publishedAt")
 
-        # --- CAMBIO APLICADO: ordenar por publishedAt; fallback a prefijo filename; y si no hay nada => MUY antiguo ---
         dt_min = datetime.min.replace(tzinfo=timezone.utc)
 
         def sort_key(it: Dict[str, Any]) -> Tuple[int, datetime, str]:
             pub_raw = it.get("publishedAt") if isinstance(it.get("publishedAt"), str) else None
-
-            # 1) Primero: fecha real de YouTube (publishedAt)
             dt = _parse_published_dt(pub_raw)
-
-            # 2) Fallback: prefijo YYYYMMDD-HHMMSS- del nombre del fichero (NO fecha del archivo)
             if dt is None:
-                dt = _parse_prefix_dt_from_filename(it["mp3"])
-
-            # 3) Si sigue sin fecha: trátalo como MUY antiguo para purgar antes
+                dt = _parse_prefix_dt_from_filename(it["media"])
             if dt is None:
-                return (0, dt_min, str(it["mp3"].name))
-
-            # 4) Con fecha: ordenar de antiguo->reciente
-            return (1, dt, str(it["mp3"].name))
+                return (0, dt_min, str(it["media"].name))
+            return (1, dt, str(it["media"].name))
 
         items_sorted = sorted(items, key=sort_key)
         to_delete = items_sorted[: max(0, len(items_sorted) - max_keep)]
-
         if not to_delete:
             continue
 
         ta_deleted_ids_for_ignore: List[str] = []
 
         for it in to_delete:
-            mp3_path: Path = it["mp3"]
-            jpg_path: Path = it["jpg"]
+            mf: Path = it["media"]
+            jpg: Path = it["jpg"]
             vid = it.get("vid")
 
             try:
-                mp3_path.unlink(missing_ok=True)
-                deleted_mp3 += 1
-                print(f"[PURGE-MAX] Borrado MP3 (>{max_keep}/canal): {mp3_path}")
+                mf.unlink(missing_ok=True)
+                deleted_media += 1
+                print(f"[PURGE-MAX] Borrado (>{max_keep}/canal): {mf}")
             except Exception:
                 pass
 
             try:
-                if jpg_path.exists():
-                    jpg_path.unlink(missing_ok=True)
+                if jpg.exists():
+                    jpg.unlink(missing_ok=True)
                     deleted_jpg += 1
-                    print(f"[PURGE-MAX] Borrado JPG asociado: {jpg_path}")
+                    print(f"[PURGE-MAX] Borrado JPG asociado: {jpg}")
             except Exception:
                 pass
 
             if ta_ok and ta_action == "delete_ignore" and isinstance(vid, str) and vid:
-                ok_del = ta_video_delete(
-                    session=session,
-                    video_id=vid,
-                    base_url=ta_base_url,
-                    token=ta_token,
-                    verify_ssl=ta_verify_ssl,
-                    dry_run=ta_dry_run,
-                )
+                ok_del = ta_video_delete(session, vid, ta_base_url, ta_token, ta_verify_ssl, ta_dry_run, log_prefix=log_prefix)
                 if ok_del:
                     if not ta_dry_run:
-                        gone = ta_wait_video_gone(session, vid, ta_base_url, ta_token, ta_verify_ssl, TA_WAIT_DELETE_TIMEOUT)
-                        if not gone:
-                            print(f"    [TA] AVISO: timeout esperando que desaparezca /api/video/{vid}/ (puede ir lento).")
+                        ta_wait_video_gone(session, vid, ta_base_url, ta_token, ta_verify_ssl, TA_WAIT_DELETE_TIMEOUT, log_prefix=log_prefix)
                     ta_deleted_ids_for_ignore.append(vid)
                     ta_processed += 1
-                else:
-                    print(f"    [TA] FAIL: no se pudo borrar {vid}")
 
         if ta_ok and ta_action == "delete_ignore" and ta_deleted_ids_for_ignore:
-            upd_ok = ta_update_subscribed_and_wait(session, ta_base_url, ta_token, ta_verify_ssl, ta_dry_run)
-            if not upd_ok:
-                print("    [TA] AVISO: update_subscribed no confirmó OK (pero continúo con ignore).")
-
+            ta_update_subscribed_and_wait(session, ta_base_url, ta_token, ta_verify_ssl, ta_dry_run, log_prefix=log_prefix)
             for vid in ta_deleted_ids_for_ignore:
-                ignored_ok = ta_apply_ignore_only(
-                    session=session,
-                    video_id=vid,
-                    base_url=ta_base_url,
-                    token=ta_token,
-                    verify_ssl=ta_verify_ssl,
-                    dry_run=ta_dry_run,
-                )
-                if ignored_ok:
-                    print(f"    [TA] OK: delete + update_subscribed + ignore-force aplicado a {vid}")
-                else:
-                    print(f"    [TA] AVISO: borrado OK pero ignore NO confirmado para {vid} (podría reaparecer en rescan).")
+                ignored_ok = ta_apply_ignore_only(session, vid, ta_base_url, ta_token, ta_verify_ssl, ta_dry_run, log_prefix=log_prefix)
+                if not ignored_ok:
+                    print(f"    [{log_prefix}] AVISO: borrado OK pero ignore NO confirmado para {vid} (podría reaparecer).")
 
-    return (deleted_mp3, deleted_jpg, ta_processed)
+    return (deleted_media, deleted_jpg, ta_processed)
 
+
+# =========================
+# Main
+# =========================
 
 def main() -> int:
     p = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -1366,15 +1375,23 @@ def main() -> int:
     p.add_argument("--overwrite-mp3", action="store_true", default=OVERWRITE_MP3)
     p.add_argument("--overwrite-images", action="store_true", default=OVERWRITE_IMAGES)
 
-    p.add_argument("--no-embed-id3", action="store_true", default=not EMBED_ID3_TAGS, help="Desactiva embebido de tags ID3 en MP3")
-    p.add_argument("--no-embed-cover", action="store_true", default=not EMBED_COVER_ART, help="Desactiva embebido de carátula (JPG) en MP3")
-    p.add_argument("--tag-existing", action="store_true", default=TAG_EXISTING_MP3, help="Retaguea también MP3 ya existentes (aunque se haya SKIP MP3)")
+    p.add_argument("--no-embed-id3", action="store_true", default=not EMBED_ID3_TAGS)
+    p.add_argument("--no-embed-cover", action="store_true", default=not EMBED_COVER_ART)
+    p.add_argument("--tag-existing", action="store_true", default=TAG_EXISTING_MP3)
 
+    # TA1
     p.add_argument("--ta-base-url", default=str(TA_BASE_URL))
     p.add_argument("--ta-token", default=str(TA_TOKEN))
     p.add_argument("--ta-action", choices=["none", "delete", "delete_ignore"], default=str(TA_ACTION))
     p.add_argument("--ta-no-verify-ssl", action="store_true", default=not TA_VERIFY_SSL)
     p.add_argument("--ta-dry-run", action="store_true", default=TA_DRY_RUN)
+
+    # TA2
+    p.add_argument("--ta2-base-url", default=str(TA2_BASE_URL))
+    p.add_argument("--ta2-token", default=str(TA2_TOKEN))
+    p.add_argument("--ta2-action", choices=["none", "delete", "delete_ignore"], default=str(TA2_ACTION))
+    p.add_argument("--ta2-no-verify-ssl", action="store_true", default=not TA2_VERIFY_SSL)
+    p.add_argument("--ta2-dry-run", action="store_true", default=TA2_DRY_RUN)
 
     args = p.parse_args()
 
@@ -1404,13 +1421,18 @@ def main() -> int:
     channel_ids = [d.name for d in channel_dirs]
     ch_meta = yt_channel_meta(api_key, channel_ids)
 
-    ta_verify_ssl = not args.ta_no_verify_ssl
+    ta1_verify_ssl = not args.ta_no_verify_ssl
+    ta2_verify_ssl = not args.ta2_no_verify_ssl
 
     errors = 0
+
+    # =======================
+    # Export (TA1)
+    # =======================
     for ch_dir in channel_dirs:
         cid = ch_dir.name
-        cname = (ch_meta.get(cid, {}).get("title") or cid)  # type: ignore[assignment]
-        cthumbs = ch_meta.get(cid, {}).get("thumbnails")  # type: ignore[assignment]
+        cname = (ch_meta.get(cid, {}).get("title") or cid)
+        cthumbs = ch_meta.get(cid, {}).get("thumbnails")
 
         try:
             export_channel(
@@ -1426,7 +1448,7 @@ def main() -> int:
                 args.ta_action,
                 args.ta_base_url,
                 args.ta_token,
-                ta_verify_ssl,
+                ta1_verify_ssl,
                 args.ta_dry_run,
                 embed_id3_tags,
                 embed_cover_art,
@@ -1436,51 +1458,110 @@ def main() -> int:
             errors += 1
             print(f"\n[{cid}] ERROR: {e}\n")
 
+    # =======================
+    # PURGE + PURGE-MAX (TA1) en DEST y gPodder
+    # =======================
     try:
-        print(f"\n[PURGE] Revisando MP3 en {dest_root} y borrando los < {PURGE_SHORTER_THAN_SECONDS}s ...\n")
-        deleted_mp3, deleted_jpg = purge_short_mp3s(dest_root, PURGE_SHORTER_THAN_SECONDS)
-        print(f"\n[PURGE] Hecho. Borrados: {deleted_mp3} mp3 y {deleted_jpg} jpg.\n")
+        for purge_root in [dest_root, RETAG_EXTRA_ROOT]:
+            if not purge_root.exists():
+                print(f"\n[PURGE] (Skip) No existe: {purge_root}\n")
+                continue
+
+            print(f"\n[PURGE] Revisando en {purge_root} y borrando los < {PURGE_SHORTER_THAN_SECONDS}s ...\n")
+            dmedia, djpg, ta_cnt = purge_short_media_files(
+                root=purge_root,
+                min_seconds=PURGE_SHORTER_THAN_SECONDS,
+                media_exts=PURGE_EXTS_AUDIO,
+                ta_action=args.ta_action,
+                ta_base_url=args.ta_base_url,
+                ta_token=args.ta_token,
+                ta_verify_ssl=ta1_verify_ssl,
+                ta_dry_run=args.ta_dry_run,
+                log_prefix="TA1",
+            )
+            print(f"\n[PURGE] Hecho en {purge_root}. Borrados: {dmedia} media y {djpg} jpg. TA1 procesados: {ta_cnt}.\n")
+
+            print(f"\n[PURGE-MAX] Limitando a {MAX_FILES_PER_CHANNEL} ficheros por canal/carpeta en {purge_root} ...\n")
+            dmedia2, djpg2, ta_cnt2 = purge_max_files_per_channel(
+                root=purge_root,
+                api_key=api_key,
+                max_keep=MAX_FILES_PER_CHANNEL,
+                media_exts=PURGE_EXTS_AUDIO,
+                ta_action=args.ta_action,
+                ta_base_url=args.ta_base_url,
+                ta_token=args.ta_token,
+                ta_verify_ssl=ta1_verify_ssl,
+                ta_dry_run=args.ta_dry_run,
+                log_prefix="TA1",
+            )
+            print(f"\n[PURGE-MAX] Hecho en {purge_root}. Borrados: {dmedia2} media y {djpg2} jpg. TA1 procesados: {ta_cnt2}.\n")
     except Exception as e:
         errors += 1
-        print(f"\n[PURGE] ERROR: {e}\n")
+        print(f"\n[PURGE/PURGE-MAX] ERROR: {e}\n")
 
+    # =======================
+    # RETAG
+    # =======================
     if embed_id3_tags and RETAG_TITLE_FROM_FILENAME:
         try:
-            print(f"\n[RETAG] Sobrescribiendo tag TITLE con el nombre del fichero (sin extensión) en {dest_root} ...\n")
+            print(f"\n[RETAG] TITLE <- filename en {dest_root} ...\n")
             retag_ok, retag_err = retag_title_from_filename(dest_root)
             print(f"\n[RETAG] Hecho. Actualizados: {retag_ok}. Errores: {retag_err}.\n")
-            if retag_err:
-                errors += retag_err
+            errors += retag_err
         except Exception as e:
             errors += 1
             print(f"\n[RETAG] ERROR: {e}\n")
 
         try:
-            print(f"\n[RETAG] Sobrescribiendo tag TITLE con el nombre del fichero (sin extensión) en {RETAG_EXTRA_ROOT} ...\n")
+            print(f"\n[RETAG] TITLE <- filename en {RETAG_EXTRA_ROOT} ...\n")
             retag_ok2, retag_err2 = retag_title_from_filename(RETAG_EXTRA_ROOT)
             print(f"\n[RETAG] Hecho. Actualizados: {retag_ok2}. Errores: {retag_err2}.\n")
-            if retag_err2:
-                errors += retag_err2
+            errors += retag_err2
         except Exception as e:
             errors += 1
             print(f"\n[RETAG] ERROR: {e}\n")
 
+    # =======================
+    # TA2: PURGE + PURGE-MAX en paths extra
+    # =======================
     try:
-        print(f"\n[PURGE-MAX] Limitando a {MAX_FILES_PER_CHANNEL} MP3 por canal (fecha publicación YouTube) en {dest_root} ...\n")
-        dmp3, djpg, ta_cnt = purge_max_files_per_channel(
-            dest_root=dest_root,
-            api_key=api_key,
-            max_keep=MAX_FILES_PER_CHANNEL,
-            ta_action=args.ta_action,
-            ta_base_url=args.ta_base_url,
-            ta_token=args.ta_token,
-            ta_verify_ssl=ta_verify_ssl,
-            ta_dry_run=args.ta_dry_run,
-        )
-        print(f"\n[PURGE-MAX] Hecho. Borrados: {dmp3} mp3 y {djpg} jpg. TA procesados: {ta_cnt}.\n")
+        for purge_root in TA2_PURGE_PATHS:
+            if not purge_root.exists():
+                print(f"\n[TA2-PURGE] (Skip) No existe: {purge_root}\n")
+                continue
+
+            print(f"\n[TA2-PURGE] Revisando en {purge_root} y borrando los < {PURGE_SHORTER_THAN_SECONDS}s ...\n")
+            dmedia, djpg, ta_cnt = purge_short_media_files(
+                root=purge_root,
+                min_seconds=PURGE_SHORTER_THAN_SECONDS,
+                media_exts=PURGE_EXTS_TA2,
+                ta_action=args.ta2_action,
+                ta_base_url=args.ta2_base_url,
+                ta_token=args.ta2_token,
+                ta_verify_ssl=ta2_verify_ssl,
+                ta_dry_run=args.ta2_dry_run,
+                log_prefix="TA2",
+            )
+            print(f"\n[TA2-PURGE] Hecho en {purge_root}. Borrados: {dmedia} media y {djpg} jpg. TA2 procesados: {ta_cnt}.\n")
+
+            print(f"\n[TA2-PURGE-MAX] Limitando a {MAX_FILES_PER_CHANNEL} ficheros por canal/carpeta en {purge_root} ...\n")
+            dmedia2, djpg2, ta_cnt2 = purge_max_files_per_channel(
+                root=purge_root,
+                api_key=api_key,
+                max_keep=MAX_FILES_PER_CHANNEL,
+                media_exts=PURGE_EXTS_TA2,
+                ta_action=args.ta2_action,
+                ta_base_url=args.ta2_base_url,
+                ta_token=args.ta2_token,
+                ta_verify_ssl=ta2_verify_ssl,
+                ta_dry_run=args.ta2_dry_run,
+                log_prefix="TA2",
+            )
+            print(f"\n[TA2-PURGE-MAX] Hecho en {purge_root}. Borrados: {dmedia2} media y {djpg2} jpg. TA2 procesados: {ta_cnt2}.\n")
+
     except Exception as e:
         errors += 1
-        print(f"\n[PURGE-MAX] ERROR: {e}\n")
+        print(f"\n[TA2] ERROR: {e}\n")
 
     if errors:
         print(f"\nFinalizado con {errors} error(es).")

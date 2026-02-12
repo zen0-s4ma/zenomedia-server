@@ -1,0 +1,105 @@
+app:
+  name: "ZenoVerso CLI"
+  author: "Quino"
+
+  # Tu compose real (fijo)
+  compose_file: "D:\\Github-zen0s4ma\\zenomedia-server\\docker-compose.yml"
+  project_dir:  "D:\\Github-zen0s4ma\\zenomedia-server"
+
+  # Runtime fuera del repo
+  runtime_home: "E:\\Docker_folders\\_zenoverso_cli"
+  log_dir: "E:\\Docker_folders\\_zenoverso_cli\\logs"
+
+  # Estética / comportamiento
+  clear_screen: true
+  default_tail_lines: 70
+
+commands:
+  - id: 1
+    title: "Actualizar guía de televisión"
+    desc: "Lanza el update en webgrabplus (EPG en E:\\Docker_folders\\epg\\guide.txt)"
+    actions:
+      - type: docker_exec
+        container: "webgrabplus"
+        exec_cmd: "s6-setuidgid abc /bin/bash /app/update.sh"
+        stdin: false
+        tty: true
+        mode: live
+        tail_lines: 25   # <-- aquí
+
+
+
+      # Opción B (recomendada a futuro): por servicio Compose (más robusto)
+      # - type: compose_exec
+      #   service: "webgrabplus"
+      #   exec_cmd: "s6-setuidgid abc /bin/bash /app/update.sh"
+      #   tty: false
+      #   mode: live
+      #   tail_lines: 70
+
+  - id: 2
+    title: "Levantar stack (detach, sin pull)"
+    desc: "docker compose up -d --pull never (no descarga imágenes)"
+    actions:
+      - type: compose
+        subcmd: "up -d --pull never"
+        mode: live
+        tail_lines: 60
+
+  - id: 3
+    title: "Bajar stack"
+    desc: "docker compose down"
+    actions:
+      - type: compose
+        subcmd: "down"
+        mode: live
+        tail_lines: 60
+
+  - id: 4
+    title: "Restart stack (down + up sin pull)"
+    desc: "Secuencia: down -> up -d --pull never"
+    actions:
+      - type: compose
+        subcmd: "down"
+        mode: live
+        tail_lines: 40
+      - type: compose
+        subcmd: "up -d --pull never"
+        mode: live
+        tail_lines: 60
+
+  - id: 5
+    title: "Ver logs (elige servicio)"
+    desc: "docker compose logs -f --tail 200 <service> (Ctrl+C para salir)"
+    actions:
+      - type: compose_logs
+        service: "prompt"
+        follow: true
+        tail: 200
+        mode: live
+        tail_lines: 80
+
+  - id: 6
+    title: "Shell en un contenedor (interactivo)"
+    desc: "Abre bash/sh dentro de un contenedor (modo passthrough)"
+    actions:
+      - type: compose_exec
+        service: "prompt"
+        exec_cmd: "/bin/bash"
+        tty: true
+        mode: passthrough
+
+  - id: 7
+    title: "Levantar stack progresivo (tu script)"
+    desc: "Lanza un .bat/.ps1 que tengas para levantar por grupos"
+    actions:
+      - type: shell
+        cmd: "E:\\Docker_folders\\Custom-Tools-Scripts\\stack-up-progressive.bat"
+        mode: live
+        tail_lines: 80
+
+combos:
+  - id: 90
+    title: "Mantenimiento EPG + levantar stack"
+    desc: "Ejecuta 1 y luego 2"
+    run: [1, 2]
