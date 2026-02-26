@@ -464,3 +464,276 @@ services:
       - TZ=Europe/Madrid
     volumes:
       - "D:/Descargas/TorBrowser:/storage/Descargas:rw"
+
+  gluetun-swt:
+    image: qmcgaw/gluetun:latest
+    container_name: gluetun-swt
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - TZ=Europe/Madrid
+      - VPN_SERVICE_PROVIDER=mullvad
+      - VPN_TYPE=wireguard
+      - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY_FIN}
+      - WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESSES_FIN}
+      - DNS_ADDRESS=${DNS_ADDRESS_FIN}
+      - SERVER_COUNTRIES=Finland
+      - SERVER_CITIES=Helsinki
+      - FIREWALL_INPUT_PORTS=9191,5800,5801,34400
+      - FIREWALL_OUTBOUND_SUBNETS=192.168.1.113/32
+      # (Opcional) para depurar iptables si hace falta
+      # - FIREWALL_DEBUG=on
+    ports:
+      - "5800:5800"
+      - "5801:5801"
+      - "9191:9191"
+      - "34400:34400"
+      # (recomendaciÃ³n hardening) si solo lo quieres local:
+      # - "127.0.0.1:34400:34400"
+    restart: unless-stopped
+
+
+    # --------------------------------------------------------
+  # --- firefox
+  # --- Navegador con GUI web (noVNC)
+  # --- Ports: Gluetun 5800
+  # --------------------------------------------------------
+  firefox:
+    image: jlesage/firefox:latest
+    container_name: firefox
+    network_mode: service:gluetun-vpn-stable
+    environment:
+      - TZ=Europe/Madrid
+      - WEB_LISTENING_PORT=5800
+      - VNC_LISTENING_PORT=5900
+    volumes:
+      - E:/Docker_folders/firefox:/config:rw
+      - D:/Descargas/FirefoxVPN:/storage/Descargas:rw
+    depends_on:
+      - gluetun-vpn-stable
+    restart: unless-stopped
+    labels:
+      - "autoheal=true"
+    healthcheck:
+      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://127.0.0.1:5800/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://127.0.0.1:5800/ >/dev/null) || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 90s
+
+  # --------------------------------------------------------
+  # --- Tor Browser
+  # --- Navegador TOR con GUI web (noVNC)
+  # --- Ports: Gluetun 5801
+  # --------------------------------------------------------
+  tor-browser2:
+      image: domistyle/tor-browser:latest
+      container_name: tor-browser
+      network_mode: service:gluetun-vpn-stable
+      environment:
+        - TZ=Europe/Madrid
+        - WEB_LISTENING_PORT=5801
+        - VNC_LISTENING_PORT=5901
+      volumes:
+        - D:/Descargas/TorBrowserVPN:/storage/Descargas:rw
+      depends_on:
+        - gluetun-vpn-stable
+      restart: unless-stopped
+      labels:
+        - "autoheal=true"
+      healthcheck:
+        test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://127.0.0.1:5801/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://127.0.0.1:5801/ >/dev/null) || exit 1"]
+        interval: 30s
+        timeout: 5s
+        retries: 5
+        start_period: 120s
+ # --------------------------------------------------------
+  # --- dispatcharr
+  # --- Gestor/servicio IPTV (bajo VPN gluetun)
+  # --- Ports: N/A
+  # --------------------------------------------------------
+  dispatcharr:
+    image: ghcr.io/dispatcharr/dispatcharr:latest
+    container_name: dispatcharr
+    network_mode: "service:gluetun-vpn-stable"
+    environment:
+      - TZ=Europe/Madrid
+      - DISPATCHARR_ENV=aio
+      - DISPATCHARR_LOG_LEVEL=info
+    volumes:
+      - "E:/Docker_folders/dispatcharr/data:/data"
+      - "E:/Docker_folders/dispatcharr/iptv:/data/m3us"
+      - "E:/Docker_folders/epg:/data/epgs:ro"
+    restart: unless-stopped
+
+  dispatcharr-speedtest:
+    image: ghcr.io/dispatcharr/dispatcharr:latest
+    container_name: dispatcharr-speedtest
+    network_mode: "service:gluetun-mullvad-speedtest"
+    depends_on:
+      - gluetun-mullvad-speedtest
+    environment:
+      - TZ=Europe/Madrid
+      - DISPATCHARR_ENV=aio
+      - DISPATCHARR_LOG_LEVEL=info
+    volumes:
+      - "E:/Docker_folders/dispatcharr-test/data:/data"
+      - "E:/Docker_folders/dispatcharr/iptv:/data/m3us"
+      - "E:/Docker_folders/epg:/data/epgs:ro"
+    restart: unless-stopped
+
+  gluetun-mullvad-speedtest:
+    image: qmcgaw/gluetun:v3.41.0
+    container_name: gluetun-mullvad-speedtest
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    volumes:
+      - "E:/Docker_folders/gluetun-mullvad-speedtest/work-wg0.conf:/gluetun/wireguard/wg0.conf:ro"
+    ports:
+      - "127.0.0.1:9197:9191/tcp"   # UI/API Dispatcharr TEST
+      - "127.0.0.1:9198:9999/tcp"   # health debug (opcional)
+      - "127.0.0.1:9199:8000/tcp"
+    environment:
+      - TZ=Europe/Madrid
+      - VPN_SERVICE_PROVIDER=custom
+      - VPN_TYPE=wireguard
+      # Mantén lo tuyo si lo necesitas (LAN access etc.)
+      - FIREWALL_OUTBOUND_SUBNETS=192.168.0.0/16,172.16.0.0/12
+      # Recomendado por defecto (v3.41.0 ya lo trae bien)
+      - HEALTH_RESTART_VPN=on
+      - HEALTH_TARGET_ADDRESSES=cloudflare.com:443,github.com:443
+      - HEALTH_ICMP_TARGET_IPS=1.1.1.1,8.8.8.8
+      - HTTP_CONTROL_SERVER_ADDRESS=:8000
+      - HTTP_CONTROL_SERVER_AUTH_DEFAULT_ROLE={"auth":"apikey","apikey":"${GLUETUN_CONTROL_APIKEY}"}
+      - FIREWALL_INPUT_PORTS=9191,9999,8000
+    restart: unless-stopped
+
+
+  gluetun-vpn-stable:
+    image: qmcgaw/gluetun:v3.41.0
+    container_name: gluetun-vpn-stable
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    volumes:
+      - "E:/Docker_folders/gluetun-vpn-stable/work-wg0.conf:/gluetun/wireguard/wg0.conf:ro"
+    environment:
+      - TZ=Europe/Madrid
+      - VPN_SERVICE_PROVIDER=custom
+      - VPN_TYPE=wireguard
+      # Healthcheck / auto healing del VPN (no reinicies contenedor si no hace falta)
+      - HEALTH_RESTART_VPN=on
+      - HEALTH_TARGET_ADDRESSES=cloudflare.com:443,github.com:443
+      - HEALTH_ICMP_TARGET_IPS=1.1.1.1,8.8.8.8
+      # Health server visible (si quieres debug desde host); por defecto es 127.0.0.1:9999
+      - HEALTH_SERVER_ADDRESS=:9999
+      # Control Server (para start/stop VPN sin restart del contenedor) :contentReference[oaicite:6]{index=6}
+      - HTTP_CONTROL_SERVER_ADDRESS=:8000
+      # IMPORTANTE: desde v3.40.0 las rutas pasan a “privadas” por defecto, usa rol por defecto :contentReference[oaicite:7]{index=7}
+      - HTTP_CONTROL_SERVER_AUTH_DEFAULT_ROLE={"auth":"apikey","apikey":"${GLUETUN_CONTROL_APIKEY}"}
+      # Firewall: SOLO puertos internos reales (no metas los host ports)
+      # dispatcharr 9191, firefox 5800, tor 5801, health 9999, control 8000 :contentReference[oaicite:8]{index=8}
+      - FIREWALL_INPUT_PORTS=9191,5800,5801,9999,8000
+      # Acceso LAN
+      - FIREWALL_OUTBOUND_SUBNETS=192.168.0.0/16,172.16.0.0/12
+      # Si usas DOT/DoH etc, deja tu config
+      - DOT=off
+      - LOG_LEVEL=info
+    ports:
+      - "9191:9191/tcp"        # dispatcharr
+      - "5800:5800/tcp"        # firefox
+      - "5801:5801/tcp"        # tor
+      - "127.0.0.1:9192:9999/tcp"  # health debug
+      - "127.0.0.1:9193:8000/tcp"  # control debug
+    restart: unless-stopped
+
+  gluetun-stable-keeper:
+    build:
+      context: ./gluetun-stable-keeper
+      dockerfile: Dockerfile
+    container_name: gluetun-stable-keeper
+    user: "0:0"
+    environment:
+      - LOG_LEVEL=INFO
+      - CONFS_DIR=/mullvad-confs
+      - TOP10_JSON=/speedtest/top10_streaming.json
+      - STABLE_WG0=/stable/work-wg0.conf
+      - STATE_PATH=/stable/stable_keeper_state.json
+      - DEFAULT_SERVER=fi-hel-wg-001
+      - GLUETUN_CONTAINER=gluetun-vpn-stable
+      - CONTROL_BASE_URL=http://gluetun-vpn-stable:8000
+      - CONTROL_APIKEY=${GLUETUN_CONTROL_APIKEY}
+      - CHECK_INTERVAL_S=20
+      - UNHEALTHY_GRACE_S=120
+      - CONNECT_TIMEOUT_S=180
+      - MAX_ATTEMPTS_PER_SERVER=3
+      - MIN_SWITCH_INTERVAL_S=600
+      - RANDOM_ON_EXHAUST=true
+      - PREFER_BEST_WHEN_HEALTHY=false
+    volumes:
+      - "E:/Docker_folders/_mullvadvpn-servers:/mullvad-confs:ro"
+      - "E:/Docker_folders/gluetun-mullvad-speedtest:/speedtest:ro"
+      - "E:/Docker_folders/gluetun-vpn-stable:/stable"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    restart: unless-stopped
+
+  mullvad-conf-sweeper:
+    build:
+      context: ./gluetun-stable-keeper
+      dockerfile: Dockerfile
+    container_name: mullvad-conf-sweeper
+    command: ["python","/app/mullvad_conf_sweep.py"]
+    user: "0:0"
+    environment:
+      - LOG_LEVEL=INFO
+      - CONFS_DIR=/mullvad-confs
+      - WORK_WG0=/speedtest/work-wg0.conf
+      - DB_PATH=/speedtest/sweep.sqlite3
+      - JSONL_PATH=/speedtest/results.jsonl
+      - TOP10_JSON=/speedtest/top10_streaming.json
+
+      - SPEEDTEST_GLUETUN_CONTAINER=gluetun-mullvad-speedtest
+      - TESTER_IMAGE=zenomedia-server-gluetun-stable-keeper:latest
+
+      # ✅ NUEVO: M3U del Dispatcharr TEST (lo pondrás en el Paso 6)
+      - STREAM_M3U_URL=http://127.0.0.1:9191/output/m3u/REEMPLAZA_ESTO
+      - DISPATCHARR_INTERNAL_BASE=http://127.0.0.1:9191
+      - REQUIRE_DISPATCHARR_PROXY=true
+
+      # 6 horas
+      - MAX_RUNTIME_S=21600
+
+      - STREAM_SECONDS=12
+      - STREAM_MAX_TIME=25
+      - CONNECT_HEALTH_TIMEOUT_S=180
+      - EGRESS_TIMEOUT_S=20
+    volumes:
+      - "E:/Docker_folders/_mullvadvpn-servers:/mullvad-confs:ro"
+      - "E:/Docker_folders/gluetun-mullvad-speedtest:/speedtest"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    restart: "no"
+
+
+# --------------------------------------------------------
+  # --- moverpelis
+  # --- Script de utilidades: mover archivos descargados
+  # --- Ports: N/A
+  # --------------------------------------------------------
+  moverpelis:
+    image: alpine:3.20
+    container_name: moverpelis
+    command: >
+      sh -c 'apk add --no-cache findutils coreutils >/dev/null
+      && echo "$(date "+%F %T.%3N") | Monitoreando /watch -> /target (cada 15s, mueve archivos con >1 min sin cambios)..."
+      && while :; do
+           /usr/bin/find /watch -maxdepth 1 -type f -mmin +1 \
+             -exec mv -n -t /target {} +
+           sleep 15
+         done'
+    volumes:
+      - "D:/Descargas/eMule/Incoming/pelis:/watch"
+      - "E:/Peliculas:/target"
+    restart: unless-stopped

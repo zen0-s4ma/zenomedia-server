@@ -87,7 +87,6 @@ services:
     ports:
       - "192.168.1.113:8096:8096"
       - "192.168.1.113:8920:8920"
-      - "192.168.1.113:7359:7359/udp"
     environment:
       TZ: Europe/Madrid
       UMASK: "022"
@@ -332,7 +331,7 @@ services:
       - archivist-es
       - archivist-redis
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health/"]
+      test: ["CMD", "curl", "-f", "http://localhost:8001/api/health/"]
       interval: 2m
       timeout: 10s
       retries: 3
@@ -762,56 +761,7 @@ services:
       - "E:/Docker_folders/epg:/data"
     restart: unless-stopped
 
-  # --------------------------------------------------------
-  # --- dispatcharr
-  # --- Gestor/servicio IPTV (bajo VPN gluetun)
-  # --- Ports: N/A
-  # --------------------------------------------------------
-  dispatcharr:
-    image: ghcr.io/dispatcharr/dispatcharr:latest
-    container_name: dispatcharr
-    network_mode: "service:gluetun-swt"
-    depends_on:
-      - gluetun-swt
-    environment:
-      - TZ=Europe/Madrid
-      - DISPATCHARR_ENV=aio
-      - DISPATCHARR_LOG_LEVEL=info
-    volumes:
-      - "E:/Docker_folders/dispatcharr/data:/data"
-      - "E:/Docker_folders/dispatcharr/iptv:/data/m3us"
-      - "E:/Docker_folders/epg:/data/epgs:ro"
-    restart: unless-stopped
-
-  # --------------------------------------------------------
-  # --- threadfin
-  # --- M3U proxy / â€œxTeVe forkâ€ para Live TV (Plex/Emby/Jellyfin)
-  # --- Va bajo VPN (gluetun-swt)
-  # --- UI: http://<host>:34400/web   (importante el /web)
-  # --------------------------------------------------------
-  threadfin:
-    image: fyb3roptik/threadfin:1.2.38
-    container_name: threadfin
-    network_mode: "service:gluetun-swt"
-    depends_on:
-      - gluetun-swt
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Madrid
-      - THREADFIN_PORT=34400
-      - THREADFIN_DEBUG=0
-      # (opcional) si quieres beta:
-      # - THREADFIN_BRANCH=beta
-    volumes:
-      - "E:/Docker_folders/threadfin/conf:/home/threadfin/conf"
-      - "E:/Docker_folders/threadfin/tmp:/tmp/threadfin:rw"
-      # tus fuentes (host folders) para que Threadfin lea los ficheros que genera Dispatcharr
-      - "E:/Docker_folders/dispatcharr/iptv:/sources/m3u:ro"
-      - "E:/Docker_folders/epg:/sources/epg:ro"
-    restart: unless-stopped
-
-
+ 
   # --------------------------------------------------------
   # --- ersatztv
   # --- Creador de canales IPTV (M3U/XMLTV) desde bibliotecas Local/Plex/Jellyfin
@@ -872,8 +822,6 @@ services:
   nextpvr:
     image: nextpvr/nextpvr_amd64:latest
     container_name: nextpvr
-    depends_on:
-      - dispatcharr
     environment:
       - TZ=Europe/Madrid
     ports:
@@ -961,27 +909,6 @@ services:
       retries: 5
       start_period: 60s
 
-  # --------------------------------------------------------
-  # --- moverpelis
-  # --- Script de utilidades: mover archivos descargados
-  # --- Ports: N/A
-  # --------------------------------------------------------
-  moverpelis:
-    image: alpine:3.20
-    container_name: moverpelis
-    command: >
-      sh -c 'apk add --no-cache findutils coreutils >/dev/null
-      && echo "$(date "+%F %T.%3N") | Monitoreando /watch -> /target (cada 15s, mueve archivos con >1 min sin cambios)..."
-      && while :; do
-           /usr/bin/find /watch -maxdepth 1 -type f -mmin +1 \
-             -exec mv -n -t /target {} +
-           sleep 15
-         done'
-    volumes:
-      - "D:/Descargas/eMule/Incoming/pelis:/watch"
-      - "E:/Peliculas:/target"
-    restart: unless-stopped
-
   # +++++++++++++++++++++++++++++++
   #
   # CATEGORIA: MONITORIZACION / LOGS / UPTIME
@@ -994,7 +921,7 @@ services:
   # --- Ports: 3001 (Gui Web)
   # --------------------------------------------------------
   uptime-kuma:
-    image: louislam/uptime-kuma:1
+    image: louislam/uptime-kuma:2.1.1
     container_name: uptime-kuma
     restart: unless-stopped
     ports:
@@ -1002,9 +929,10 @@ services:
     environment:
       - TZ=Europe/Madrid
     volumes:
-      - "E:/Docker_folders/uptime_kuma/uptime_kuma_data:/app/data"
       - "E:/:/host/E:ro"
       - "F:/:/host/F:ro"
+      - E:/Docker_folders/uptime_kuma:/app/data
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     extra_hosts:
       - "host.docker.internal:host-gateway"
     healthcheck:
@@ -1094,34 +1022,9 @@ services:
       interval: 1m
       timeout: 5s
       retries: 3
-      start_period: 20s
+      start_period: 20s 
 
-  # --------------------------------------------------------
-  # --- vpn-ip-check
-  # --- ComprobaciÃ³n de IP/VPN (logs)
-  # --- Ports: N/A
-  # --------------------------------------------------------
-  vpn-ip-check:
-    image: alpine:3.20
-    container_name: vpn-ip-check
-    network_mode: "service:gluetun-swt"
-    depends_on:
-      - gluetun-swt
-    command: >
-      sh -c "apk add --no-cache curl >/dev/null
-      && while true; do
-           echo '============================='
-           date
-           echo '[Mullvad check]'
-           curl -s https://am.i.mullvad.net/json || true
-           echo
-           echo '[Public IP]'
-           curl -s https://ipinfo.io/ip || true
-           echo
-           sleep 30
-         done"
-    restart: unless-stopped
-
+  
   # --------------------------------------------------------
   # --- test-gpu
   # --- Prueba de GPU (nvidia-smi)
@@ -1162,7 +1065,6 @@ services:
     ports:
       - "127.0.0.1:9443:9443"   # UI HTTPS (principal)
       - "127.0.0.1:9000:9000"   # UI HTTP (opcional)
-      - "127.0.0.1:8000:8000"   # Edge tunnel (opcional)
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - "E:/Docker_folders/portainer/portainer_data:/data"
@@ -1232,37 +1134,9 @@ services:
     image: cloudflare/cloudflared:latest
     container_name: cloudflared
     restart: unless-stopped
-    command: tunnel --no-autoupdate run --token ${CF_TUNNEL_TOKEN}
+    command: tunnel --no-autoupdate --metrics 0.0.0.0:2000 run --token ${CF_TUNNEL_TOKEN}
     depends_on:
       - nginx-proxy-manager
-
-  gluetun-swt:
-    image: qmcgaw/gluetun:latest
-    container_name: gluetun-swt
-    cap_add:
-      - NET_ADMIN
-    environment:
-      - TZ=Europe/Madrid
-      - VPN_SERVICE_PROVIDER=mullvad
-      - VPN_TYPE=wireguard
-      - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY_FIN}
-      - WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESSES_FIN}
-      - DNS_ADDRESS=${DNS_ADDRESS_FIN}
-      - SERVER_COUNTRIES=Finland
-      - SERVER_CITIES=Helsinki
-      - FIREWALL_INPUT_PORTS=9191,5800,5801,34400
-      - FIREWALL_OUTBOUND_SUBNETS=192.168.1.113/32
-      # (Opcional) para depurar iptables si hace falta
-      # - FIREWALL_DEBUG=on
-    ports:
-      - "5800:5800"
-      - "5801:5801"
-      - "9191:9191"
-      - "34400:34400"
-      # (recomendaciÃ³n hardening) si solo lo quieres local:
-      # - "127.0.0.1:34400:34400"
-    restart: unless-stopped
-
 
   # --------------------------------------------------------
   # --- cloudflare-ddns
@@ -1644,7 +1518,7 @@ services:
   # --------------------------------------------------------
   # --- sftpgo
   # --- SFTP + Web Admin/Web Client
-  # --- Ports: 33160 (Gui Web)
+  # --- Ports: 33163 (Gui Web)
   # --------------------------------------------------------
   sftpgo:
     image: drakkan/sftpgo:latest
@@ -1654,7 +1528,7 @@ services:
       - TZ=Europe/Madrid
       - SFTPGO_LOG_LEVEL=info
     ports:
-      - "192.168.1.113:33160:8080"   # Web Admin + Web Client
+      - "192.168.1.113:33163:8080"   # Web Admin + Web Client
       - "192.168.1.113:33222:2022"   # SFTP
     volumes:
       - "E:/Docker_folders/sftpgo/srv:/srv/sftpgo"
@@ -2058,45 +1932,6 @@ services:
     restart: "no"
     profiles: ["tools"]
 
-  # --------------------------------------------------------
-  # --- firefox
-  # --- Navegador con GUI web (noVNC)
-  # --- Ports: Gluetun 5800
-  # --------------------------------------------------------
-  firefox:
-    image: jlesage/firefox:latest
-    container_name: firefox
-    network_mode: service:gluetun-swt
-    environment:
-      - TZ=Europe/Madrid
-      - WEB_LISTENING_PORT=5800
-      - VNC_LISTENING_PORT=5900
-    volumes:
-      - E:/Docker_folders/firefox:/config:rw
-      - D:/Descargas/FirefoxVPN:/storage/Descargas:rw
-    depends_on:
-      - gluetun-swt
-    restart: unless-stopped
-
-
-  # --------------------------------------------------------
-  # --- Tor Browser
-  # --- Navegador TOR con GUI web (noVNC)
-  # --- Ports: Gluetun 5801
-  # --------------------------------------------------------
-  tor-browser:
-      image: domistyle/tor-browser:latest
-      container_name: tor-browser
-      network_mode: service:gluetun-swt
-      environment:
-        - TZ=Europe/Madrid
-        - WEB_LISTENING_PORT=5801
-        - VNC_LISTENING_PORT=5901
-      volumes:
-        - D:/Descargas/TorBrowserVPN:/storage/Descargas:rw
-      depends_on:
-        - gluetun-swt
-      restart: unless-stopped
   
   # --------------------------------------------------------
   # --- youtube-podcast-exporter (cron)
@@ -2178,3 +2013,198 @@ services:
       timeout: 5s
       retries: 5
 
+  vpn-stable:
+    image: qmcgaw/gluetun:latest
+    container_name: vpn-stable
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    environment:
+      - TZ=Europe/Madrid
+
+      # (ejemplo) Mullvad WireGuard
+      - VPN_SERVICE_PROVIDER=mullvad
+      - VPN_TYPE=wireguard
+
+      # IMPORTANTE: abre aquí los puertos de TODOS los servicios que van "detrás" de la VPN
+      # Ajusta a tus reales:
+      - FIREWALL_INPUT_PORTS=9191,8901,5800,5900,5801,5901,8000
+
+      # Si usas control server con auth (como en tus logs)
+      # (ya lo tienes, lo dejo para contexto)
+      # - HTTP_CONTROL_SERVER_LOG=on  (si lo usas)
+    volumes:
+      # tus configs
+      - "E:/Docker_folders/vpn-status/config.toml:/gluetun/auth/config.toml"
+      # si usas WG custom file, adapta:
+      # - "E:/Docker_folders/_mullvadvpn-servers/${MULLVAD_WG_FILE}.conf:/gluetun/wireguard/wg0.conf:ro"
+
+      # servers cache si lo guardas
+      - "E:/Docker_folders/gluetun:/gluetun"
+
+    ports:
+      # Puertos “publicados” de los servicios que cuelgan de network_mode: service:vpn-stable
+      - "9191:9191"   # tuliprox (ejemplo)
+      - "8901:8901"   # dispatcharr (ejemplo)
+      - "5800:5800"   # firefox web
+      - "5900:5900"   # firefox vnc
+      - "5801:5800"   # tor web (si mapeas así)
+      - "5901:5900"   # tor vnc (si mapeas así)
+      - "8000:8000"   # gluetun control server (ojo seguridad)
+
+    restart: unless-stopped
+
+    # ✅ ARREGLO “PRO”: HEALTHCHECK explícito usando el healthcheck propio de Gluetun.
+    # Gluetun trae un "health server" y un healthcheck Docker pensado para esto. :contentReference[oaicite:2]{index=2}
+    healthcheck:
+      test: ["CMD-SHELL", "/gluetun-entrypoint healthcheck"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+
+  dispatcharr:
+    image: ghcr.io/dispatcharr/dispatcharr:latest
+    container_name: dispatcharr
+    network_mode: "service:vpn-stable"
+    depends_on:
+      vpn-stable:
+        condition: service_healthy
+    environment:
+      - TZ=${TZ}
+      - DISPATCHARR_ENV=aio
+      - DISPATCHARR_LOG_LEVEL=${DISPATCHARR_LOG_LEVEL} # debug recomendado en docs :contentReference[oaicite:19]{index=19}
+    volumes:
+      - "E:/Docker_folders/dispatcharr/data:/data"
+      - "E:/Docker_folders/dispatcharr/iptv:/data/m3us"
+      - "E:/Docker_folders/epg:/data/epgs:ro"
+    restart: unless-stopped
+
+
+  tuliprox:
+    image: ghcr.io/euzu/tuliprox:latest
+    container_name: tuliprox
+    network_mode: "service:vpn-stable"
+    depends_on:
+      vpn-stable:
+        condition: service_healthy
+    working_dir: /app
+    command: ["/app/tuliprox", "-p", "/app/config", "-s"]
+    environment:
+      - TZ=${TZ}
+    volumes:
+      - "E:/Docker_folders/dispatcharr/iptv:/app/data/m3us:ro"
+      - "E:/Docker_folders/epg:/app/data/epg:ro"
+      - "E:/Docker_folders/tuliprox/config:/app/config"
+      - "E:/Docker_folders/tuliprox/data:/app/data"
+      - "E:/Docker_folders/tuliprox/backup:/app/backup"
+      - "E:/Docker_folders/tuliprox/downloads:/app/downloads"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "/app/tuliprox", "-p", "/app/config", "--healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+
+  firefox:
+    image: jlesage/firefox:latest
+    container_name: firefox
+    network_mode: "service:vpn-stable"
+    depends_on:
+      vpn-stable:
+        condition: service_healthy
+    environment:
+      - TZ=${TZ}
+      - KEEP_APP_RUNNING=1
+      # Cambiar puertos internos para convivir con Tor (docs oficiales) :contentReference[oaicite:20]{index=20}
+      - WEB_LISTENING_PORT=5802
+      - VNC_LISTENING_PORT=5902
+    volumes:
+      - "E:/Docker_folders/firefox:/config:rw"
+      - "D:/Descargas/FirefoxVPN:/storage/Descargas:rw"
+    shm_size: "2gb"
+    restart: unless-stopped
+
+
+  tor-browser:
+    image: domistyle/tor-browser:latest
+    container_name: tor-browser
+    network_mode: "service:vpn-stable"
+    depends_on:
+      vpn-stable:
+        condition: service_healthy
+    environment:
+      - TZ=${TZ}
+      - KEEP_APP_RUNNING=1
+      # (opcional) resolución
+      - DISPLAY_WIDTH=1920
+      - DISPLAY_HEIGHT=1080
+    volumes:
+      - "D:/Descargas/TorBrowserVPN:/storage/Descargas:rw"
+    shm_size: "2gb"
+    restart: unless-stopped
+
+
+  vpn-ip-check:
+    image: alpine:3.20
+    container_name: vpn-ip-check
+    network_mode: "service:vpn-stable"
+    depends_on:
+      vpn-stable:
+        condition: service_healthy
+    command: >
+      sh -c "apk add --no-cache curl >/dev/null
+      && while true; do
+           echo '============================='
+           date
+           echo '[Mullvad check]'
+           curl -s https://am.i.mullvad.net/json || true
+           echo
+           echo '[Public IP]'
+           curl -s https://ipinfo.io/ip || true
+           echo
+           sleep 30
+         done"
+    restart: unless-stopped
+
+
+  # Watchdog: NO reinicia por microcortes.
+  # Espera OUTAGE_GRACE_SECONDS (180s) y solo si sigue caído reinicia dependientes.
+  vpn-watchdog:
+    build: ./watchdog
+    container_name: vpn-watchdog
+    depends_on:
+      vpn-stable:
+        condition: service_started
+    environment:
+      - TZ=Europe/Madrid
+
+      # Qué contenedor vigilar (Gluetun)
+      - VPN_CONTAINER=vpn-stable
+
+      # A quién reiniciar si Gluetun está UNHEALTHY durante > GRACE
+      - DEPENDENTS=dispatcharr,tuliprox
+
+      # timings
+      - CHECK_INTERVAL=10
+      - STARTUP_GRACE=90
+      - DOWN_GRACE=180
+      - COOLDOWN=120
+
+      # verbosity
+      - VERBOSE=1
+      - PRINT_HEALTH_LOGS=1
+      - PRINT_CONTAINER_LOG_TAIL=60
+
+      # opcional: también reiniciar el propio vpn-stable
+      - RESTART_VPN=0
+
+    # 🔥 Docker Desktop Windows (Linux containers): monta el engine pipe como docker.sock dentro del contenedor
+    volumes:
+      - "//./pipe/docker_engine:/var/run/docker.sock:ro"
+
+    restart: unless-stopped

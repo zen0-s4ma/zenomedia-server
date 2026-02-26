@@ -1,0 +1,341 @@
+2026-02-26 01:15:29 | INFO | Cargados 565 .conf en DB.
+2026-02-26 01:15:29 | INFO | Control server disponible: False
+2026-02-26 01:15:29 | INFO | === TEST START | al-tia-wg-003 | E:\Docker_folders\_mullvadvpn-servers\al-tia-wg-003.conf ===
+2026-02-26 01:15:29 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml stop gluetun-dispatcharr-test
+2026-02-26 01:15:31 | INFO | STDERR: Container gluetun-dispatcharr-test Stopping 
+ Container gluetun-dispatcharr-test Stopped
+2026-02-26 01:15:31 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml up -d --force-recreate gluetun-vpn-test
+2026-02-26 01:15:38 | INFO | STDERR: Container gluetun-vpn-test Recreate 
+ Container gluetun-vpn-test Recreated 
+ Container gluetun-vpn-test Starting 
+ Container gluetun-vpn-test Started
+2026-02-26 01:15:38 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 -sS --max-time 8 https://api.ipify.org?format=json
+2026-02-26 01:15:44 | INFO | STDERR: docker: Error response from daemon: cannot join network namespace of container: Container 25fddd0e58e9debb328875921207bf5469da1a053ef0a1e69c7fe1a82e842cfb is restarting, wait until the container is running
+
+Run 'docker run --help' for more information
+2026-02-26 01:15:46 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 -sS --max-time 8 https://api.ipify.org?format=json
+2026-02-26 01:15:59 | INFO | STDERR: curl: (7) Failed to connect to api.ipify.org port 443 after 4023 ms: Couldn't connect to server
+2026-02-26 01:16:01 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 -sS --max-time 8 https://api.ipify.org?format=json
+2026-02-26 01:16:14 | INFO | STDERR: curl: (7) Failed to connect to api.ipify.org port 443 after 4007 ms: Couldn't connect to server
+2026-02-26 01:16:16 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 -sS --max-time 8 https://api.ipify.org?format=json
+2026-02-26 01:16:21 | INFO | STDERR: docker: Error response from daemon: cannot join network namespace of container: Container 25fddd0e58e9debb328875921207bf5469da1a053ef0a1e69c7fe1a82e842cfb is restarting, wait until the container is running
+
+Run 'docker run --help' for more information
+2026-02-26 01:16:23 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 -sS --max-time 8 https://api.ipify.org?format=json
+2026-02-26 01:16:30 | INFO | STDERR: docker: Error response from daemon: failed to create task for container: failed to create shim task: OCI runtime create failed: runc create failed: unable to create new parent process: namespace path: lstat /proc/533112/ns/net: no such file or directory
+
+Run 'docker run --help' for more information
+2026-02-26 01:16:32 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 -sS --max-time 8 https://api.ipify.org?format=json
+2026-02-26 01:16:36 | INFO | STDERR: docker: Error response from daemon: cannot join network namespace of container: Container 25fddd0e58e9debb328875921207bf5469da1a053ef0a1e69c7fe1a82e842cfb is restarting, wait until the container is running
+
+Run 'docker run --help' for more information
+2026-02-26 01:16:38 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 -sS --max-time 8 https://api.ipify.org?format=json
+2026-02-26 01:16:48 | INFO | STDERR: curl: (7) Failed to connect to api.ipify.org port 443 after 4008 ms: Couldn't connect to server
+2026-02-26 01:16:50 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 -sS --max-time 8 https://api.ipify.org?format=json
+2026-02-26 01:16:55 | INFO | STDERR: docker: Error response from daemon: cannot join network namespace of container: Container 25fddd0e58e9debb328875921207bf5469da1a053ef0a1e69c7fe1a82e842cfb is restarting, wait until the container is running
+
+Run 'docker run --help' for more information
+2026-02-26 01:16:57 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 -sS --max-time 8 https://api.ipify.org?format=json
+2026-02-26 01:17:01 | INFO | STDERR: docker: Error response from daemon: cannot join network namespace of container: Container 25fddd0e58e9debb328875921207bf5469da1a053ef0a1e69c7fe1a82e842cfb is restarting, wait until the container is running
+
+Run 'docker run --help' for more information
+2026-02-26 01:17:03 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 -sS --max-time 8 https://api.ipify.org?format=json
+2026-02-26 01:17:08 | INFO | STDERR: docker: Error response from daemon: cannot join network namespace of container: Container 25fddd0e58e9debb328875921207bf5469da1a053ef0a1e69c7fe1a82e842cfb is restarting, wait until the container is running
+
+Run 'docker run --help' for more information
+2026-02-26 01:17:10 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 -sS --max-time 8 https://api.ipify.org?format=json
+2026-02-26 01:17:16 | INFO | STDERR: docker: Error response from daemon: cannot join network namespace of container: Container 25fddd0e58e9debb328875921207bf5469da1a053ef0a1e69c7fe1a82e842cfb is restarting, wait until the container is running
+
+Run 'docker run --help' for more information
+2026-02-26 01:17:18 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 -sS --max-time 8 https://api.ipify.org?format=json
+2026-02-26 01:17:23 | INFO | STDERR: docker: Error response from daemon: cannot join network namespace of container: Container 25fddd0e58e9debb328875921207bf5469da1a053ef0a1e69c7fe1a82e842cfb is restarting, wait until the container is running
+
+Run 'docker run --help' for more information
+2026-02-26 01:17:25 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 -sS --max-time 8 https://api.ipify.org?format=json
+2026-02-26 01:17:30 | INFO | STDERR: docker: Error response from daemon: cannot join network namespace of container: Container 25fddd0e58e9debb328875921207bf5469da1a053ef0a1e69c7fe1a82e842cfb is restarting, wait until the container is running
+
+Run 'docker run --help' for more information
+2026-02-26 01:17:32 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 -sS --max-time 8 https://api.ipify.org?format=json
+2026-02-26 01:17:35 | INFO | STDERR: docker: Error response from daemon: cannot join network namespace of container: Container 25fddd0e58e9debb328875921207bf5469da1a053ef0a1e69c7fe1a82e842cfb is restarting, wait until the container is running
+
+Run 'docker run --help' for more information
+2026-02-26 01:17:37 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 -sS --max-time 8 https://api.ipify.org?format=json
+2026-02-26 01:17:42 | INFO | STDERR: docker: Error response from daemon: cannot join network namespace of container: Container 25fddd0e58e9debb328875921207bf5469da1a053ef0a1e69c7fe1a82e842cfb is restarting, wait until the container is running
+
+Run 'docker run --help' for more information
+2026-02-26 01:17:44 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 -sS --max-time 8 https://api.ipify.org?format=json
+2026-02-26 01:17:48 | INFO | STDERR: docker: Error response from daemon: cannot join network namespace of container: Container 25fddd0e58e9debb328875921207bf5469da1a053ef0a1e69c7fe1a82e842cfb is restarting, wait until the container is running
+
+Run 'docker run --help' for more information
+2026-02-26 01:17:50 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 -sS --max-time 8 https://api.ipify.org?format=json
+2026-02-26 01:33:57 | INFO | Cargados 565 .conf en DB.
+2026-02-26 01:33:57 | INFO | Control server disponible: False
+2026-02-26 01:33:57 | INFO | === TEST START | al-tia-wg-003 | E:\Docker_folders\_mullvadvpn-servers\al-tia-wg-003.conf ===
+2026-02-26 01:33:57 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml stop gluetun-dispatcharr-test
+2026-02-26 01:33:58 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml up -d --force-recreate gluetun-vpn-test
+2026-02-26 01:34:04 | INFO | STDERR: Container gluetun-vpn-test Recreate 
+ Container gluetun-vpn-test Recreated 
+ Container gluetun-vpn-test Starting 
+ Container gluetun-vpn-test Started
+2026-02-26 01:36:44 | INFO | Cargados 565 .conf en DB.
+2026-02-26 01:36:44 | INFO | Control server disponible: False
+2026-02-26 01:36:44 | INFO | === TEST START | al-tia-wg-003 | E:\Docker_folders\_mullvadvpn-servers\al-tia-wg-003.conf ===
+2026-02-26 01:36:44 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml stop gluetun-dispatcharr-test
+2026-02-26 01:36:45 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml up -d --force-recreate gluetun-vpn-test
+2026-02-26 01:36:50 | INFO | STDERR: Container gluetun-vpn-test Creating 
+ Container gluetun-vpn-test Created 
+ Container gluetun-vpn-test Starting 
+ Container gluetun-vpn-test Started
+2026-02-26 01:38:20 | INFO | Container gluetun-vpn-test no está estable tras 90s
+2026-02-26 01:38:20 | INFO | VPN switch failed: gluetun_not_stable_restarting
+2026-02-26 01:38:20 | INFO | === QUARANTINE | al-tia-wg-003 | reason=vpn_no_public_ip ===
+2026-02-26 02:00:17 | INFO | Cargados 565 .conf en DB.
+2026-02-26 02:00:17 | INFO | BOOTSTRAP: no existía wg0.conf -> copiado al-tia-wg-003.conf a D:\Github-zen0s4ma\zenomedia-server\_gluetun_runtime\wg0.conf
+2026-02-26 02:00:19 | ERROR | Modo HOT solicitado, pero control server no disponible en http://127.0.0.1:8391
+2026-02-26 02:00:19 | ERROR | OJO: en tu compose suele ser http://127.0.0.1:8391 (8391:8000) y además debes permitir 8000 en FIREWALL_INPUT_PORTS.
+2026-02-26 02:06:09 | INFO | Cargados 565 .conf en DB.
+2026-02-26 02:06:09 | INFO | Control server disponible: True (base=http://127.0.0.1:8391)
+2026-02-26 02:06:09 | INFO | === TEST START | al-tia-wg-004 | E:\Docker_folders\_mullvadvpn-servers\al-tia-wg-004.conf ===
+2026-02-26 02:06:09 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml stop gluetun-dispatcharr-test
+2026-02-26 02:06:12 | INFO | STDERR: Container gluetun-dispatcharr-test Stopping 
+ Container gluetun-dispatcharr-test Stopped
+2026-02-26 02:06:12 | INFO | wg0.conf actualizado: al-tia-wg-004.conf -> D:\Github-zen0s4ma\zenomedia-server\_gluetun_runtime\wg0.conf
+2026-02-26 02:06:12 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml up -d gluetun-vpn-test
+2026-02-26 02:06:12 | INFO | STDERR: Container gluetun-vpn-test Running
+2026-02-26 02:06:13 | INFO | VPN OK | public_ip= | mode=HOT
+2026-02-26 02:06:13 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml up -d gluetun-dispatcharr-test
+2026-02-26 02:06:14 | INFO | STDERR: Container gluetun-vpn-test Running 
+ Container gluetun-dispatcharr-test Starting 
+ Container gluetun-dispatcharr-test Started
+2026-02-26 02:06:29 | INFO | Dispatcharr READY at http://127.0.0.1:9399
+2026-02-26 02:06:32 | INFO | Stream test | ok=False | mbps=0.00 | timeouts=0 | derived={}
+2026-02-26 02:06:32 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 -L -sS --max-time 25 -o /dev/null -w %{speed_download} %{time_total} %{http_code} https://speed.cloudflare.com/__down?bytes=25000000
+2026-02-26 02:06:45 | INFO | STDOUT: 3943050 6.340269 200
+2026-02-26 02:06:45 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 sh -lc head -c 10000000 /dev/zero | curl -sS --max-time 25 -o /dev/null -w '%{speed_upload} %{time_total} %{http_code}' -X POST --data-binary @- https://speed.cloudflare.com/__up
+2026-02-26 02:06:52 | INFO | STDOUT: 4728013 2.115053 200
+2026-02-26 02:06:52 | INFO | Speed test | ok=True | dl=31.54Mbps | ul=37.82Mbps | provider=cloudflare
+2026-02-26 02:06:52 | INFO | DB WRITE | run_id=2 | conf=al-tia-wg-004 | score=0 (stream=0 speed=0) | quarantined=True reason=stream_failed: unknown
+2026-02-26 02:06:52 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml stop gluetun-dispatcharr-test
+2026-02-26 02:06:55 | INFO | STDERR: Container gluetun-dispatcharr-test Stopping 
+ Container gluetun-dispatcharr-test Stopped
+2026-02-26 02:06:55 | INFO | === TEST END | al-tia-wg-004 | score=0 | quarantined=True ===
+2026-02-26 02:25:11 | INFO | DB RESET: borrado D:\Github-zen0s4ma\zenomedia-server\vpn_autotest.sqlite
+2026-02-26 02:25:11 | INFO | ONLY-CONF: forzando servidor fi-hel-wg-001.conf
+2026-02-26 02:25:11 | INFO | Control server disponible: False (base=http://127.0.0.1:8000)
+2026-02-26 02:25:11 | INFO | === TEST START | fi-hel-wg-001 | E:\Docker_folders\_mullvadvpn-servers\fi-hel-wg-001.conf ===
+2026-02-26 02:25:11 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml stop gluetun-dispatcharr-test
+2026-02-26 02:25:12 | INFO | wg0.conf actualizado: fi-hel-wg-001.conf -> D:\Github-zen0s4ma\zenomedia-server\_gluetun_runtime\wg0.conf
+2026-02-26 02:25:12 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml up -d --force-recreate gluetun-vpn-test
+2026-02-26 02:25:17 | INFO | STDERR: time="2026-02-26T02:25:12+01:00" level=warning msg="Found orphan containers ([tvheadend]) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up."
+ Container gluetun-vpn-test Creating 
+ Container gluetun-vpn-test Created 
+ Container gluetun-vpn-test Starting 
+ Container gluetun-vpn-test Started
+2026-02-26 02:25:24 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 -sS --max-time 10 https://api.ipify.org?format=json
+2026-02-26 02:25:29 | INFO | STDOUT: {"ip":"185.77.218.14"}
+2026-02-26 02:25:29 | INFO | VPN OK | public_ip=185.77.218.14 | mode=RECREATE
+2026-02-26 02:25:29 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml up -d gluetun-dispatcharr-test
+2026-02-26 02:25:35 | INFO | STDERR: time="2026-02-26T02:25:31+01:00" level=warning msg="Found orphan containers ([tvheadend]) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up."
+ Container gluetun-vpn-test Running 
+ Container gluetun-dispatcharr-test Creating 
+ Container gluetun-dispatcharr-test Created 
+ Container gluetun-dispatcharr-test Starting 
+ Container gluetun-dispatcharr-test Started
+2026-02-26 02:25:54 | INFO | Dispatcharr READY at http://127.0.0.1:9399
+2026-02-26 02:25:59 | INFO | Stream test | ok=False | http=None | bytes=0 | mbps=0.00 | timeouts=0 | err=HTTPConnectionPool(host='127.0.0.1', port=9399): Read timed out. (read timeout=5.0) | derived={}
+2026-02-26 02:25:59 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 -L -sS --max-time 25 -o /dev/null -w %{speed_download} %{time_total} %{http_code} https://speed.cloudflare.com/__down?bytes=25000000
+2026-02-26 02:26:29 | INFO | STDOUT: 1033884 24.180642 200
+2026-02-26 02:26:29 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 sh -lc head -c 10000000 /dev/zero | curl -sS --max-time 25 -o /dev/null -w '%{speed_upload} %{time_total} %{http_code}' -X POST --data-binary @- https://speed.cloudflare.com/__up
+2026-02-26 02:26:57 | INFO | STDOUT: 428312 23.347449 200
+2026-02-26 02:26:57 | INFO | Speed test | ok=True | dl=8.27Mbps | ul=3.43Mbps | provider=cloudflare
+2026-02-26 02:26:57 | INFO | DB WRITE | run_id=1 | conf=fi-hel-wg-001 | score=0 (stream=0 speed=0) | quarantined=True reason=stream_failed: HTTPConnectionPool(host='127.0.0.1', port=9399): Read timed out. (read timeout=5.0)
+2026-02-26 02:26:57 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml stop gluetun-dispatcharr-test
+2026-02-26 02:27:01 | INFO | STDERR: Container gluetun-dispatcharr-test Stopping 
+ Container gluetun-dispatcharr-test Stopped
+2026-02-26 02:27:01 | INFO | === TEST END | fi-hel-wg-001 | score=0 | quarantined=True ===
+2026-02-26 02:39:23 | INFO | DB RESET: borrado D:\Github-zen0s4ma\zenomedia-server\vpn_autotest.sqlite
+2026-02-26 02:39:23 | INFO | ONLY-CONF: forzando servidor fi-hel-wg-001.conf
+2026-02-26 02:39:23 | INFO | === TEST START | fi-hel-wg-001 | E:\Docker_folders\_mullvadvpn-servers\fi-hel-wg-001.conf ===
+2026-02-26 02:39:23 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml stop gluetun-dispatcharr-test
+2026-02-26 02:39:24 | INFO | STDERR: Container gluetun-dispatcharr-test Stopping 
+ Container gluetun-dispatcharr-test Stopped
+2026-02-26 02:39:24 | INFO | wg0.conf actualizado: fi-hel-wg-001.conf -> D:\Github-zen0s4ma\zenomedia-server\_gluetun_runtime\wg0.conf
+2026-02-26 02:39:24 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml up -d --force-recreate gluetun-vpn-test
+2026-02-26 02:39:32 | INFO | STDERR: Container gluetun-vpn-test Recreate 
+ Container gluetun-vpn-test Recreated 
+ Container gluetun-vpn-test Starting 
+ Container gluetun-vpn-test Started
+2026-02-26 02:39:39 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 -sS --max-time 10 https://api.ipify.org?format=json
+2026-02-26 02:39:44 | INFO | STDOUT: {"ip":"185.77.218.14"}
+2026-02-26 02:39:44 | INFO | VPN OK | public_ip=185.77.218.14 | mode=RECREATE
+2026-02-26 02:39:44 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml up -d gluetun-dispatcharr-test
+2026-02-26 02:39:54 | INFO | STDERR: Container gluetun-vpn-test Running 
+ Container gluetun-dispatcharr-test Recreate 
+ Container gluetun-dispatcharr-test Recreated 
+ Container gluetun-dispatcharr-test Starting 
+ Container gluetun-dispatcharr-test Started
+2026-02-26 02:40:14 | INFO | Dispatcharr READY at http://127.0.0.1:9399
+2026-02-26 02:40:40 | INFO | Channel not ready in status after 25s (uuid=9c621abb-23b4-46df-b2bf-ba78ed01073c)
+2026-02-26 02:42:01 | INFO | Stream test | ok=False | http=200 | bytes=5119760 | mbps=0.79 | timeouts=0 | err=HTTPConnectionPool(host='127.0.0.1', port=9399): Read timed out. | derived={}
+2026-02-26 02:42:01 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 -L -sS --max-time 25 -o /dev/null -w %{speed_download} %{time_total} %{http_code} https://speed.cloudflare.com/__down?bytes=25000000
+2026-02-26 02:42:13 | INFO | STDOUT: 3703924 6.749597 200
+2026-02-26 02:42:13 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 sh -lc head -c 10000000 /dev/zero | curl -sS --max-time 25 -o /dev/null -w '%{speed_upload} %{time_total} %{http_code}' -X POST --data-binary @- https://speed.cloudflare.com/__up
+2026-02-26 02:42:25 | INFO | STDOUT: 1477835 6.766654 200
+2026-02-26 02:42:25 | INFO | Speed test | ok=True | dl=29.63Mbps | ul=11.82Mbps | provider=cloudflare
+2026-02-26 02:42:25 | INFO | DB WRITE | run_id=1 | conf=fi-hel-wg-001 | score=0 (stream=0 speed=0) | quarantined=True reason=stream_failed: HTTPConnectionPool(host='127.0.0.1', port=9399): Read timed out.
+2026-02-26 02:42:25 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml stop gluetun-dispatcharr-test
+2026-02-26 02:42:29 | INFO | STDERR: Container gluetun-dispatcharr-test Stopping 
+ Container gluetun-dispatcharr-test Stopped
+2026-02-26 02:42:29 | INFO | === TEST END | fi-hel-wg-001 | score=0 | quarantined=True ===
+2026-02-26 02:49:29 | INFO | DB RESET: borrado D:\Github-zen0s4ma\zenomedia-server\vpn_autotest.sqlite
+2026-02-26 02:49:29 | INFO | ONLY-CONF: forzando servidor fi-hel-wg-001.conf
+2026-02-26 02:49:29 | INFO | wg0.conf actualizado: fi-hel-wg-001.conf -> D:\Github-zen0s4ma\zenomedia-server\_gluetun_runtime\wg0.conf
+2026-02-26 02:49:29 | INFO | === TEST START | fi-hel-wg-001 | E:\Docker_folders\_mullvadvpn-servers\fi-hel-wg-001.conf ===
+2026-02-26 02:49:29 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml stop gluetun-dispatcharr-test
+2026-02-26 02:49:29 | INFO | STDERR: Container gluetun-dispatcharr-test Stopping 
+ Container gluetun-dispatcharr-test Stopped
+2026-02-26 02:49:29 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml up -d --force-recreate gluetun-vpn-test
+2026-02-26 02:49:37 | INFO | STDERR: Container gluetun-vpn-test Recreate 
+ Container gluetun-vpn-test Recreated 
+ Container gluetun-vpn-test Starting 
+ Container gluetun-vpn-test Started
+2026-02-26 02:49:43 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 -sS --max-time 10 https://api.ipify.org?format=json
+2026-02-26 02:49:49 | INFO | STDOUT: {"ip":"185.77.218.14"}
+2026-02-26 02:49:49 | INFO | VPN OK | public_ip=185.77.218.14 | mode=RECREATE
+2026-02-26 02:49:49 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml up -d gluetun-dispatcharr-test
+2026-02-26 02:49:58 | INFO | STDERR: Container gluetun-vpn-test Running 
+ Container gluetun-dispatcharr-test Recreate 
+ Container gluetun-dispatcharr-test Recreated 
+ Container gluetun-dispatcharr-test Starting 
+ Container gluetun-dispatcharr-test Started
+2026-02-26 02:50:21 | INFO | Dispatcharr READY at http://127.0.0.1:9399
+2026-02-26 02:50:23 | INFO | Stream test | ok=False | http=200 | bytes=0 | mbps=0.00 | timeouts=0 | stalls=0.0s | err=no_data_received | derived={}
+2026-02-26 02:50:23 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 -L -sS --max-time 25 -o /dev/null -w %{speed_download} %{time_total} %{http_code} https://speed.cloudflare.com/__down?bytes=25000000
+2026-02-26 02:50:54 | INFO | STDOUT: 327620 25.001655 200
+2026-02-26 02:50:54 | INFO | STDERR: curl: (28) Operation timed out after 25001 milliseconds with 8191063 bytes received
+2026-02-26 02:50:54 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 -L -sS --max-time 25 -o /dev/null -w %{speed_download} %{time_total} %{http_code} https://proof.ovh.net/files/100Mb.dat
+2026-02-26 02:51:24 | INFO | STDOUT: 107457 25.002535 200
+2026-02-26 02:51:24 | INFO | STDERR: curl: (28) Operation timed out after 25002 milliseconds with 2686720 out of 104857600 bytes received
+2026-02-26 02:51:24 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 sh -lc head -c 10000000 /dev/zero | curl -sS --max-time 25 -o /dev/null -w '%{speed_upload} %{time_total} %{http_code}' -X POST --data-binary @- https://speed.cloudflare.com/__up
+2026-02-26 02:51:54 | INFO | STDOUT: 447378 22.352456 200
+2026-02-26 02:51:54 | INFO | Speed test | ok=True | dl=0.00Mbps | ul=3.58Mbps | provider=None
+2026-02-26 02:51:54 | INFO | DB WRITE | run_id=1 | conf=fi-hel-wg-001 | score=0 (stream=0 speed=0) | quarantined=True reason=stream_failed: no_data_received
+2026-02-26 02:51:54 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml stop gluetun-dispatcharr-test
+2026-02-26 02:51:57 | INFO | STDERR: Container gluetun-dispatcharr-test Stopping 
+ Container gluetun-dispatcharr-test Stopped
+2026-02-26 02:51:57 | INFO | === TEST END | fi-hel-wg-001 | score=0 | quarantined=True ===
+2026-02-26 03:01:05 | INFO | DB RESET: borrado D:\Github-zen0s4ma\zenomedia-server\vpn_autotest.sqlite
+2026-02-26 03:01:05 | INFO | ONLY-CONF: forzando servidor fi-hel-wg-001.conf
+2026-02-26 03:01:05 | INFO | wg0.conf actualizado: fi-hel-wg-001.conf -> D:\Github-zen0s4ma\zenomedia-server\_gluetun_runtime\wg0.conf
+2026-02-26 03:01:05 | INFO | === TEST START | fi-hel-wg-001 | E:\Docker_folders\_mullvadvpn-servers\fi-hel-wg-001.conf ===
+2026-02-26 03:01:05 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml stop gluetun-dispatcharr-test
+2026-02-26 03:01:06 | INFO | STDERR: Container gluetun-dispatcharr-test Stopping 
+ Container gluetun-dispatcharr-test Stopped
+2026-02-26 03:01:06 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml up -d --force-recreate gluetun-vpn-test
+2026-02-26 03:01:16 | INFO | STDERR: Container gluetun-vpn-test Recreate 
+ Container gluetun-vpn-test Recreated 
+ Container gluetun-vpn-test Starting 
+ Container gluetun-vpn-test Started
+2026-02-26 03:01:23 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 -sS --max-time 10 https://api.ipify.org?format=json
+2026-02-26 03:01:29 | INFO | STDOUT: {"ip":"185.77.218.14"}
+2026-02-26 03:01:29 | INFO | VPN OK | public_ip=185.77.218.14 | mode=RECREATE
+2026-02-26 03:01:29 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml up -d gluetun-dispatcharr-test
+2026-02-26 03:01:36 | INFO | STDERR: Container gluetun-vpn-test Running 
+ Container gluetun-dispatcharr-test Recreate 
+ Container gluetun-dispatcharr-test Recreated 
+ Container gluetun-dispatcharr-test Starting 
+ Container gluetun-dispatcharr-test Started
+2026-02-26 03:02:01 | INFO | Dispatcharr READY at http://127.0.0.1:9399
+2026-02-26 03:02:27 | INFO | Stream test | ok=False | http=None | bytes=0 | mbps=0.00 | timeouts=0 | stalls=0.0s | err=HTTPConnectionPool(host='127.0.0.1', port=9399): Read timed out. (read timeout=5.0) | derived={}
+2026-02-26 03:02:27 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 -L -sS --max-time 25 -o /dev/null -w %{speed_download} %{time_total} %{http_code} https://speed.cloudflare.com/__down?bytes=25000000
+2026-02-26 03:02:57 | INFO | STDOUT: 566193 25.000994 200
+2026-02-26 03:02:57 | INFO | STDERR: curl: (28) Operation timed out after 25000 milliseconds with 14155403 bytes received
+2026-02-26 03:02:57 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 -L -sS --max-time 25 -o /dev/null -w %{speed_download} %{time_total} %{http_code} https://proof.ovh.net/files/100Mb.dat
+2026-02-26 03:03:28 | INFO | STDOUT: 574071 25.000612 200
+2026-02-26 03:03:28 | INFO | STDERR: curl: (28) Operation timed out after 25000 milliseconds with 14352128 out of 104857600 bytes received
+2026-02-26 03:03:28 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 sh -lc head -c 10000000 /dev/zero | curl -sS --max-time 25 -o /dev/null -w '%{speed_upload} %{time_total} %{http_code}' -X POST --data-binary @- https://speed.cloudflare.com/__up
+2026-02-26 03:03:37 | INFO | STDOUT: 0 4.771317 000
+2026-02-26 03:03:37 | INFO | STDERR: curl: (6) Could not resolve host: speed.cloudflare.com
+2026-02-26 03:03:37 | INFO | Speed test | ok=False | dl=0.00Mbps | ul=0.00Mbps | provider=None
+2026-02-26 03:03:37 | INFO | DB WRITE | run_id=1 | conf=fi-hel-wg-001 | score=0 (stream=0 speed=0) | quarantined=True reason=stream_failed: HTTPConnectionPool(host='127.0.0.1', port=9399): Read timed out. (read timeout=5.0)
+2026-02-26 03:03:37 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml stop gluetun-dispatcharr-test
+2026-02-26 03:03:40 | INFO | STDERR: Container gluetun-dispatcharr-test Stopping 
+ Container gluetun-dispatcharr-test Stopped
+2026-02-26 03:03:40 | INFO | === TEST END | fi-hel-wg-001 | score=0 | quarantined=True ===
+2026-02-26 03:22:44 | INFO | DB RESET: borrado D:\Github-zen0s4ma\zenomedia-server\vpn_autotest.sqlite
+2026-02-26 03:22:44 | INFO | ONLY-CONF: forzando servidor fi-hel-wg-001.conf
+2026-02-26 03:22:44 | INFO | wg0.conf actualizado: fi-hel-wg-001.conf -> D:\Github-zen0s4ma\zenomedia-server\_gluetun_runtime\wg0.conf
+2026-02-26 03:22:44 | INFO | === TEST START | fi-hel-wg-001 | E:\Docker_folders\_mullvadvpn-servers\fi-hel-wg-001.conf ===
+2026-02-26 03:22:44 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml stop gluetun-dispatcharr-test
+2026-02-26 03:22:44 | INFO | STDERR: Container gluetun-dispatcharr-test Stopping 
+ Container gluetun-dispatcharr-test Stopped
+2026-02-26 03:22:44 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml up -d --force-recreate gluetun-vpn-test
+2026-02-26 03:22:56 | INFO | STDERR: Container gluetun-vpn-test Recreate 
+ Container gluetun-vpn-test Recreated 
+ Container gluetun-vpn-test Starting 
+ Container gluetun-vpn-test Started
+2026-02-26 03:23:03 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 -sS --max-time 10 https://api.ipify.org?format=json
+2026-02-26 03:23:09 | INFO | STDOUT: {"ip":"185.77.218.14"}
+2026-02-26 03:23:09 | INFO | VPN OK | public_ip=185.77.218.14 | mode=RECREATE
+2026-02-26 03:23:09 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml up -d gluetun-dispatcharr-test
+2026-02-26 03:23:18 | INFO | STDERR: Container gluetun-vpn-test Running 
+ Container gluetun-dispatcharr-test Recreate 
+ Container gluetun-dispatcharr-test Recreated 
+ Container gluetun-dispatcharr-test Starting 
+ Container gluetun-dispatcharr-test Started
+2026-02-26 03:23:37 | INFO | Dispatcharr READY at http://127.0.0.1:9399
+2026-02-26 03:24:39 | INFO | Status test | ok=False | presence=0.00 (0/30) | speed_med=None | buf_ratio=None | bitrate_est=None Mbps | err=low_presence_ratio:0.00 | derived={'presence_ratio': 0.0, 'buffering_threshold': 1.0, 'buffer_events': 0, 'speed_samples': 0, 'bitrate_samples': 0, 'bitrate_mbps_est': None, 'quality_target_mbps': 6.0}
+2026-02-26 03:24:39 | INFO | DB WRITE | run_id=1 | conf=fi-hel-wg-001 | score=0 (stream=0 speed=0) | quarantined=True reason=stream_failed: low_presence_ratio:0.00
+2026-02-26 03:24:39 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml stop gluetun-dispatcharr-test
+2026-02-26 03:24:39 | INFO | Kickoff stream thread finished
+2026-02-26 03:24:42 | INFO | STDERR: Container gluetun-dispatcharr-test Stopping 
+ Container gluetun-dispatcharr-test Stopped
+2026-02-26 03:24:42 | INFO | === TEST END | fi-hel-wg-001 | score=0 | quarantined=True ===
+2026-02-26 03:47:30 | INFO | DB RESET: borrado D:\Github-zen0s4ma\zenomedia-server\vpn_autotest.sqlite
+2026-02-26 03:47:30 | INFO | ONLY-CONF: forzando servidor fi-hel-wg-001.conf
+2026-02-26 03:47:30 | INFO | wg0.conf actualizado: fi-hel-wg-001.conf -> D:\Github-zen0s4ma\zenomedia-server\_gluetun_runtime\wg0.conf
+2026-02-26 03:47:30 | INFO | === TEST START | fi-hel-wg-001 | E:\Docker_folders\_mullvadvpn-servers\fi-hel-wg-001.conf ===
+2026-02-26 03:47:30 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml stop gluetun-dispatcharr-test
+2026-02-26 03:47:31 | INFO | STDERR: Container gluetun-dispatcharr-test Stopping 
+ Container gluetun-dispatcharr-test Stopped
+2026-02-26 03:47:31 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml up -d --force-recreate gluetun-vpn-test
+2026-02-26 03:47:51 | INFO | DB RESET: borrado D:\Github-zen0s4ma\zenomedia-server\vpn_autotest.sqlite
+2026-02-26 03:47:51 | INFO | ONLY-CONF: forzando servidor fi-hel-wg-001.conf
+2026-02-26 03:47:51 | INFO | wg0.conf actualizado: fi-hel-wg-001.conf -> D:\Github-zen0s4ma\zenomedia-server\_gluetun_runtime\wg0.conf
+2026-02-26 03:47:51 | INFO | === TEST START | fi-hel-wg-001 | E:\Docker_folders\_mullvadvpn-servers\fi-hel-wg-001.conf ===
+2026-02-26 03:47:51 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml stop gluetun-dispatcharr-test
+2026-02-26 03:47:52 | INFO | STDERR: Container gluetun-dispatcharr-test Stopping 
+ Container gluetun-dispatcharr-test Stopped
+2026-02-26 03:47:52 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml up -d --force-recreate gluetun-vpn-test
+2026-02-26 03:48:00 | INFO | STDERR: Container gluetun-vpn-test Recreate 
+ Container gluetun-vpn-test Recreated 
+ Container gluetun-vpn-test Starting 
+ Container gluetun-vpn-test Started
+2026-02-26 03:48:26 | INFO | DB RESET: borrado D:\Github-zen0s4ma\zenomedia-server\vpn_autotest.sqlite
+2026-02-26 03:48:27 | INFO | ONLY-CONF: forzando servidor fi-hel-wg-001.conf
+2026-02-26 03:48:27 | INFO | wg0.conf actualizado: fi-hel-wg-001.conf -> D:\Github-zen0s4ma\zenomedia-server\_gluetun_runtime\wg0.conf
+2026-02-26 03:48:27 | INFO | === TEST START | fi-hel-wg-001 | E:\Docker_folders\_mullvadvpn-servers\fi-hel-wg-001.conf ===
+2026-02-26 03:48:27 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml stop gluetun-dispatcharr-test
+2026-02-26 03:48:27 | INFO | STDERR: Container gluetun-dispatcharr-test Stopping 
+ Container gluetun-dispatcharr-test Stopped
+2026-02-26 03:48:27 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml up -d --force-recreate gluetun-vpn-test
+2026-02-26 03:48:35 | INFO | STDERR: Container gluetun-vpn-test Recreate 
+ Container gluetun-vpn-test Recreated 
+ Container gluetun-vpn-test Starting 
+ Container gluetun-vpn-test Started
+2026-02-26 03:48:41 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 -sS --max-time 10 https://api.ipify.org?format=json
+2026-02-26 03:48:52 | INFO | STDERR: curl: (6) Could not resolve host: api.ipify.org
+2026-02-26 03:53:19 | INFO | DB RESET: borrado D:\Github-zen0s4ma\zenomedia-server\vpn_autotest.sqlite
+2026-02-26 03:53:19 | INFO | ONLY-CONF: forzando servidor fi-hel-wg-001.conf
+2026-02-26 03:53:19 | INFO | wg0.conf actualizado: fi-hel-wg-001.conf -> D:\Github-zen0s4ma\zenomedia-server\_gluetun_runtime\wg0.conf
+2026-02-26 03:53:19 | INFO | === TEST START | fi-hel-wg-001 | E:\Docker_folders\_mullvadvpn-servers\fi-hel-wg-001.conf ===
+2026-02-26 03:53:19 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml stop gluetun-dispatcharr-test
+2026-02-26 03:53:20 | INFO | STDERR: Container gluetun-dispatcharr-test Stopping 
+ Container gluetun-dispatcharr-test Stopped
+2026-02-26 03:53:20 | INFO | CMD: docker compose -f D:\Github-zen0s4ma\zenomedia-server\docker-compose.yml up -d --force-recreate gluetun-vpn-test
+2026-02-26 03:53:29 | INFO | STDERR: Container gluetun-vpn-test Recreate 
+ Container gluetun-vpn-test Recreated 
+ Container gluetun-vpn-test Starting 
+ Container gluetun-vpn-test Started
+2026-02-26 03:53:36 | INFO | CMD: docker run --rm --network container:gluetun-vpn-test curlimages/curl:8.5.0 -sS --max-time 10 https://api.ipify.org?format=json
+2026-02-26 03:53:47 | INFO | STDERR: curl: (6) Could not resolve host: api.ipify.org
