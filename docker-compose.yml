@@ -2020,43 +2020,64 @@ services:
       - NET_ADMIN
     devices:
       - /dev/net/tun:/dev/net/tun
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
     environment:
-      - TZ=Europe/Madrid
+      TZ: Europe/Madrid
 
-      # (ejemplo) Mullvad WireGuard
-      - VPN_SERVICE_PROVIDER=mullvad
-      - VPN_TYPE=wireguard
+      VPN_SERVICE_PROVIDER: mullvad
+      VPN_TYPE: wireguard
 
-      # IMPORTANTE: abre aquí los puertos de TODOS los servicios que van "detrás" de la VPN
-      # Ajusta a tus reales:
-      - FIREWALL_INPUT_PORTS=9191,8901,5800,5900,5801,5901,8000
+      LOG_LEVEL: ${GLUETUN_LOG_LEVEL:-info}
 
-      # Si usas control server con auth (como en tus logs)
-      # (ya lo tienes, lo dejo para contexto)
-      # - HTTP_CONTROL_SERVER_LOG=on  (si lo usas)
+      WIREGUARD_PRIVATE_KEY: ${WIREGUARD_PRIVATE_KEY}
+      WIREGUARD_ADDRESSES: ${WIREGUARD_ADDRESSES}
+      SERVER_COUNTRIES: ${SERVER_COUNTRIES}
+
+      WIREGUARD_MTU: 1400
+      WIREGUARD_PERSISTENT_KEEPALIVE_INTERVAL: 25s
+
+      # PUERTOS INTERNOS permitidos por el firewall de Gluetun
+      # - Dispatcharr: 9191
+      # - Tuliprox:   8901
+      # - Tor:       5800/5900
+      # - Firefox:   5802/5902  (porque los cambiaste para no chocar con Tor)
+      FIREWALL_INPUT_PORTS: 9191,8901,5800,5900,5802,5902
+
+      # Auto-heal del túnel (ok mantenerlo)
+      HEALTH_RESTART_VPN: on
+      HEALTH_TARGET_ADDRESSES: cloudflare.com:443,github.com:443
+      HEALTH_ICMP_TARGET_IPS: 1.1.1.1,8.8.8.8
+      UPDATER_PERIOD: 24h
+
+      # --- OPCIONAL (mejor NO exponer si no lo necesitas) ---
+      # Si usas el control server con auth por config.toml:
+      # HTTP_CONTROL_SERVER_AUTH_CONFIG_FILE: /gluetun/auth/config.toml
+
     volumes:
-      # tus configs
       - "E:/Docker_folders/vpn-status/config.toml:/gluetun/auth/config.toml"
-      # si usas WG custom file, adapta:
-      # - "E:/Docker_folders/_mullvadvpn-servers/${MULLVAD_WG_FILE}.conf:/gluetun/wireguard/wg0.conf:ro"
-
-      # servers cache si lo guardas
       - "E:/Docker_folders/gluetun:/gluetun"
 
     ports:
-      # Puertos “publicados” de los servicios que cuelgan de network_mode: service:vpn-stable
-      - "9191:9191"   # tuliprox (ejemplo)
-      - "8901:8901"   # dispatcharr (ejemplo)
-      - "5800:5800"   # firefox web
-      - "5900:5900"   # firefox vnc
-      - "5801:5800"   # tor web (si mapeas así)
-      - "5901:5900"   # tor vnc (si mapeas así)
-      - "8000:8000"   # gluetun control server (ojo seguridad)
+      # Dispatcharr (UI/API)
+      - "9191:9191"
+
+      # Tuliprox (UI/API)
+      - "8901:8901"
+
+      # Firefox (publico 5800->interno 5802, 5900->interno 5902)
+      - "5800:5802"
+      - "5900:5902"
+
+      # Tor browser (mantiene internos 5800/5900)
+      - "5801:5800"
+      - "5901:5900"
+
+      # --- OPCIONAL control server ---
+      # - "8000:8000"
 
     restart: unless-stopped
 
-    # ✅ ARREGLO “PRO”: HEALTHCHECK explícito usando el healthcheck propio de Gluetun.
-    # Gluetun trae un "health server" y un healthcheck Docker pensado para esto. :contentReference[oaicite:2]{index=2}
     healthcheck:
       test: ["CMD-SHELL", "/gluetun-entrypoint healthcheck"]
       interval: 10s
@@ -2073,9 +2094,11 @@ services:
       vpn-stable:
         condition: service_healthy
     environment:
-      - TZ=${TZ}
-      - DISPATCHARR_ENV=aio
-      - DISPATCHARR_LOG_LEVEL=${DISPATCHARR_LOG_LEVEL} # debug recomendado en docs :contentReference[oaicite:19]{index=19}
+      TZ: ${TZ:-Europe/Madrid}
+      DISPATCHARR_ENV: aio
+      REDIS_HOST: localhost
+      CELERY_BROKER_URL: redis://localhost:6379/0
+      DISPATCHARR_LOG_LEVEL: ${DISPATCHARR_LOG_LEVEL:-info}
     volumes:
       - "E:/Docker_folders/dispatcharr/data:/data"
       - "E:/Docker_folders/dispatcharr/iptv:/data/m3us"
@@ -2093,7 +2116,7 @@ services:
     working_dir: /app
     command: ["/app/tuliprox", "-p", "/app/config", "-s"]
     environment:
-      - TZ=${TZ}
+      TZ: ${TZ:-Europe/Madrid}
     volumes:
       - "E:/Docker_folders/dispatcharr/iptv:/app/data/m3us:ro"
       - "E:/Docker_folders/epg:/app/data/epg:ro"
@@ -2118,11 +2141,10 @@ services:
       vpn-stable:
         condition: service_healthy
     environment:
-      - TZ=${TZ}
-      - KEEP_APP_RUNNING=1
-      # Cambiar puertos internos para convivir con Tor (docs oficiales) :contentReference[oaicite:20]{index=20}
-      - WEB_LISTENING_PORT=5802
-      - VNC_LISTENING_PORT=5902
+      TZ: ${TZ:-Europe/Madrid}
+      KEEP_APP_RUNNING: "1"
+      WEB_LISTENING_PORT: "5802"
+      VNC_LISTENING_PORT: "5902"
     volumes:
       - "E:/Docker_folders/firefox:/config:rw"
       - "D:/Descargas/FirefoxVPN:/storage/Descargas:rw"
@@ -2138,11 +2160,10 @@ services:
       vpn-stable:
         condition: service_healthy
     environment:
-      - TZ=${TZ}
-      - KEEP_APP_RUNNING=1
-      # (opcional) resolución
-      - DISPLAY_WIDTH=1920
-      - DISPLAY_HEIGHT=1080
+      TZ: ${TZ:-Europe/Madrid}
+      KEEP_APP_RUNNING: "1"
+      DISPLAY_WIDTH: "1920"
+      DISPLAY_HEIGHT: "1080"
     volumes:
       - "D:/Descargas/TorBrowserVPN:/storage/Descargas:rw"
     shm_size: "2gb"
@@ -2172,8 +2193,6 @@ services:
     restart: unless-stopped
 
 
-  # Watchdog: NO reinicia por microcortes.
-  # Espera OUTAGE_GRACE_SECONDS (180s) y solo si sigue caído reinicia dependientes.
   vpn-watchdog:
     build: ./watchdog
     container_name: vpn-watchdog
@@ -2181,30 +2200,29 @@ services:
       vpn-stable:
         condition: service_started
     environment:
-      - TZ=Europe/Madrid
+      TZ: Europe/Madrid
 
-      # Qué contenedor vigilar (Gluetun)
-      - VPN_CONTAINER=vpn-stable
+      # Docker Engine API (Windows Docker Desktop)
+      DOCKER_HOST: "http://host.docker.internal:2375"
+      DOCKER_TIMEOUT: "5"
 
-      # A quién reiniciar si Gluetun está UNHEALTHY durante > GRACE
-      - DEPENDENTS=dispatcharr,tuliprox
+      VPN_CONTAINER: vpn-stable
 
-      # timings
-      - CHECK_INTERVAL=10
-      - STARTUP_GRACE=90
-      - DOWN_GRACE=180
-      - COOLDOWN=120
+      # Reinicia TODO lo que cuelga del namespace del VPN cuando detecta restart o UNHEALTHY sostenido
+      DEPENDENTS: dispatcharr,tuliprox,firefox,tor-browser,vpn-ip-check
 
-      # verbosity
-      - VERBOSE=1
-      - PRINT_HEALTH_LOGS=1
-      - PRINT_CONTAINER_LOG_TAIL=60
+      CHECK_INTERVAL: "10"
+      STARTUP_GRACE: "90"
+      DOWN_GRACE: "180"
+      COOLDOWN: "120"
 
-      # opcional: también reiniciar el propio vpn-stable
-      - RESTART_VPN=0
+      # Nuevo: reiniciar dependientes si el VPN se reinicia aunque vuelva "healthy"
+      RESTART_ON_VPN_RESTART: "1"
+      VPN_RESTART_GRACE: "15"
 
-    # 🔥 Docker Desktop Windows (Linux containers): monta el engine pipe como docker.sock dentro del contenedor
-    volumes:
-      - "//./pipe/docker_engine:/var/run/docker.sock:ro"
+      VERBOSE: "1"
+      PRINT_HEALTH_LOGS: "1"
+      PRINT_CONTAINER_LOG_TAIL: "60"
 
+      RESTART_VPN: "0"
     restart: unless-stopped
