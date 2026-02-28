@@ -2020,4 +2020,34 @@ services:
     restart: unless-stopped
 
 
-  
+  iptvnator-backend:
+    image: 4gray/iptvnator-backend:latest
+    container_name: iptvnator-backend
+    restart: unless-stopped
+    environment:
+      - TZ=${TZ:-Europe/Madrid}
+      # Debe coincidir EXACTAMENTE con el origen (URL) desde el que abrirás el frontend
+      - CLIENT_URL=http://${HOST_IP}:${IPTVNATOR_FRONTEND_PORT}
+    ports:
+      # Backend expone 3000 dentro del contenedor
+      - "${HOST_IP}:${IPTVNATOR_BACKEND_PORT}:3000"
+    volumes:
+      # Persistencia “tipo zenomedia”: carpeta reservada (hoy el backend es stateless)
+      - "E:/Docker_folders/iptvnator/backend:/data"
+
+  iptvnator:
+    image: 4gray/iptvnator:latest
+    container_name: iptvnator
+    restart: unless-stopped
+    depends_on:
+      - iptvnator-backend
+    environment:
+      # Debe ser accesible DESDE EL NAVEGADOR (no “http://iptvnator-backend:3000”)
+      - BACKEND_URL=http://${HOST_IP}:${IPTVNATOR_BACKEND_PORT}
+    ports:
+      - "${HOST_IP}:${IPTVNATOR_FRONTEND_PORT}:80"
+    volumes:
+      # Persistente: overrides “extra” para nginx (la imagen incluye: include /etc/nginx/extra-conf.d/*.conf)
+      - "E:/Docker_folders/iptvnator/frontend/extra-conf.d:/etc/nginx/extra-conf.d"
+      # Persistente: logs nginx
+      - "E:/Docker_folders/iptvnator/frontend/logs:/var/log/nginx"
