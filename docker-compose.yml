@@ -774,48 +774,18 @@ services:
     depends_on:
       - jellyfin
     ports:
-      # RecomendaciÃ³n prÃ¡ctica con Dispatcharr/Jellyfin: publicar en la LAN para usar URL con IP (valida siempre).
-      # Si prefieres NO exponerlo en LAN, alternativa: usa una URL con FQDN que resuelva en Docker, o proxy inverso.
       - "8409:8409"
     environment:
       - TZ=Europe/Madrid
-      # NVIDIA (solo si tu host lo soporta; en Docker sobre Windows/macOS no estÃ¡ soportado oficialmente por ErsatzTV)
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=compute,video,utility
     volumes:
-      # ConfiguraciÃ³n persistente
+      # Configuración persistente
       - "E:/Docker_folders/ersatztv/config:/config"
-      # Media (opciÃ³n 1 recomendada por docs para 'Streaming From Disk' con Jellyfin: mismos mounts/paths que Jellyfin)
-      - "F:/Animacion:/media/Animacion:ro"
-      - "F:/Infantil:/media/Infantil:ro"
-      - "F:/Peliculas:/media/Peliculas:ro"
-      - "F:/Documentales:/media/Documentales:ro"
-      - "F:/Series:/media/Series:ro"
-      - "F:/MiniSeries:/media/MiniSeries:ro"
-      - "F:/Anime:/media/Anime:ro"
-      - "F:/Futbol:/media/Futbol:ro"
-      - "F:/Baloncesto:/media/Baloncesto:ro"
-      - "F:/NFL:/media/NFL:ro"
-      - "F:/Combates:/media/Combates:ro"
-      - "F:/LoL:/media/LoL:ro"
-      - "F:/Olimpiadas:/media/Olimpiadas:ro"
-      - "F:/Podcasts:/media/Podcast:ro"
-      - "E:/Animacion:/media/Animacion2:ro"
-      - "E:/Infantil:/media/Infantil2:ro"
-      - "E:/Peliculas:/media/Peliculas2:ro"
-      - "E:/Series:/media/Series2:ro"
-      - "E:/MiniSeries:/media/MiniSeries2:ro"
-      - "E:/YouTube:/media/YouTube2:ro"
-      - "E:/Anime:/media/Anime2:ro"
-      - "E:/Documentales:/media/Documentales2:ro"
-      - "E:/Futbol:/media/Futbol2:ro"
-      - "E:/Baloncesto:/media/Baloncesto2:ro"
-      - "E:/NFL:/media/NFL2:ro"
-      - "E:/Combates:/media/Combates2:ro"
-      - "E:/LoL:/media/LoL2:ro"
-      - "E:/Olimpiadas:/media/Olimpiadas2:ro"
-      - "E:/Podcasts:/media/Podcast2:ro"
-    # tmpfs recomendado por docs para limitar escrituras en disco (transcodes temporales)
+
+      # Media (Windows -> contenedor)
+      - "F:/:/media_f:ro"
+      - "E:/:/media_e:ro"
     tmpfs:
       - /transcode
 
@@ -834,40 +804,7 @@ services:
       - "E:/Docker_folders/nextpvr/buffer:/buffer"
     restart: unless-stopped
 
-    # --------------------------------------------------------
-  # --- iptvnator-backend
-  # --- Backend para IPTVnator (self-host)
-  # --- Ports: N/A (solo interno)
-  # --------------------------------------------------------
-  iptvnator-backend:
-    image: 4gray/iptvnator-backend:latest
-    container_name: iptvnator-backend
-    restart: unless-stopped
-    environment:
-      - TZ=Europe/Madrid
-      # IMPORTANTE: usa el mismo host/puerto con el que abrirÃ¡s la UI en el navegador
-      - CLIENT_URL=http://localhost:33195
-    expose:
-      - "3000"
-
-  # --------------------------------------------------------
-  # --- iptvnator
-  # --- Web UI IPTV (M3U + EPG XMLTV)
-  # --- Ports: 33195 (Gui Web)
-  # --------------------------------------------------------
-  iptvnator:
-    image: 4gray/iptvnator:latest
-    container_name: iptvnator
-    restart: unless-stopped
-    ports:
-      - "127.0.0.1:33195:80"
-    environment:
-      - TZ=Europe/Madrid
-      - BACKEND_URL=http://iptvnator-backend:3000
-    depends_on:
-      - iptvnator-backend
-
-
+  
   # +++++++++++++++++++++++++++++++
   #
   # CATEGORIA: PROCESADO / TRANSCODIFICACION / UTILIDADES MULTIMEDIA
@@ -2014,70 +1951,45 @@ services:
       retries: 5
 
   vpn-stable:
-    image: qmcgaw/gluetun:latest
+    image: qmcgaw/gluetun:v3.41.1   # pin recomendado (evita sorpresas con latest)
     container_name: vpn-stable
     cap_add:
       - NET_ADMIN
-    devices:
-      - /dev/net/tun:/dev/net/tun
-    sysctls:
-      - net.ipv4.conf.all.src_valid_mark=1
     environment:
       TZ: Europe/Madrid
-
+      # VPN TYPE CONFIG
       VPN_SERVICE_PROVIDER: mullvad
       VPN_TYPE: wireguard
-
       LOG_LEVEL: ${GLUETUN_LOG_LEVEL:-info}
-
+      # WIREWARD KEYS & CONFIG
       WIREGUARD_PRIVATE_KEY: ${WIREGUARD_PRIVATE_KEY}
       WIREGUARD_ADDRESSES: ${WIREGUARD_ADDRESSES}
       SERVER_COUNTRIES: ${SERVER_COUNTRIES}
-
-      WIREGUARD_MTU: 1400
-      WIREGUARD_PERSISTENT_KEEPALIVE_INTERVAL: 25s
-
-      # PUERTOS INTERNOS permitidos por el firewall de Gluetun
-      # - Dispatcharr: 9191
-      # - Tuliprox:   8901
-      # - Tor:       5800/5900
-      # - Firefox:   5802/5902  (porque los cambiaste para no chocar con Tor)
-      FIREWALL_INPUT_PORTS: 9191,8901,5800,5900,5802,5902
-
-      # Auto-heal del túnel (ok mantenerlo)
+      # FIREWALL
+      FIREWALL_DEBUG: on
+      FIREWALL_INPUT_PORTS: 9191,8000
+      FIREWALL_OUTBOUND_SUBNETS: 192.168.1.113/32
+      # HEALTHCHECK: evita DNS aquí usando IPs
       HEALTH_RESTART_VPN: on
-      HEALTH_TARGET_ADDRESSES: cloudflare.com:443,github.com:443
+      HEALTH_TARGET_ADDRESSES: 1.1.1.1:443,8.8.8.8:443
       HEALTH_ICMP_TARGET_IPS: 1.1.1.1,8.8.8.8
-      UPDATER_PERIOD: 24h
-
-      # --- OPCIONAL (mejor NO exponer si no lo necesitas) ---
-      # Si usas el control server con auth por config.toml:
-      # HTTP_CONTROL_SERVER_AUTH_CONFIG_FILE: /gluetun/auth/config.toml
-
+      # DNS
+      # DNS: si DoT te da EOF, cambia a DoH (o plain)
+      # DNS_UPSTREAM_RESOLVER_TYPE: plain
+      # DNS_UPSTREAM_RESOLVERS: cloudflare,google
+      # BLOCKS 
+      # (Si sospechas OOM (out of memory) por listas enormes, desactiva filtrado)
+      # BLOCK_MALICIOUS: off
+      # BLOCK_SURVEILLANCE: off
+      # BLOCK_ADS: off
+      # UPDATER
+      # UPDATER_PERIOD: 24h
     volumes:
-      - "E:/Docker_folders/vpn-status/config.toml:/gluetun/auth/config.toml"
       - "E:/Docker_folders/gluetun:/gluetun"
-
     ports:
-      # Dispatcharr (UI/API)
       - "9191:9191"
-
-      # Tuliprox (UI/API)
-      - "8901:8901"
-
-      # Firefox (publico 5800->interno 5802, 5900->interno 5902)
-      - "5800:5802"
-      - "5900:5902"
-
-      # Tor browser (mantiene internos 5800/5900)
-      - "5801:5800"
-      - "5901:5900"
-
-      # --- OPCIONAL control server ---
-      # - "8000:8000"
-
+      - "8000:8000"
     restart: unless-stopped
-
     healthcheck:
       test: ["CMD-SHELL", "/gluetun-entrypoint healthcheck"]
       interval: 10s
@@ -2099,6 +2011,8 @@ services:
       REDIS_HOST: localhost
       CELERY_BROKER_URL: redis://localhost:6379/0
       DISPATCHARR_LOG_LEVEL: ${DISPATCHARR_LOG_LEVEL:-info}
+      NVIDIA_VISIBLE_DEVICES: "all"
+      NVIDIA_DRIVER_CAPABILITIES: "compute,video,utility"
     volumes:
       - "E:/Docker_folders/dispatcharr/data:/data"
       - "E:/Docker_folders/dispatcharr/iptv:/data/m3us"
@@ -2106,123 +2020,4 @@ services:
     restart: unless-stopped
 
 
-  tuliprox:
-    image: ghcr.io/euzu/tuliprox:latest
-    container_name: tuliprox
-    network_mode: "service:vpn-stable"
-    depends_on:
-      vpn-stable:
-        condition: service_healthy
-    working_dir: /app
-    command: ["/app/tuliprox", "-p", "/app/config", "-s"]
-    environment:
-      TZ: ${TZ:-Europe/Madrid}
-    volumes:
-      - "E:/Docker_folders/dispatcharr/iptv:/app/data/m3us:ro"
-      - "E:/Docker_folders/epg:/app/data/epg:ro"
-      - "E:/Docker_folders/tuliprox/config:/app/config"
-      - "E:/Docker_folders/tuliprox/data:/app/data"
-      - "E:/Docker_folders/tuliprox/backup:/app/backup"
-      - "E:/Docker_folders/tuliprox/downloads:/app/downloads"
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "/app/tuliprox", "-p", "/app/config", "--healthcheck"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
-
-
-  firefox:
-    image: jlesage/firefox:latest
-    container_name: firefox
-    network_mode: "service:vpn-stable"
-    depends_on:
-      vpn-stable:
-        condition: service_healthy
-    environment:
-      TZ: ${TZ:-Europe/Madrid}
-      KEEP_APP_RUNNING: "1"
-      WEB_LISTENING_PORT: "5802"
-      VNC_LISTENING_PORT: "5902"
-    volumes:
-      - "E:/Docker_folders/firefox:/config:rw"
-      - "D:/Descargas/FirefoxVPN:/storage/Descargas:rw"
-    shm_size: "2gb"
-    restart: unless-stopped
-
-
-  tor-browser:
-    image: domistyle/tor-browser:latest
-    container_name: tor-browser
-    network_mode: "service:vpn-stable"
-    depends_on:
-      vpn-stable:
-        condition: service_healthy
-    environment:
-      TZ: ${TZ:-Europe/Madrid}
-      KEEP_APP_RUNNING: "1"
-      DISPLAY_WIDTH: "1920"
-      DISPLAY_HEIGHT: "1080"
-    volumes:
-      - "D:/Descargas/TorBrowserVPN:/storage/Descargas:rw"
-    shm_size: "2gb"
-    restart: unless-stopped
-
-
-  vpn-ip-check:
-    image: alpine:3.20
-    container_name: vpn-ip-check
-    network_mode: "service:vpn-stable"
-    depends_on:
-      vpn-stable:
-        condition: service_healthy
-    command: >
-      sh -c "apk add --no-cache curl >/dev/null
-      && while true; do
-           echo '============================='
-           date
-           echo '[Mullvad check]'
-           curl -s https://am.i.mullvad.net/json || true
-           echo
-           echo '[Public IP]'
-           curl -s https://ipinfo.io/ip || true
-           echo
-           sleep 30
-         done"
-    restart: unless-stopped
-
-
-  vpn-watchdog:
-    build: ./watchdog
-    container_name: vpn-watchdog
-    depends_on:
-      vpn-stable:
-        condition: service_started
-    environment:
-      TZ: Europe/Madrid
-
-      # Docker Engine API (Windows Docker Desktop)
-      DOCKER_HOST: "http://host.docker.internal:2375"
-      DOCKER_TIMEOUT: "5"
-
-      VPN_CONTAINER: vpn-stable
-
-      # Reinicia TODO lo que cuelga del namespace del VPN cuando detecta restart o UNHEALTHY sostenido
-      DEPENDENTS: dispatcharr,tuliprox,firefox,tor-browser,vpn-ip-check
-
-      CHECK_INTERVAL: "10"
-      STARTUP_GRACE: "90"
-      DOWN_GRACE: "180"
-      COOLDOWN: "120"
-
-      # Nuevo: reiniciar dependientes si el VPN se reinicia aunque vuelva "healthy"
-      RESTART_ON_VPN_RESTART: "1"
-      VPN_RESTART_GRACE: "15"
-
-      VERBOSE: "1"
-      PRINT_HEALTH_LOGS: "1"
-      PRINT_CONTAINER_LOG_TAIL: "60"
-
-      RESTART_VPN: "0"
-    restart: unless-stopped
+  

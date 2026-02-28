@@ -493,7 +493,52 @@ services:
     restart: unless-stopped
 
 
-    # --------------------------------------------------------
+  vpn-stable:
+    image: qmcgaw/gluetun:v3.41.1   # pin recomendado (evita sorpresas con latest)
+    container_name: vpn-stable
+    cap_add: [NET_ADMIN]
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    environment:
+      TZ: Europe/Madrid
+      VPN_SERVICE_PROVIDER: mullvad
+      VPN_TYPE: wireguard
+      LOG_LEVEL: ${GLUETUN_LOG_LEVEL:-info}
+      WIREGUARD_PRIVATE_KEY: ${WIREGUARD_PRIVATE_KEY}
+      WIREGUARD_ADDRESSES: ${WIREGUARD_ADDRESSES}
+      SERVER_COUNTRIES: ${SERVER_COUNTRIES}
+      WIREGUARD_MTU: 1180
+      WIREGUARD_PERSISTENT_KEEPALIVE_INTERVAL: 15s
+      FIREWALL_INPUT_PORTS: 9191,8000
+      # HEALTHCHECK: evita DNS aquí usando IPs
+      HEALTH_RESTART_VPN: on
+      HEALTH_TARGET_ADDRESSES: 1.1.1.1:443,8.8.8.8:443
+      HEALTH_ICMP_TARGET_IPS: 1.1.1.1,8.8.8.8
+      # DNS: si DoT te da EOF, cambia a DoH (o plain)
+      DNS_UPSTREAM_RESOLVER_TYPE: plain
+      DNS_UPSTREAM_RESOLVERS: cloudflare,google
+      # (opcional) si sospechas OOM por listas enormes, desactiva filtrado:
+      # BLOCK_MALICIOUS: off
+      # BLOCK_SURVEILLANCE: off
+      # BLOCK_ADS: off
+      # UPDATER_PERIOD: 24h
+    volumes:
+      #- "E:/Docker_folders/vpn-status/config.toml:/gluetun/auth/config.toml"
+      - "E:/Docker_folders/gluetun:/gluetun"
+    ports:
+      - "9191:9191"
+      - "8000:8000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "/gluetun-entrypoint healthcheck"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  # --------------------------------------------------------
   # --- firefox
   # --- Navegador con GUI web (noVNC)
   # --- Ports: Gluetun 5800
@@ -736,4 +781,126 @@ services:
     volumes:
       - "D:/Descargas/eMule/Incoming/pelis:/watch"
       - "E:/Peliculas:/target"
+    restart: unless-stopped
+
+
+  tuliprox:
+    image: ghcr.io/euzu/tuliprox:latest
+    container_name: tuliprox
+    network_mode: "service:vpn-stable"
+    depends_on:
+      vpn-stable:
+        condition: service_healthy
+    environment:
+      TZ: ${TZ:-Europe/Madrid}
+    volumes:
+      # Config de tuliprox
+      - "E:/Docker_folders/tuliprox/config:/app/config"
+      # Working dir (cache/playlists generadas, db, etc.)
+      - "E:/Docker_folders/tuliprox/data:/app/data"
+      # Tus fuentes (solo lectura)
+      - "E:/Docker_folders/dispatcharr/iptv:/iptv:ro"
+      - "E:/Docker_folders/epg:/epg:ro"
+      - "E:/Docker_folders/tuliprox/inputs:/app/inputs:ro"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "/app/tuliprox", "-p", "/app/config", "--healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  firefox:
+    image: jlesage/firefox:latest
+    container_name: firefox
+    network_mode: "service:vpn-stable"
+    depends_on:
+      vpn-stable:
+        condition: service_healthy
+    environment:
+      TZ: ${TZ:-Europe/Madrid}
+      KEEP_APP_RUNNING: "1"
+      DISPLAY_WIDTH: "1920"
+      DISPLAY_HEIGHT: "1080"
+      WEB_LISTENING_PORT: "5800"
+      VNC_LISTENING_PORT: "5900"
+    volumes:
+      - "E:/Docker_folders/firefox:/config:rw"
+      - "D:/Descargas/FirefoxVPN:/storage/Descargas:rw"
+    shm_size: "2gb"
+    restart: unless-stopped
+
+
+  tor-browser:
+    image: domistyle/tor-browser:latest
+    container_name: tor-browser
+    network_mode: "service:vpn-stable"
+    depends_on:
+      vpn-stable:
+        condition: service_healthy
+    environment:
+      TZ: ${TZ:-Europe/Madrid}
+      KEEP_APP_RUNNING: "1"
+      DISPLAY_WIDTH: "1920"
+      DISPLAY_HEIGHT: "1080"
+      WEB_LISTENING_PORT: "5801"
+      VNC_LISTENING_PORT: "5901"
+    volumes:
+      - "D:/Descargas/TorBrowserVPN:/storage/Descargas:rw"
+    shm_size: "2gb"
+    restart: unless-stopped
+
+
+  vpn-ip-check:
+    image: alpine:3.20
+    container_name: vpn-ip-check
+    network_mode: "service:vpn-stable"
+    depends_on:
+      vpn-stable:
+        condition: service_healthy
+    command: >
+      sh -c "apk add --no-cache curl >/dev/null
+      && while true; do
+           echo '============================='
+           date
+           echo '[Mullvad check]'
+           curl -s https://am.i.mullvad.net/json || true
+           echo
+           echo '[Public IP]'
+           curl -s https://ipinfo.io/ip || true
+           echo
+           sleep 30
+         done"
+    restart: unless-stopped
+
+
+  vpn-watchdog:
+    build: ./watchdog
+    container_name: vpn-watchdog
+    depends_on:
+      vpn-stable:
+        condition: service_started
+    environment:
+      TZ: Europe/Madrid
+      DOCKER_HOST: "http://host.docker.internal:2375"
+      DOCKER_TIMEOUT: "30"
+      DOCKER_RETRIES: "3"
+      DOCKER_RETRY_SLEEP: "1"
+      VPN_CONTAINER: vpn-stable
+      DEPENDENTS: dispatcharr,tuliprox,firefox,tor-browser,vpn-ip-check
+      CHECK_INTERVAL: "10"
+      STARTUP_GRACE: "90"
+      DOWN_GRACE: "180"
+      COOLDOWN: "120"
+      RESTART_ON_VPN_RESTART: "1"
+      VPN_RESTART_GRACE: "15"
+      # v4 flags
+      RECREATE_ON_NETNS_MISMATCH: "1"
+      RECREATE_ON_NETNS_ERROR: "1"
+      STOP_TIMEOUT_S: "20"
+      RESTART_TIMEOUT_S: "30"
+      VERBOSE: "1"
+      PRINT_HEALTH_LOGS: "1"
+      PRINT_CONTAINER_LOG_TAIL: "120"
+      RESTART_VPN: "0"
     restart: unless-stopped
