@@ -769,7 +769,7 @@ services:
   # --- Ports: 8409 (Web UI + endpoints)
   # --------------------------------------------------------
   ersatztv:
-    image: ghcr.io/ersatztv/ersatztv:latest
+    image: ghcr.io/ersatztv/ersatztv:v26.3.0
     container_name: ersatztv
     restart: unless-stopped
     depends_on:
@@ -781,9 +781,8 @@ services:
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=compute,video,utility
     volumes:
-      # Configuración persistente
-      - "E:/Docker_folders/ersatztv/config:/config"
-
+      # Configuración persistente (RW explícito: aquí vive la SQLite)
+      - "E:/Docker_folders/ersatztv/config:/config:rw"
       # Media (Windows -> contenedor)
       - "F:/:/media_f:ro"
       - "E:/:/media_e:ro"
