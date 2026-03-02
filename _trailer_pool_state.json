@@ -1,123 +1,3453 @@
 {
   "by_tmdb": {
-    "18487": {
-      "title": "Asalto al tren Pelham 123",
-      "file": "E:\\_Trailers\\tmdb_18487__Asalto al tren Pelham 123.mp4",
-      "added_at": 1772319788,
+    "1234821": {
+      "title": "Jurassic World: El renacer",
+      "file": "E:\\_Trailers\\tmdb_1234821__Jurassic World_ El renacer.mp4",
+      "added_at": 1772320379,
       "preferred_lang": "es-ES"
     },
-    "315837": {
-      "title": "Ghost in the Shell: El alma de la máquina",
-      "file": "E:\\_Trailers\\tmdb_315837__Ghost in the Shell_ El alma de la máquina.mp4",
-      "added_at": 1772319792,
+    "37165": {
+      "title": "El show de Truman",
+      "file": "E:\\_Trailers\\tmdb_37165__El show de Truman.mp4",
+      "added_at": 1772320384,
       "preferred_lang": "es-ES"
     },
-    "886396": {
-      "title": "Batman y Superman: La Batalla de los Super hijos",
-      "file": "E:\\_Trailers\\tmdb_886396__Batman y Superman_ La Batalla de los Super hijos.mp4",
-      "added_at": 1772319797,
+    "165": {
+      "title": "Regreso al futuro II",
+      "file": "E:\\_Trailers\\tmdb_165__Regreso al futuro II.mp4",
+      "added_at": 1772320387,
       "preferred_lang": "es-ES"
     },
-    "383498": {
-      "title": "Deadpool 2",
-      "file": "E:\\_Trailers\\tmdb_383498__Deadpool 2.mp4",
-      "added_at": 1772319801,
+    "1669": {
+      "title": "La caza del Octubre Rojo",
+      "file": "E:\\_Trailers\\tmdb_1669__La caza del Octubre Rojo.mp4",
+      "added_at": 1772320391,
       "preferred_lang": "es-ES"
     },
-    "575264": {
-      "title": "Misión: Imposible - Sentencia mortal parte uno",
-      "file": "E:\\_Trailers\\tmdb_575264__Misión_ Imposible - Sentencia mortal parte uno.mp4",
-      "added_at": 1772319805,
+    "1724": {
+      "title": "El increíble Hulk",
+      "file": "E:\\_Trailers\\tmdb_1724__El increíble Hulk.mp4",
+      "added_at": 1772320395,
       "preferred_lang": "es-ES"
     },
-    "4935": {
-      "title": "El castillo ambulante",
-      "file": "E:\\_Trailers\\tmdb_4935__El castillo ambulante.mp4",
-      "added_at": 1772319812,
+    "33228": {
+      "title": "El mago",
+      "file": "E:\\_Trailers\\tmdb_33228__El mago.mp4",
+      "added_at": 1772320398,
       "preferred_lang": "es-ES"
     },
-    "13020": {
-      "title": "Enron, los tipos que estafaron a América",
-      "file": "E:\\_Trailers\\tmdb_13020__Enron_ los tipos que estafaron a América.mp4",
-      "added_at": 1772319820,
+    "121": {
+      "title": "El señor de los anillos: Las dos torres",
+      "file": "E:\\_Trailers\\tmdb_121__El señor de los anillos_ Las dos torres.mp4",
+      "added_at": 1772320402,
       "preferred_lang": "es-ES"
     },
-    "496": {
-      "title": "Borat",
-      "file": "E:\\_Trailers\\tmdb_496__Borat.mp4",
-      "added_at": 1772319839,
+    "816": {
+      "title": "Austin Powers: Misterioso agente internacional",
+      "file": "E:\\_Trailers\\tmdb_816__Austin Powers_ Misterioso agente internacional.mp4",
+      "added_at": 1772320407,
       "preferred_lang": "es-ES"
     },
-    "284427": {
-      "title": "Who Am I: Ningún sistema es seguro",
-      "file": "E:\\_Trailers\\tmdb_284427__Who Am I_ Ningún sistema es seguro.mp4",
-      "added_at": 1772319843,
+    "123025": {
+      "title": "Batman: El regreso del Caballero Oscuro, Parte 1",
+      "file": "E:\\_Trailers\\tmdb_123025__Batman_ El regreso del Caballero Oscuro_ Parte 1.mp4",
+      "added_at": 1772320410,
       "preferred_lang": "es-ES"
     },
-    "624860": {
-      "title": "Matrix Resurrections",
-      "file": "E:\\_Trailers\\tmdb_624860__Matrix Resurrections.mp4",
-      "added_at": 1772319849,
+    "11625": {
+      "title": "Astérix y el golpe de menhir",
+      "file": "E:\\_Trailers\\tmdb_11625__Astérix y el golpe de menhir.mp4",
+      "added_at": 1772320414,
+      "preferred_lang": "es-ES"
+    },
+    "597": {
+      "title": "Titanic",
+      "file": "E:\\_Trailers\\tmdb_597__Titanic.mp4",
+      "added_at": 1772320418,
+      "preferred_lang": "es-ES"
+    },
+    "1726": {
+      "title": "Iron Man",
+      "file": "E:\\_Trailers\\tmdb_1726__Iron Man.mp4",
+      "added_at": 1772320421,
+      "preferred_lang": "es-ES"
+    },
+    "446807": {
+      "title": "Millennium: Lo que no te mata te hace más fuerte",
+      "file": "E:\\_Trailers\\tmdb_446807__Millennium_ Lo que no te mata te hace más fuerte.mp4",
+      "added_at": 1772320425,
+      "preferred_lang": "es-ES"
+    },
+    "776503": {
+      "title": "CODA: Los sonidos del silencio",
+      "file": "E:\\_Trailers\\tmdb_776503__CODA_ Los sonidos del silencio.mp4",
+      "added_at": 1772320429,
+      "preferred_lang": "es-ES"
+    },
+    "157849": {
+      "title": "El hombre más buscado",
+      "file": "E:\\_Trailers\\tmdb_157849__El hombre más buscado.mp4",
+      "added_at": 1772320433,
+      "preferred_lang": "es-ES"
+    },
+    "1359": {
+      "title": "American Psycho",
+      "file": "E:\\_Trailers\\tmdb_1359__American Psycho.mp4",
+      "added_at": 1772320437,
+      "preferred_lang": "es-ES"
+    },
+    "2133": {
+      "title": "La tormenta perfecta",
+      "file": "E:\\_Trailers\\tmdb_2133__La tormenta perfecta.mp4",
+      "added_at": 1772320441,
+      "preferred_lang": "es-ES"
+    },
+    "35": {
+      "title": "Los Simpson: La película",
+      "file": "E:\\_Trailers\\tmdb_35__Los Simpson_ La película.mp4",
+      "added_at": 1772320445,
+      "preferred_lang": "es-ES"
+    },
+    "274": {
+      "title": "El silencio de los corderos",
+      "file": "E:\\_Trailers\\tmdb_274__El silencio de los corderos.mp4",
+      "added_at": 1772320449,
+      "preferred_lang": "es-ES"
+    },
+    "390061": {
+      "title": "Mark Felt (El informante)",
+      "file": "E:\\_Trailers\\tmdb_390061__Mark Felt (El informante).mp4",
+      "added_at": 1772320453,
+      "preferred_lang": "es-ES"
+    },
+    "399170": {
+      "title": "La suerte de los Logan",
+      "file": "E:\\_Trailers\\tmdb_399170__La suerte de los Logan.mp4",
+      "added_at": 1772320457,
+      "preferred_lang": "es-ES"
+    },
+    "9277": {
+      "title": "El golpe",
+      "file": "E:\\_Trailers\\tmdb_9277__El golpe.mp4",
+      "added_at": 1772320460,
+      "preferred_lang": "es-ES"
+    },
+    "10734": {
+      "title": "Fuga de Alcatraz",
+      "file": "E:\\_Trailers\\tmdb_10734__Fuga de Alcatraz.mp4",
+      "added_at": 1772320464,
+      "preferred_lang": "es-ES"
+    },
+    "82992": {
+      "title": "Fast & Furious 6",
+      "file": "E:\\_Trailers\\tmdb_82992__Fast _ Furious 6.mp4",
+      "added_at": 1772320469,
+      "preferred_lang": "es-ES"
+    },
+    "956": {
+      "title": "Misión imposible 3",
+      "file": "E:\\_Trailers\\tmdb_956__Misión imposible 3.mp4",
+      "added_at": 1772320472,
+      "preferred_lang": "es-ES"
+    },
+    "22": {
+      "title": "Piratas del Caribe: La maldición de la Perla Negra",
+      "file": "E:\\_Trailers\\tmdb_22__Piratas del Caribe_ La maldición de la Perla Negra.mp4",
+      "added_at": 1772320477,
+      "preferred_lang": "es-ES"
+    },
+    "36658": {
+      "title": "X-Men 2",
+      "file": "E:\\_Trailers\\tmdb_36658__X-Men 2.mp4",
+      "added_at": 1772320482,
+      "preferred_lang": "es-ES"
+    },
+    "56135": {
+      "title": "El filo de la navaja",
+      "file": "E:\\_Trailers\\tmdb_56135__El filo de la navaja.mp4",
+      "added_at": 1772320490,
+      "preferred_lang": "es-ES"
+    },
+    "508": {
+      "title": "Love Actually",
+      "file": "E:\\_Trailers\\tmdb_508__Love Actually.mp4",
+      "added_at": 1772320494,
+      "preferred_lang": "es-ES"
+    },
+    "13223": {
+      "title": "Gran Torino",
+      "file": "E:\\_Trailers\\tmdb_13223__Gran Torino.mp4",
+      "added_at": 1772320499,
+      "preferred_lang": "es-ES"
+    },
+    "44251": {
+      "title": "Dragon Ball Z: El regreso de Broly",
+      "file": "E:\\_Trailers\\tmdb_44251__Dragon Ball Z_ El regreso de Broly.mp4",
+      "added_at": 1772320503,
       "preferred_lang": "es-ES"
     },
     "414": {
       "title": "Batman Forever",
       "file": "E:\\_Trailers\\tmdb_414__Batman Forever.mp4",
-      "added_at": 1772319854,
+      "added_at": 1772320506,
       "preferred_lang": "es-ES"
     },
-    "1271": {
-      "title": "300",
-      "file": "E:\\_Trailers\\tmdb_1271__300.mp4",
-      "added_at": 1772319859,
+    "598": {
+      "title": "Ciudad de Dios",
+      "file": "E:\\_Trailers\\tmdb_598__Ciudad de Dios.mp4",
+      "added_at": 1772320510,
       "preferred_lang": "es-ES"
     },
-    "68721": {
-      "title": "Iron Man 3",
-      "file": "E:\\_Trailers\\tmdb_68721__Iron Man 3.mp4",
-      "added_at": 1772319864,
+    "9563": {
+      "title": "Un domingo cualquiera",
+      "file": "E:\\_Trailers\\tmdb_9563__Un domingo cualquiera.mp4",
+      "added_at": 1772320514,
+      "preferred_lang": "es-ES"
+    },
+    "522162": {
+      "title": "Midway",
+      "file": "E:\\_Trailers\\tmdb_522162__Midway.mp4",
+      "added_at": 1772320517,
+      "preferred_lang": "es-ES"
+    },
+    "752": {
+      "title": "V de Vendetta",
+      "file": "E:\\_Trailers\\tmdb_752__V de Vendetta.mp4",
+      "added_at": 1772320523,
+      "preferred_lang": "es-ES"
+    },
+    "1094473": {
+      "title": "Bambi, una vida en el bosque",
+      "file": "E:\\_Trailers\\tmdb_1094473__Bambi_ una vida en el bosque.mp4",
+      "added_at": 1772320527,
+      "preferred_lang": "es-ES"
+    },
+    "1933": {
+      "title": "Los otros",
+      "file": "E:\\_Trailers\\tmdb_1933__Los otros.mp4",
+      "added_at": 1772320530,
+      "preferred_lang": "es-ES"
+    },
+    "34584": {
+      "title": "La historia interminable",
+      "file": "E:\\_Trailers\\tmdb_34584__La historia interminable.mp4",
+      "added_at": 1772320534,
+      "preferred_lang": "es-ES"
+    },
+    "550988": {
+      "title": "Free Guy",
+      "file": "E:\\_Trailers\\tmdb_550988__Free Guy.mp4",
+      "added_at": 1772320539,
+      "preferred_lang": "es-ES"
+    },
+    "284427": {
+      "title": "Who Am I: Ningún sistema es seguro",
+      "file": "E:\\_Trailers\\tmdb_284427__Who Am I_ Ningún sistema es seguro.mp4",
+      "added_at": 1772320542,
+      "preferred_lang": "es-ES"
+    },
+    "4169": {
+      "title": "El espía",
+      "file": "E:\\_Trailers\\tmdb_4169__El espía.mp4",
+      "added_at": 1772320546,
+      "preferred_lang": "es-ES"
+    },
+    "6538": {
+      "title": "La guerra de Charlie Wilson",
+      "file": "E:\\_Trailers\\tmdb_6538__La guerra de Charlie Wilson.mp4",
+      "added_at": 1772320550,
+      "preferred_lang": "es-ES"
+    },
+    "490132": {
+      "title": "Green Book",
+      "file": "E:\\_Trailers\\tmdb_490132__Green Book.mp4",
+      "added_at": 1772320554,
+      "preferred_lang": "es-ES"
+    },
+    "278": {
+      "title": "Cadena perpetua",
+      "file": "E:\\_Trailers\\tmdb_278__Cadena perpetua.mp4",
+      "added_at": 1772320558,
+      "preferred_lang": "es-ES"
+    },
+    "44833": {
+      "title": "Battleship",
+      "file": "E:\\_Trailers\\tmdb_44833__Battleship.mp4",
+      "added_at": 1772320563,
+      "preferred_lang": "es-ES"
+    },
+    "68722": {
+      "title": "The Master",
+      "file": "E:\\_Trailers\\tmdb_68722__The Master.mp4",
+      "added_at": 1772320572,
+      "preferred_lang": "es-ES"
+    },
+    "9323": {
+      "title": "Ghost in the Shell",
+      "file": "E:\\_Trailers\\tmdb_9323__Ghost in the Shell.mp4",
+      "added_at": 1772320576,
+      "preferred_lang": "es-ES"
+    },
+    "1241436": {
+      "title": "Warfare: Tiempo de guerra",
+      "file": "E:\\_Trailers\\tmdb_1241436__Warfare_ Tiempo de guerra.mp4",
+      "added_at": 1772320580,
+      "preferred_lang": "es-ES"
+    },
+    "2898": {
+      "title": "Mejor... imposible",
+      "file": "E:\\_Trailers\\tmdb_2898__Mejor... imposible.mp4",
+      "added_at": 1772320584,
+      "preferred_lang": "es-ES"
+    },
+    "11652": {
+      "title": "Invencible",
+      "file": "E:\\_Trailers\\tmdb_11652__Invencible.mp4",
+      "added_at": 1772320588,
+      "preferred_lang": "es-ES"
+    },
+    "414906": {
+      "title": "The Batman",
+      "file": "E:\\_Trailers\\tmdb_414906__The Batman.mp4",
+      "added_at": 1772320596,
+      "preferred_lang": "es-ES"
+    },
+    "177677": {
+      "title": "Misión imposible: Nación secreta",
+      "file": "E:\\_Trailers\\tmdb_177677__Misión imposible_ Nación secreta.mp4",
+      "added_at": 1772320600,
+      "preferred_lang": "es-ES"
+    },
+    "9390": {
+      "title": "Jerry Maguire",
+      "file": "E:\\_Trailers\\tmdb_9390__Jerry Maguire.mp4",
+      "added_at": 1772320604,
+      "preferred_lang": "es-ES"
+    },
+    "505642": {
+      "title": "Black Panther: Wakanda Forever",
+      "file": "E:\\_Trailers\\tmdb_505642__Black Panther_ Wakanda Forever.mp4",
+      "added_at": 1772320608,
+      "preferred_lang": "es-ES"
+    },
+    "640": {
+      "title": "Atrápame si puedes",
+      "file": "E:\\_Trailers\\tmdb_640__Atrápame si puedes.mp4",
+      "added_at": 1772320613,
+      "preferred_lang": "es-ES"
+    },
+    "566525": {
+      "title": "Shang-Chi y la leyenda de los Diez Anillos",
+      "file": "E:\\_Trailers\\tmdb_566525__Shang-Chi y la leyenda de los Diez Anillos.mp4",
+      "added_at": 1772320617,
+      "preferred_lang": "es-ES"
+    },
+    "58595": {
+      "title": "Blancanieves y la leyenda del cazador",
+      "file": "E:\\_Trailers\\tmdb_58595__Blancanieves y la leyenda del cazador.mp4",
+      "added_at": 1772320623,
+      "preferred_lang": "es-ES"
+    },
+    "11037": {
+      "title": "Águila de acero",
+      "file": "E:\\_Trailers\\tmdb_11037__Águila de acero.mp4",
+      "added_at": 1772320628,
+      "preferred_lang": "es-ES"
+    },
+    "9078": {
+      "title": "Merlín el encantador",
+      "file": "E:\\_Trailers\\tmdb_9078__Merlín el encantador.mp4",
+      "added_at": 1772320632,
+      "preferred_lang": "es-ES"
+    },
+    "99861": {
+      "title": "Vengadores: La era de Ultrón",
+      "file": "E:\\_Trailers\\tmdb_99861__Vengadores_ La era de Ultrón.mp4",
+      "added_at": 1772320637,
+      "preferred_lang": "es-ES"
+    },
+    "479455": {
+      "title": "Men in Black: International",
+      "file": "E:\\_Trailers\\tmdb_479455__Men in Black_ International.mp4",
+      "added_at": 1772320641,
+      "preferred_lang": "es-ES"
+    },
+    "640146": {
+      "title": "Ant-Man y la Avispa: Quantumanía",
+      "file": "E:\\_Trailers\\tmdb_640146__Ant-Man y la Avispa_ Quantumanía.mp4",
+      "added_at": 1772320646,
       "preferred_lang": "es-ES"
     },
     "415": {
       "title": "Batman y Robin",
       "file": "E:\\_Trailers\\tmdb_415__Batman y Robin.mp4",
-      "added_at": 1772319868,
+      "added_at": 1772320649,
       "preferred_lang": "es-ES"
     },
-    "240": {
-      "title": "El Padrino Parte II",
-      "file": "E:\\_Trailers\\tmdb_240__El Padrino Parte II.mp4",
-      "added_at": 1772319873,
+    "630": {
+      "title": "El mago de Oz",
+      "file": "E:\\_Trailers\\tmdb_630__El mago de Oz.mp4",
+      "added_at": 1772320653,
+      "preferred_lang": "es-ES"
+    },
+    "28": {
+      "title": "Apocalypse Now",
+      "file": "E:\\_Trailers\\tmdb_28__Apocalypse Now.mp4",
+      "added_at": 1772320657,
+      "preferred_lang": "es-ES"
+    },
+    "429197": {
+      "title": "El vicio del poder",
+      "file": "E:\\_Trailers\\tmdb_429197__El vicio del poder.mp4",
+      "added_at": 1772320660,
+      "preferred_lang": "es-ES"
+    },
+    "1904": {
+      "title": "Memorias de una geisha",
+      "file": "E:\\_Trailers\\tmdb_1904__Memorias de una geisha.mp4",
+      "added_at": 1772320664,
+      "preferred_lang": "es-ES"
+    },
+    "1104844": {
+      "title": "Blue Lock la película -episodio Nagi-",
+      "file": "E:\\_Trailers\\tmdb_1104844__Blue Lock la película -episodio Nagi-.mp4",
+      "added_at": 1772320668,
+      "preferred_lang": "es-ES"
+    },
+    "853": {
+      "title": "Enemigo a las puertas",
+      "file": "E:\\_Trailers\\tmdb_853__Enemigo a las puertas.mp4",
+      "added_at": 1772320673,
+      "preferred_lang": "es-ES"
+    },
+    "289": {
+      "title": "Casablanca",
+      "file": "E:\\_Trailers\\tmdb_289__Casablanca.mp4",
+      "added_at": 1772320676,
+      "preferred_lang": "es-ES"
+    },
+    "613": {
+      "title": "El hundimiento",
+      "file": "E:\\_Trailers\\tmdb_613__El hundimiento.mp4",
+      "added_at": 1772320679,
+      "preferred_lang": "es-ES"
+    },
+    "232679": {
+      "title": "Un equipo legendario",
+      "file": "E:\\_Trailers\\tmdb_232679__Un equipo legendario.mp4",
+      "added_at": 1772320683,
+      "preferred_lang": "es-ES"
+    },
+    "954": {
+      "title": "Misión imposible",
+      "file": "E:\\_Trailers\\tmdb_954__Misión imposible.mp4",
+      "added_at": 1772320687,
+      "preferred_lang": "es-ES"
+    },
+    "350": {
+      "title": "El diablo viste de Prada",
+      "file": "E:\\_Trailers\\tmdb_350__El diablo viste de Prada.mp4",
+      "added_at": 1772320691,
+      "preferred_lang": "es-ES"
+    },
+    "453": {
+      "title": "Una mente maravillosa",
+      "file": "E:\\_Trailers\\tmdb_453__Una mente maravillosa.mp4",
+      "added_at": 1772320695,
+      "preferred_lang": "es-ES"
+    },
+    "315635": {
+      "title": "Spider-Man: Homecoming",
+      "file": "E:\\_Trailers\\tmdb_315635__Spider-Man_ Homecoming.mp4",
+      "added_at": 1772320700,
+      "preferred_lang": "es-ES"
+    },
+    "302401": {
+      "title": "Snowden",
+      "file": "E:\\_Trailers\\tmdb_302401__Snowden.mp4",
+      "added_at": 1772320705,
+      "preferred_lang": "es-ES"
+    },
+    "9377": {
+      "title": "Todo en un día",
+      "file": "E:\\_Trailers\\tmdb_9377__Todo en un día.mp4",
+      "added_at": 1772320708,
+      "preferred_lang": "es-ES"
+    },
+    "762509": {
+      "title": "Mufasa: El rey león",
+      "file": "E:\\_Trailers\\tmdb_762509__Mufasa_ El rey león.mp4",
+      "added_at": 1772320713,
+      "preferred_lang": "es-ES"
+    },
+    "600": {
+      "title": "La chaqueta metálica",
+      "file": "E:\\_Trailers\\tmdb_600__La chaqueta metálica.mp4",
+      "added_at": 1772320717,
+      "preferred_lang": "es-ES"
+    },
+    "8741": {
+      "title": "La delgada línea roja",
+      "file": "E:\\_Trailers\\tmdb_8741__La delgada línea roja.mp4",
+      "added_at": 1772320724,
+      "preferred_lang": "es-ES"
+    },
+    "331": {
+      "title": "Jurassic Park III (Parque Jurásico III)",
+      "file": "E:\\_Trailers\\tmdb_331__Jurassic Park III (Parque Jurásico III).mp4",
+      "added_at": 1772320727,
+      "preferred_lang": "es-ES"
+    },
+    "9615": {
+      "title": "A todo gas: Tokyo Race",
+      "file": "E:\\_Trailers\\tmdb_9615__A todo gas_ Tokyo Race.mp4",
+      "added_at": 1772320731,
+      "preferred_lang": "es-ES"
+    },
+    "65754": {
+      "title": "Millennium: Los hombres que no amaban a las mujeres",
+      "file": "E:\\_Trailers\\tmdb_65754__Millennium_ Los hombres que no amaban a las mujeres.mp4",
+      "added_at": 1772320738,
+      "preferred_lang": "es-ES"
+    },
+    "76600": {
+      "title": "Avatar: El sentido del agua",
+      "file": "E:\\_Trailers\\tmdb_76600__Avatar_ El sentido del agua.mp4",
+      "added_at": 1772320742,
+      "preferred_lang": "es-ES"
+    },
+    "9800": {
+      "title": "Philadelphia",
+      "file": "E:\\_Trailers\\tmdb_9800__Philadelphia.mp4",
+      "added_at": 1772320746,
+      "preferred_lang": "es-ES"
+    },
+    "36557": {
+      "title": "Casino Royale",
+      "file": "E:\\_Trailers\\tmdb_36557__Casino Royale.mp4",
+      "added_at": 1772320750,
+      "preferred_lang": "es-ES"
+    },
+    "296098": {
+      "title": "El puente de los espías",
+      "file": "E:\\_Trailers\\tmdb_296098__El puente de los espías.mp4",
+      "added_at": 1772320754,
+      "preferred_lang": "es-ES"
+    },
+    "607": {
+      "title": "Men in Black",
+      "file": "E:\\_Trailers\\tmdb_607__Men in Black.mp4",
+      "added_at": 1772320760,
+      "preferred_lang": "es-ES"
+    },
+    "667": {
+      "title": "Sólo se vive dos veces",
+      "file": "E:\\_Trailers\\tmdb_667__Sólo se vive dos veces.mp4",
+      "added_at": 1772320765,
+      "preferred_lang": "es-ES"
+    },
+    "2668": {
+      "title": "Sleepy Hollow (El Jinete sin Cabeza)",
+      "file": "E:\\_Trailers\\tmdb_2668__Sleepy Hollow (El Jinete sin Cabeza).mp4",
+      "added_at": 1772320770,
+      "preferred_lang": "es-ES"
+    },
+    "101411": {
+      "title": "23-F: la película",
+      "file": "E:\\_Trailers\\tmdb_101411__23-F_ la película.mp4",
+      "added_at": 1772320773,
+      "preferred_lang": "es-ES"
+    },
+    "657": {
+      "title": "Desde Rusia con amor",
+      "file": "E:\\_Trailers\\tmdb_657__Desde Rusia con amor.mp4",
+      "added_at": 1772320779,
+      "preferred_lang": "es-ES"
+    },
+    "4494": {
+      "title": "Arrebato",
+      "file": "E:\\_Trailers\\tmdb_4494__Arrebato.mp4",
+      "added_at": 1772320783,
+      "preferred_lang": "es-ES"
+    },
+    "393": {
+      "title": "Kill Bill: Volumen 2",
+      "file": "E:\\_Trailers\\tmdb_393__Kill Bill_ Volumen 2.mp4",
+      "added_at": 1772320787,
+      "preferred_lang": "es-ES"
+    },
+    "881": {
+      "title": "Algunos hombres buenos",
+      "file": "E:\\_Trailers\\tmdb_881__Algunos hombres buenos.mp4",
+      "added_at": 1772320792,
+      "preferred_lang": "es-ES"
+    },
+    "379441": {
+      "title": "Greater",
+      "file": "E:\\_Trailers\\tmdb_379441__Greater.mp4",
+      "added_at": 1772320797,
+      "preferred_lang": "es-ES"
+    },
+    "424694": {
+      "title": "Bohemian Rhapsody",
+      "file": "E:\\_Trailers\\tmdb_424694__Bohemian Rhapsody.mp4",
+      "added_at": 1772320802,
+      "preferred_lang": "es-ES"
+    },
+    "100402": {
+      "title": "Capitán América: El soldado de invierno",
+      "file": "E:\\_Trailers\\tmdb_100402__Capitán América_ El soldado de invierno.mp4",
+      "added_at": 1772320806,
+      "preferred_lang": "es-ES"
+    },
+    "324786": {
+      "title": "Hasta el último hombre",
+      "file": "E:\\_Trailers\\tmdb_324786__Hasta el último hombre.mp4",
+      "added_at": 1772320810,
+      "preferred_lang": "es-ES"
+    },
+    "12155": {
+      "title": "Alicia en el País de las Maravillas",
+      "file": "E:\\_Trailers\\tmdb_12155__Alicia en el País de las Maravillas.mp4",
+      "added_at": 1772320814,
+      "preferred_lang": "es-ES"
+    },
+    "603692": {
+      "title": "John Wick 4",
+      "file": "E:\\_Trailers\\tmdb_603692__John Wick 4.mp4",
+      "added_at": 1772320817,
+      "preferred_lang": "es-ES"
+    },
+    "9929": {
+      "title": "Astérix y Cleopatra",
+      "file": "E:\\_Trailers\\tmdb_9929__Astérix y Cleopatra.mp4",
+      "added_at": 1772320821,
+      "preferred_lang": "es-ES"
+    },
+    "15472": {
+      "title": "Millennium 1: Los hombres que no amaban a las mujeres",
+      "file": "E:\\_Trailers\\tmdb_15472__Millennium 1_ Los hombres que no amaban a las mujeres.mp4",
+      "added_at": 1772320825,
+      "preferred_lang": "es-ES"
+    },
+    "87": {
+      "title": "Indiana Jones y el templo maldito",
+      "file": "E:\\_Trailers\\tmdb_87__Indiana Jones y el templo maldito.mp4",
+      "added_at": 1772320831,
+      "preferred_lang": "es-ES"
+    },
+    "1892": {
+      "title": "El retorno del Jedi",
+      "file": "E:\\_Trailers\\tmdb_1892__El retorno del Jedi.mp4",
+      "added_at": 1772320834,
+      "preferred_lang": "es-ES"
+    },
+    "1572": {
+      "title": "Jungla de cristal: la venganza",
+      "file": "E:\\_Trailers\\tmdb_1572__Jungla de cristal_ la venganza.mp4",
+      "added_at": 1772320839,
+      "preferred_lang": "es-ES"
+    },
+    "4176": {
+      "title": "Asesinato en el Orient Express",
+      "file": "E:\\_Trailers\\tmdb_4176__Asesinato en el Orient Express.mp4",
+      "added_at": 1772320847,
+      "preferred_lang": "es-ES"
+    },
+    "76203": {
+      "title": "12 años de esclavitud",
+      "file": "E:\\_Trailers\\tmdb_76203__12 años de esclavitud.mp4",
+      "added_at": 1772320851,
+      "preferred_lang": "es-ES"
+    },
+    "496243": {
+      "title": "Parásitos",
+      "file": "E:\\_Trailers\\tmdb_496243__Parásitos.mp4",
+      "added_at": 1772320855,
+      "preferred_lang": "es-ES"
+    },
+    "399402": {
+      "title": "Hunter Killer: Caza en las profundidades",
+      "file": "E:\\_Trailers\\tmdb_399402__Hunter Killer_ Caza en las profundidades.mp4",
+      "added_at": 1772320860,
+      "preferred_lang": "es-ES"
+    },
+    "22954": {
+      "title": "Invictus",
+      "file": "E:\\_Trailers\\tmdb_22954__Invictus.mp4",
+      "added_at": 1772320867,
+      "preferred_lang": "es-ES"
+    },
+    "87825": {
+      "title": "Golpe de efecto",
+      "file": "E:\\_Trailers\\tmdb_87825__Golpe de efecto.mp4",
+      "added_at": 1772320871,
+      "preferred_lang": "es-ES"
+    },
+    "11639": {
+      "title": "Cristal oscuro",
+      "file": "E:\\_Trailers\\tmdb_11639__Cristal oscuro.mp4",
+      "added_at": 1772320876,
+      "preferred_lang": "es-ES"
+    },
+    "635237": {
+      "title": "Arturo y Merlín: Caballeros de Camelot",
+      "file": "E:\\_Trailers\\tmdb_635237__Arturo y Merlín_ Caballeros de Camelot.mp4",
+      "added_at": 1772320879,
+      "preferred_lang": "es-ES"
+    },
+    "497": {
+      "title": "La milla verde",
+      "file": "E:\\_Trailers\\tmdb_497__La milla verde.mp4",
+      "added_at": 1772320883,
+      "preferred_lang": "es-ES"
+    },
+    "380808": {
+      "title": "Zero Days",
+      "file": "E:\\_Trailers\\tmdb_380808__Zero Days.mp4",
+      "added_at": 1772320893,
+      "preferred_lang": "es-ES"
+    },
+    "220289": {
+      "title": "Coherence",
+      "file": "E:\\_Trailers\\tmdb_220289__Coherence.mp4",
+      "added_at": 1772320897,
+      "preferred_lang": "es-ES"
+    },
+    "587": {
+      "title": "Big Fish",
+      "file": "E:\\_Trailers\\tmdb_587__Big Fish.mp4",
+      "added_at": 1772320901,
+      "preferred_lang": "es-ES"
+    },
+    "8273": {
+      "title": "American Pie ¡Menuda boda!",
+      "file": "E:\\_Trailers\\tmdb_8273__American Pie _Menuda boda_.mp4",
+      "added_at": 1772320904,
+      "preferred_lang": "es-ES"
+    },
+    "246655": {
+      "title": "X-Men: Apocalipsis",
+      "file": "E:\\_Trailers\\tmdb_246655__X-Men_ Apocalipsis.mp4",
+      "added_at": 1772320909,
+      "preferred_lang": "es-ES"
+    },
+    "324668": {
+      "title": "Jason Bourne",
+      "file": "E:\\_Trailers\\tmdb_324668__Jason Bourne.mp4",
+      "added_at": 1772320913,
+      "preferred_lang": "es-ES"
+    },
+    "68721": {
+      "title": "Iron Man 3",
+      "file": "E:\\_Trailers\\tmdb_68721__Iron Man 3.mp4",
+      "added_at": 1772320917,
+      "preferred_lang": "es-ES"
+    },
+    "2118": {
+      "title": "L.A. Confidential",
+      "file": "E:\\_Trailers\\tmdb_2118__L.A. Confidential.mp4",
+      "added_at": 1772320920,
+      "preferred_lang": "es-ES"
+    },
+    "1087891": {
+      "title": "Amateur",
+      "file": "E:\\_Trailers\\tmdb_1087891__Amateur.mp4",
+      "added_at": 1772320925,
+      "preferred_lang": "es-ES"
+    },
+    "9705": {
+      "title": "Operación Swordfish",
+      "file": "E:\\_Trailers\\tmdb_9705__Operación Swordfish.mp4",
+      "added_at": 1772320929,
+      "preferred_lang": "es-ES"
+    },
+    "223702": {
+      "title": "La fiesta de las salchichas",
+      "file": "E:\\_Trailers\\tmdb_223702__La fiesta de las salchichas.mp4",
+      "added_at": 1772320933,
+      "preferred_lang": "es-ES"
+    },
+    "12104": {
+      "title": "Pink Floyd: El muro",
+      "file": "E:\\_Trailers\\tmdb_12104__Pink Floyd_ El muro.mp4",
+      "added_at": 1772320939,
+      "preferred_lang": "es-ES"
+    },
+    "385687": {
+      "title": "Fast & Furious X",
+      "file": "E:\\_Trailers\\tmdb_385687__Fast _ Furious X.mp4",
+      "added_at": 1772320944,
+      "preferred_lang": "es-ES"
+    },
+    "10020": {
+      "title": "La bella y la bestia",
+      "file": "E:\\_Trailers\\tmdb_10020__La bella y la bestia.mp4",
+      "added_at": 1772320948,
+      "preferred_lang": "es-ES"
+    },
+    "17431": {
+      "title": "Moon",
+      "file": "E:\\_Trailers\\tmdb_17431__Moon.mp4",
+      "added_at": 1772320952,
+      "preferred_lang": "es-ES"
+    },
+    "16869": {
+      "title": "Malditos bastardos",
+      "file": "E:\\_Trailers\\tmdb_16869__Malditos bastardos.mp4",
+      "added_at": 1772320958,
+      "preferred_lang": "es-ES"
+    },
+    "106646": {
+      "title": "El lobo de Wall Street",
+      "file": "E:\\_Trailers\\tmdb_106646__El lobo de Wall Street.mp4",
+      "added_at": 1772320962,
+      "preferred_lang": "es-ES"
+    },
+    "714": {
+      "title": "El mañana nunca muere",
+      "file": "E:\\_Trailers\\tmdb_714__El mañana nunca muere.mp4",
+      "added_at": 1772320968,
+      "preferred_lang": "es-ES"
+    },
+    "8961": {
+      "title": "Dos policías rebeldes II",
+      "file": "E:\\_Trailers\\tmdb_8961__Dos policías rebeldes II.mp4",
+      "added_at": 1772320971,
+      "preferred_lang": "es-ES"
+    },
+    "1893": {
+      "title": "La guerra de las galaxias. Episodio I: La amenaza fantasma",
+      "file": "E:\\_Trailers\\tmdb_1893__La guerra de las galaxias. Episodio I_ La amenaza fantasma.mp4",
+      "added_at": 1772320975,
+      "preferred_lang": "es-ES"
+    },
+    "9315": {
+      "title": "Plan de vuelo: Desaparecida",
+      "file": "E:\\_Trailers\\tmdb_9315__Plan de vuelo_ Desaparecida.mp4",
+      "added_at": 1772320980,
+      "preferred_lang": "es-ES"
+    },
+    "135397": {
+      "title": "Jurassic World",
+      "file": "E:\\_Trailers\\tmdb_135397__Jurassic World.mp4",
+      "added_at": 1772320988,
+      "preferred_lang": "es-ES"
+    },
+    "19933": {
+      "title": "La tostadora valiente",
+      "file": "E:\\_Trailers\\tmdb_19933__La tostadora valiente.mp4",
+      "added_at": 1772320995,
+      "preferred_lang": "es-ES"
+    },
+    "298": {
+      "title": "Ocean's Thirteen",
+      "file": "E:\\_Trailers\\tmdb_298__Ocean_s Thirteen.mp4",
+      "added_at": 1772320998,
+      "preferred_lang": "es-ES"
+    },
+    "1182861": {
+      "title": "Romería",
+      "file": "E:\\_Trailers\\tmdb_1182861__Romería.mp4",
+      "added_at": 1772321011,
       "preferred_lang": "es-ES"
     },
     "1422": {
       "title": "Infiltrados",
       "file": "E:\\_Trailers\\tmdb_1422__Infiltrados.mp4",
-      "added_at": 1772319878,
+      "added_at": 1772321015,
+      "preferred_lang": "es-ES"
+    },
+    "79707": {
+      "title": "Viaje a Agartha",
+      "file": "E:\\_Trailers\\tmdb_79707__Viaje a Agartha.mp4",
+      "added_at": 1772321023,
+      "preferred_lang": "es-ES"
+    },
+    "447277": {
+      "title": "La sirenita",
+      "file": "E:\\_Trailers\\tmdb_447277__La sirenita.mp4",
+      "added_at": 1772321028,
+      "preferred_lang": "es-ES"
+    },
+    "10316": {
+      "title": "Los idus de marzo",
+      "file": "E:\\_Trailers\\tmdb_10316__Los idus de marzo.mp4",
+      "added_at": 1772321032,
+      "preferred_lang": "es-ES"
+    },
+    "49047": {
+      "title": "Gravity",
+      "file": "E:\\_Trailers\\tmdb_49047__Gravity.mp4",
+      "added_at": 1772321036,
+      "preferred_lang": "es-ES"
+    },
+    "6415": {
+      "title": "Tres reyes",
+      "file": "E:\\_Trailers\\tmdb_6415__Tres reyes.mp4",
+      "added_at": 1772321040,
+      "preferred_lang": "es-ES"
+    },
+    "38167": {
+      "title": "Come, reza, ama",
+      "file": "E:\\_Trailers\\tmdb_38167__Come_ reza_ ama.mp4",
+      "added_at": 1772321044,
+      "preferred_lang": "es-ES"
+    },
+    "11": {
+      "title": "La guerra de las galaxias",
+      "file": "E:\\_Trailers\\tmdb_11__La guerra de las galaxias.mp4",
+      "added_at": 1772321048,
+      "preferred_lang": "es-ES"
+    },
+    "16995": {
+      "title": "La sombra del poder",
+      "file": "E:\\_Trailers\\tmdb_16995__La sombra del poder.mp4",
+      "added_at": 1772321052,
+      "preferred_lang": "es-ES"
+    },
+    "10722": {
+      "title": "El día de la bestia",
+      "file": "E:\\_Trailers\\tmdb_10722__El día de la bestia.mp4",
+      "added_at": 1772321055,
+      "preferred_lang": "es-ES"
+    },
+    "33613": {
+      "title": "Millennium 3: La reina en el palacio de las corrientes de aire",
+      "file": "E:\\_Trailers\\tmdb_33613__Millennium 3_ La reina en el palacio de las corrientes de aire.mp4",
+      "added_at": 1772321059,
+      "preferred_lang": "es-ES"
+    },
+    "284052": {
+      "title": "Doctor Strange",
+      "file": "E:\\_Trailers\\tmdb_284052__Doctor Strange.mp4",
+      "added_at": 1772321063,
+      "preferred_lang": "es-ES"
+    },
+    "128": {
+      "title": "La princesa Mononoke",
+      "file": "E:\\_Trailers\\tmdb_128__La princesa Mononoke.mp4",
+      "added_at": 1772321067,
+      "preferred_lang": "es-ES"
+    },
+    "524434": {
+      "title": "Eternals",
+      "file": "E:\\_Trailers\\tmdb_524434__Eternals.mp4",
+      "added_at": 1772321071,
+      "preferred_lang": "es-ES"
+    },
+    "438631": {
+      "title": "Dune",
+      "file": "E:\\_Trailers\\tmdb_438631__Dune.mp4",
+      "added_at": 1772321075,
+      "preferred_lang": "es-ES"
+    },
+    "1051": {
+      "title": "French Connection, contra el imperio de la droga",
+      "file": "E:\\_Trailers\\tmdb_1051__French Connection_ contra el imperio de la droga.mp4",
+      "added_at": 1772321080,
+      "preferred_lang": "es-ES"
+    },
+    "1064213": {
+      "title": "Anora",
+      "file": "E:\\_Trailers\\tmdb_1064213__Anora.mp4",
+      "added_at": 1772321083,
+      "preferred_lang": "es-ES"
+    },
+    "812583": {
+      "title": "Puñales por la espalda: De entre los muertos",
+      "file": "E:\\_Trailers\\tmdb_812583__Puñales por la espalda_ De entre los muertos.mp4",
+      "added_at": 1772321087,
+      "preferred_lang": "es-ES"
+    },
+    "608": {
+      "title": "Hombres de negro II",
+      "file": "E:\\_Trailers\\tmdb_608__Hombres de negro II.mp4",
+      "added_at": 1772321091,
+      "preferred_lang": "es-ES"
+    },
+    "9008": {
+      "title": "El dilema",
+      "file": "E:\\_Trailers\\tmdb_9008__El dilema.mp4",
+      "added_at": 1772321095,
+      "preferred_lang": "es-ES"
+    },
+    "315837": {
+      "title": "Ghost in the Shell: El alma de la máquina",
+      "file": "E:\\_Trailers\\tmdb_315837__Ghost in the Shell_ El alma de la máquina.mp4",
+      "added_at": 1772321099,
+      "preferred_lang": "es-ES"
+    },
+    "955": {
+      "title": "Misión imposible 2",
+      "file": "E:\\_Trailers\\tmdb_955__Misión imposible 2.mp4",
+      "added_at": 1772321104,
+      "preferred_lang": "es-ES"
+    },
+    "353081": {
+      "title": "Misión: Imposible - Fallout",
+      "file": "E:\\_Trailers\\tmdb_353081__Misión_ Imposible - Fallout.mp4",
+      "added_at": 1772321112,
+      "preferred_lang": "es-ES"
+    },
+    "860901": {
+      "title": "Padre Pio",
+      "file": "E:\\_Trailers\\tmdb_860901__Padre Pio.mp4",
+      "added_at": 1772321120,
+      "preferred_lang": "es-ES"
+    },
+    "675": {
+      "title": "Harry Potter y la Orden del Fénix",
+      "file": "E:\\_Trailers\\tmdb_675__Harry Potter y la Orden del Fénix.mp4",
+      "added_at": 1772321124,
+      "preferred_lang": "es-ES"
+    },
+    "201088": {
+      "title": "Blackhat: Amenaza en la red",
+      "file": "E:\\_Trailers\\tmdb_201088__Blackhat_ Amenaza en la red.mp4",
+      "added_at": 1772321128,
+      "preferred_lang": "es-ES"
+    },
+    "18133": {
+      "title": "Lobos universitarios",
+      "file": "E:\\_Trailers\\tmdb_18133__Lobos universitarios.mp4",
+      "added_at": 1772321133,
+      "preferred_lang": "es-ES"
+    },
+    "118340": {
+      "title": "Guardianes de la galaxia",
+      "file": "E:\\_Trailers\\tmdb_118340__Guardianes de la galaxia.mp4",
+      "added_at": 1772321137,
+      "preferred_lang": "es-ES"
+    },
+    "668": {
+      "title": "007 al servicio secreto de su Majestad",
+      "file": "E:\\_Trailers\\tmdb_668__007 al servicio secreto de su Majestad.mp4",
+      "added_at": 1772321144,
+      "preferred_lang": "es-ES"
+    },
+    "10133": {
+      "title": "Cypher",
+      "file": "E:\\_Trailers\\tmdb_10133__Cypher.mp4",
+      "added_at": 1772321150,
+      "preferred_lang": "es-ES"
+    },
+    "205775": {
+      "title": "En el corazón del mar",
+      "file": "E:\\_Trailers\\tmdb_205775__En el corazón del mar.mp4",
+      "added_at": 1772321155,
+      "preferred_lang": "es-ES"
+    },
+    "11170": {
+      "title": "Equipo Marshall",
+      "file": "E:\\_Trailers\\tmdb_11170__Equipo Marshall.mp4",
+      "added_at": 1772321161,
+      "preferred_lang": "es-ES"
+    },
+    "340102": {
+      "title": "Los nuevos mutantes",
+      "file": "E:\\_Trailers\\tmdb_340102__Los nuevos mutantes.mp4",
+      "added_at": 1772321164,
+      "preferred_lang": "es-ES"
+    },
+    "181808": {
+      "title": "Star Wars: Los últimos Jedi",
+      "file": "E:\\_Trailers\\tmdb_181808__Star Wars_ Los últimos Jedi.mp4",
+      "added_at": 1772321169,
+      "preferred_lang": "es-ES"
+    },
+    "39231": {
+      "title": "Su juego favorito",
+      "file": "E:\\_Trailers\\tmdb_39231__Su juego favorito.mp4",
+      "added_at": 1772321173,
+      "preferred_lang": "es-ES"
+    },
+    "727306": {
+      "title": "Safety: La última línea de defensa",
+      "file": "E:\\_Trailers\\tmdb_727306__Safety_ La última línea de defensa.mp4",
+      "added_at": 1772321181,
+      "preferred_lang": "es-ES"
+    },
+    "1271": {
+      "title": "300",
+      "file": "E:\\_Trailers\\tmdb_1271__300.mp4",
+      "added_at": 1772321185,
+      "preferred_lang": "es-ES"
+    },
+    "240": {
+      "title": "El Padrino Parte II",
+      "file": "E:\\_Trailers\\tmdb_240__El Padrino Parte II.mp4",
+      "added_at": 1772321189,
+      "preferred_lang": "es-ES"
+    },
+    "181812": {
+      "title": "Star Wars: El ascenso de Skywalker",
+      "file": "E:\\_Trailers\\tmdb_181812__Star Wars_ El ascenso de Skywalker.mp4",
+      "added_at": 1772321194,
+      "preferred_lang": "es-ES"
+    },
+    "447365": {
+      "title": "Guardianes de la Galaxia: Volumen 3",
+      "file": "E:\\_Trailers\\tmdb_447365__Guardianes de la Galaxia_ Volumen 3.mp4",
+      "added_at": 1772321198,
+      "preferred_lang": "es-ES"
+    },
+    "699": {
+      "title": "Sólo para sus ojos",
+      "file": "E:\\_Trailers\\tmdb_699__Sólo para sus ojos.mp4",
+      "added_at": 1772321204,
+      "preferred_lang": "es-ES"
+    },
+    "36669": {
+      "title": "Muere otro día",
+      "file": "E:\\_Trailers\\tmdb_36669__Muere otro día.mp4",
+      "added_at": 1772321208,
+      "preferred_lang": "es-ES"
+    },
+    "45781": {
+      "title": "Hoyo en uno",
+      "file": "E:\\_Trailers\\tmdb_45781__Hoyo en uno.mp4",
+      "added_at": 1772321212,
+      "preferred_lang": "es-ES"
+    },
+    "9620": {
+      "title": "Paycheck",
+      "file": "E:\\_Trailers\\tmdb_9620__Paycheck.mp4",
+      "added_at": 1772321216,
+      "preferred_lang": "es-ES"
+    },
+    "72976": {
+      "title": "Lincoln",
+      "file": "E:\\_Trailers\\tmdb_72976__Lincoln.mp4",
+      "added_at": 1772321222,
+      "preferred_lang": "es-ES"
+    },
+    "541671": {
+      "title": "Ballerina",
+      "file": "E:\\_Trailers\\tmdb_541671__Ballerina.mp4",
+      "added_at": 1772321226,
+      "preferred_lang": "es-ES"
+    },
+    "529216": {
+      "title": "Durante la tormenta",
+      "file": "E:\\_Trailers\\tmdb_529216__Durante la tormenta.mp4",
+      "added_at": 1772321230,
+      "preferred_lang": "es-ES"
+    },
+    "616037": {
+      "title": "Thor: Love and Thunder",
+      "file": "E:\\_Trailers\\tmdb_616037__Thor_ Love and Thunder.mp4",
+      "added_at": 1772321235,
+      "preferred_lang": "es-ES"
+    },
+    "48139": {
+      "title": "El sur",
+      "file": "E:\\_Trailers\\tmdb_48139__El sur.mp4",
+      "added_at": 1772321239,
+      "preferred_lang": "es-ES"
+    },
+    "8619": {
+      "title": "Master and commander: Al otro lado del mundo",
+      "file": "E:\\_Trailers\\tmdb_8619__Master and commander_ Al otro lado del mundo.mp4",
+      "added_at": 1772321245,
+      "preferred_lang": "es-ES"
+    },
+    "209112": {
+      "title": "Batman vs Superman: El amanecer de la justicia",
+      "file": "E:\\_Trailers\\tmdb_209112__Batman vs Superman_ El amanecer de la justicia.mp4",
+      "added_at": 1772321250,
+      "preferred_lang": "es-ES"
+    },
+    "364": {
+      "title": "Batman vuelve",
+      "file": "E:\\_Trailers\\tmdb_364__Batman vuelve.mp4",
+      "added_at": 1772321253,
+      "preferred_lang": "es-ES"
+    },
+    "658": {
+      "title": "James Bond contra Goldfinger",
+      "file": "E:\\_Trailers\\tmdb_658__James Bond contra Goldfinger.mp4",
+      "added_at": 1772321260,
+      "preferred_lang": "es-ES"
+    },
+    "804251": {
+      "title": "Alcarràs",
+      "file": "E:\\_Trailers\\tmdb_804251__Alcarràs.mp4",
+      "added_at": 1772321265,
+      "preferred_lang": "es-ES"
+    },
+    "14534": {
+      "title": "Rudy, reto a la gloria",
+      "file": "E:\\_Trailers\\tmdb_14534__Rudy_ reto a la gloria.mp4",
+      "added_at": 1772321268,
+      "preferred_lang": "es-ES"
+    },
+    "263115": {
+      "title": "Logan",
+      "file": "E:\\_Trailers\\tmdb_263115__Logan.mp4",
+      "added_at": 1772321273,
+      "preferred_lang": "es-ES"
+    },
+    "11013": {
+      "title": "Secretary",
+      "file": "E:\\_Trailers\\tmdb_11013__Secretary.mp4",
+      "added_at": 1772321276,
+      "preferred_lang": "es-ES"
+    },
+    "411088": {
+      "title": "Contratiempo",
+      "file": "E:\\_Trailers\\tmdb_411088__Contratiempo.mp4",
+      "added_at": 1772321283,
+      "preferred_lang": "es-ES"
+    },
+    "9443": {
+      "title": "Carros de fuego",
+      "file": "E:\\_Trailers\\tmdb_9443__Carros de fuego.mp4",
+      "added_at": 1772321287,
+      "preferred_lang": "es-ES"
+    },
+    "9369": {
+      "title": "Astérix en América",
+      "file": "E:\\_Trailers\\tmdb_9369__Astérix en América.mp4",
+      "added_at": 1772321291,
+      "preferred_lang": "es-ES"
+    },
+    "9799": {
+      "title": "A todo gas",
+      "file": "E:\\_Trailers\\tmdb_9799__A todo gas.mp4",
+      "added_at": 1772321295,
+      "preferred_lang": "es-ES"
+    },
+    "12113": {
+      "title": "Red de mentiras",
+      "file": "E:\\_Trailers\\tmdb_12113__Red de mentiras.mp4",
+      "added_at": 1772321299,
+      "preferred_lang": "es-ES"
+    },
+    "18925": {
+      "title": "Gigantes hacia la victoria",
+      "file": "E:\\_Trailers\\tmdb_18925__Gigantes hacia la victoria.mp4",
+      "added_at": 1772321303,
+      "preferred_lang": "es-ES"
+    },
+    "660": {
+      "title": "Operación Trueno",
+      "file": "E:\\_Trailers\\tmdb_660__Operación Trueno.mp4",
+      "added_at": 1772321313,
+      "preferred_lang": "es-ES"
+    },
+    "676": {
+      "title": "Pearl Harbor",
+      "file": "E:\\_Trailers\\tmdb_676__Pearl Harbor.mp4",
+      "added_at": 1772321317,
+      "preferred_lang": "es-ES"
+    },
+    "102961": {
+      "title": "Los siete profesionales",
+      "file": "E:\\_Trailers\\tmdb_102961__Los siete profesionales.mp4",
+      "added_at": 1772321321,
+      "preferred_lang": "es-ES"
+    },
+    "2080": {
+      "title": "X-Men orígenes: Lobezno",
+      "file": "E:\\_Trailers\\tmdb_2080__X-Men orígenes_ Lobezno.mp4",
+      "added_at": 1772321325,
+      "preferred_lang": "es-ES"
+    },
+    "1035259": {
+      "title": "Agárralo como puedas",
+      "file": "E:\\_Trailers\\tmdb_1035259__Agárralo como puedas.mp4",
+      "added_at": 1772321329,
+      "preferred_lang": "es-ES"
+    },
+    "10950": {
+      "title": "Yo soy Sam",
+      "file": "E:\\_Trailers\\tmdb_10950__Yo soy Sam.mp4",
+      "added_at": 1772321334,
+      "preferred_lang": "es-ES"
+    },
+    "49051": {
+      "title": "El hobbit: Un viaje inesperado",
+      "file": "E:\\_Trailers\\tmdb_49051__El hobbit_ Un viaje inesperado.mp4",
+      "added_at": 1772321339,
+      "preferred_lang": "es-ES"
+    },
+    "97630": {
+      "title": "La noche más oscura",
+      "file": "E:\\_Trailers\\tmdb_97630__La noche más oscura.mp4",
+      "added_at": 1772321344,
+      "preferred_lang": "es-ES"
+    },
+    "187": {
+      "title": "Sin City: Ciudad del pecado",
+      "file": "E:\\_Trailers\\tmdb_187__Sin City_ Ciudad del pecado.mp4",
+      "added_at": 1772321350,
+      "preferred_lang": "es-ES"
+    },
+    "1246": {
+      "title": "Rocky Balboa",
+      "file": "E:\\_Trailers\\tmdb_1246__Rocky Balboa.mp4",
+      "added_at": 1772321355,
+      "preferred_lang": "es-ES"
+    },
+    "2604": {
+      "title": "Nacido el cuatro de julio",
+      "file": "E:\\_Trailers\\tmdb_2604__Nacido el cuatro de julio.mp4",
+      "added_at": 1772321360,
+      "preferred_lang": "es-ES"
+    },
+    "351286": {
+      "title": "Jurassic World: El reino caído",
+      "file": "E:\\_Trailers\\tmdb_351286__Jurassic World_ El reino caído.mp4",
+      "added_at": 1772321364,
+      "preferred_lang": "es-ES"
+    },
+    "12445": {
+      "title": "Harry Potter y las Reliquias de la Muerte - Parte 2",
+      "file": "E:\\_Trailers\\tmdb_12445__Harry Potter y las Reliquias de la Muerte - Parte 2.mp4",
+      "added_at": 1772321368,
+      "preferred_lang": "es-ES"
+    },
+    "415396": {
+      "title": "María (y los demás)",
+      "file": "E:\\_Trailers\\tmdb_415396__María (y los demás).mp4",
+      "added_at": 1772321377,
+      "preferred_lang": "es-ES"
+    },
+    "58429": {
+      "title": "La ciénaga",
+      "file": "E:\\_Trailers\\tmdb_58429__La ciénaga.mp4",
+      "added_at": 1772321381,
+      "preferred_lang": "es-ES"
+    },
+    "637": {
+      "title": "La vida es bella",
+      "file": "E:\\_Trailers\\tmdb_637__La vida es bella.mp4",
+      "added_at": 1772321385,
+      "preferred_lang": "es-ES"
+    },
+    "120": {
+      "title": "El señor de los anillos: La comunidad del anillo",
+      "file": "E:\\_Trailers\\tmdb_120__El señor de los anillos_ La comunidad del anillo.mp4",
+      "added_at": 1772321390,
+      "preferred_lang": "es-ES"
+    },
+    "1495": {
+      "title": "El reino de los cielos",
+      "file": "E:\\_Trailers\\tmdb_1495__El reino de los cielos.mp4",
+      "added_at": 1772321394,
+      "preferred_lang": "es-ES"
+    },
+    "10052": {
+      "title": "Dragonfly (La sombra de la libélula)",
+      "file": "E:\\_Trailers\\tmdb_10052__Dragonfly (La sombra de la libélula).mp4",
+      "added_at": 1772321397,
+      "preferred_lang": "es-ES"
+    },
+    "776526": {
+      "title": "Rita Moreno: una chica que decidió ir a por todas",
+      "file": "E:\\_Trailers\\tmdb_776526__Rita Moreno_ una chica que decidió ir a por todas.mp4",
+      "added_at": 1772321403,
+      "preferred_lang": "es-ES"
+    },
+    "9737": {
+      "title": "Dos policías rebeldes",
+      "file": "E:\\_Trailers\\tmdb_9737__Dos policías rebeldes.mp4",
+      "added_at": 1772321407,
+      "preferred_lang": "es-ES"
+    },
+    "85": {
+      "title": "En busca del arca perdida",
+      "file": "E:\\_Trailers\\tmdb_85__En busca del arca perdida.mp4",
+      "added_at": 1772321412,
+      "preferred_lang": "es-ES"
+    },
+    "284": {
+      "title": "El apartamento",
+      "file": "E:\\_Trailers\\tmdb_284__El apartamento.mp4",
+      "added_at": 1772321416,
+      "preferred_lang": "es-ES"
+    },
+    "393561": {
+      "title": "Risk",
+      "file": "E:\\_Trailers\\tmdb_393561__Risk.mp4",
+      "added_at": 1772321420,
+      "preferred_lang": "es-ES"
+    },
+    "886396": {
+      "title": "Batman y Superman: La Batalla de los Super hijos",
+      "file": "E:\\_Trailers\\tmdb_886396__Batman y Superman_ La Batalla de los Super hijos.mp4",
+      "added_at": 1772321424,
+      "preferred_lang": "es-ES"
+    },
+    "16916": {
+      "title": "Un novio para mi mujer",
+      "file": "E:\\_Trailers\\tmdb_16916__Un novio para mi mujer.mp4",
+      "added_at": 1772321427,
+      "preferred_lang": "es-ES"
+    },
+    "581": {
+      "title": "Bailando con lobos",
+      "file": "E:\\_Trailers\\tmdb_581__Bailando con lobos.mp4",
+      "added_at": 1772321432,
+      "preferred_lang": "es-ES"
+    },
+    "329": {
+      "title": "Jurassic Park (Parque Jurásico)",
+      "file": "E:\\_Trailers\\tmdb_329__Jurassic Park (Parque Jurásico).mp4",
+      "added_at": 1772321436,
+      "preferred_lang": "es-ES"
+    },
+    "1275151": {
+      "title": "Un fantasma en la batalla",
+      "file": "E:\\_Trailers\\tmdb_1275151__Un fantasma en la batalla.mp4",
+      "added_at": 1772321441,
+      "preferred_lang": "es-ES"
+    },
+    "334531": {
+      "title": "My All American",
+      "file": "E:\\_Trailers\\tmdb_334531__My All American.mp4",
+      "added_at": 1772321445,
+      "preferred_lang": "es-ES"
+    },
+    "11499": {
+      "title": "El desafío: Frost contra Nixon",
+      "file": "E:\\_Trailers\\tmdb_11499__El desafío_ Frost contra Nixon.mp4",
+      "added_at": 1772321450,
+      "preferred_lang": "es-ES"
+    },
+    "73": {
+      "title": "American History X",
+      "file": "E:\\_Trailers\\tmdb_73__American History X.mp4",
+      "added_at": 1772321454,
+      "preferred_lang": "es-ES"
+    },
+    "10138": {
+      "title": "Iron Man 2",
+      "file": "E:\\_Trailers\\tmdb_10138__Iron Man 2.mp4",
+      "added_at": 1772321458,
+      "preferred_lang": "es-ES"
+    },
+    "272": {
+      "title": "Batman Begins",
+      "file": "E:\\_Trailers\\tmdb_272__Batman Begins.mp4",
+      "added_at": 1772321461,
+      "preferred_lang": "es-ES"
+    },
+    "1592": {
+      "title": "Las dos caras de la verdad",
+      "file": "E:\\_Trailers\\tmdb_1592__Las dos caras de la verdad.mp4",
+      "added_at": 1772321466,
+      "preferred_lang": "es-ES"
+    },
+    "579051": {
+      "title": "Silk Road: Atrapado en la Dark Web",
+      "file": "E:\\_Trailers\\tmdb_579051__Silk Road_ Atrapado en la Dark Web.mp4",
+      "added_at": 1772321470,
+      "preferred_lang": "es-ES"
+    },
+    "516486": {
+      "title": "Greyhound: Enemigos bajo el mar",
+      "file": "E:\\_Trailers\\tmdb_516486__Greyhound_ Enemigos bajo el mar.mp4",
+      "added_at": 1772321476,
+      "preferred_lang": "es-ES"
+    },
+    "552178": {
+      "title": "Aguas oscuras",
+      "file": "E:\\_Trailers\\tmdb_552178__Aguas oscuras.mp4",
+      "added_at": 1772321483,
+      "preferred_lang": "es-ES"
+    },
+    "399404": {
+      "title": "El instante más oscuro",
+      "file": "E:\\_Trailers\\tmdb_399404__El instante más oscuro.mp4",
+      "added_at": 1772321487,
+      "preferred_lang": "es-ES"
+    },
+    "241": {
+      "title": "Asesinos natos",
+      "file": "E:\\_Trailers\\tmdb_241__Asesinos natos.mp4",
+      "added_at": 1772321491,
+      "preferred_lang": "es-ES"
+    },
+    "36593": {
+      "title": "Agárralo como puedas 33⅓: El insulto final",
+      "file": "E:\\_Trailers\\tmdb_36593__Agárralo como puedas 33⅓_ El insulto final.mp4",
+      "added_at": 1772321495,
+      "preferred_lang": "es-ES"
+    },
+    "336882": {
+      "title": "La ola",
+      "file": "E:\\_Trailers\\tmdb_336882__La ola.mp4",
+      "added_at": 1772321500,
+      "preferred_lang": "es-ES"
+    },
+    "109424": {
+      "title": "Capitán Phillips",
+      "file": "E:\\_Trailers\\tmdb_109424__Capitán Phillips.mp4",
+      "added_at": 1772321504,
+      "preferred_lang": "es-ES"
+    },
+    "68718": {
+      "title": "Django desencadenado",
+      "file": "E:\\_Trailers\\tmdb_68718__Django desencadenado.mp4",
+      "added_at": 1772321509,
+      "preferred_lang": "es-ES"
+    },
+    "4566": {
+      "title": "Michael Clayton",
+      "file": "E:\\_Trailers\\tmdb_4566__Michael Clayton.mp4",
+      "added_at": 1772321517,
+      "preferred_lang": "es-ES"
+    },
+    "693134": {
+      "title": "Dune: Parte dos",
+      "file": "E:\\_Trailers\\tmdb_693134__Dune_ Parte dos.mp4",
+      "added_at": 1772321525,
+      "preferred_lang": "es-ES"
+    },
+    "9299": {
+      "title": "Tesis",
+      "file": "E:\\_Trailers\\tmdb_9299__Tesis.mp4",
+      "added_at": 1772321529,
       "preferred_lang": "es-ES"
     },
     "2503": {
       "title": "El ultimátum de Bourne",
       "file": "E:\\_Trailers\\tmdb_2503__El ultimátum de Bourne.mp4",
-      "added_at": 1772319885,
+      "added_at": 1772321535,
       "preferred_lang": "es-ES"
     },
-    "9475": {
-      "title": "Esencia de mujer",
-      "file": "E:\\_Trailers\\tmdb_9475__Esencia de mujer.mp4",
-      "added_at": 1772319890,
+    "817": {
+      "title": "Austin Powers: La espía que me achuchó",
+      "file": "E:\\_Trailers\\tmdb_817__Austin Powers_ La espía que me achuchó.mp4",
+      "added_at": 1772321539,
+      "preferred_lang": "es-ES"
+    },
+    "168259": {
+      "title": "Fast & Furious 7",
+      "file": "E:\\_Trailers\\tmdb_168259__Fast _ Furious 7.mp4",
+      "added_at": 1772321544,
+      "preferred_lang": "es-ES"
+    },
+    "661374": {
+      "title": "Puñales por la espalda: El misterio de Glass Onion",
+      "file": "E:\\_Trailers\\tmdb_661374__Puñales por la espalda_ El misterio de Glass Onion.mp4",
+      "added_at": 1772321547,
+      "preferred_lang": "es-ES"
+    },
+    "8277": {
+      "title": "American Pie presenta: Fraternidad Beta",
+      "file": "E:\\_Trailers\\tmdb_8277__American Pie presenta_ Fraternidad Beta.mp4",
+      "added_at": 1772321551,
+      "preferred_lang": "es-ES"
+    },
+    "558449": {
+      "title": "Gladiator II",
+      "file": "E:\\_Trailers\\tmdb_558449__Gladiator II.mp4",
+      "added_at": 1772321554,
+      "preferred_lang": "es-ES"
+    },
+    "8007": {
+      "title": "Tras la línea enemiga",
+      "file": "E:\\_Trailers\\tmdb_8007__Tras la línea enemiga.mp4",
+      "added_at": 1772321558,
+      "preferred_lang": "es-ES"
+    },
+    "1984": {
+      "title": "1984",
+      "file": "E:\\_Trailers\\tmdb_1984__1984.mp4",
+      "added_at": 1772321562,
+      "preferred_lang": "es-ES"
+    },
+    "245891": {
+      "title": "John Wick (Otro día para matar)",
+      "file": "E:\\_Trailers\\tmdb_245891__John Wick (Otro día para matar).mp4",
+      "added_at": 1772321565,
+      "preferred_lang": "es-ES"
+    },
+    "329865": {
+      "title": "La llegada",
+      "file": "E:\\_Trailers\\tmdb_329865__La llegada.mp4",
+      "added_at": 1772321572,
+      "preferred_lang": "es-ES"
+    },
+    "19995": {
+      "title": "Avatar",
+      "file": "E:\\_Trailers\\tmdb_19995__Avatar.mp4",
+      "added_at": 1772321576,
+      "preferred_lang": "es-ES"
+    },
+    "129": {
+      "title": "El viaje de Chihiro",
+      "file": "E:\\_Trailers\\tmdb_129__El viaje de Chihiro.mp4",
+      "added_at": 1772321579,
+      "preferred_lang": "es-ES"
+    },
+    "122917": {
+      "title": "El hobbit: La batalla de los cinco ejércitos",
+      "file": "E:\\_Trailers\\tmdb_122917__El hobbit_ La batalla de los cinco ejércitos.mp4",
+      "added_at": 1772321584,
+      "preferred_lang": "es-ES"
+    },
+    "13920": {
+      "title": "Me llaman Radio",
+      "file": "E:\\_Trailers\\tmdb_13920__Me llaman Radio.mp4",
+      "added_at": 1772321588,
+      "preferred_lang": "es-ES"
+    },
+    "299534": {
+      "title": "Vengadores: Endgame",
+      "file": "E:\\_Trailers\\tmdb_299534__Vengadores_ Endgame.mp4",
+      "added_at": 1772321592,
+      "preferred_lang": "es-ES"
+    },
+    "9919": {
+      "title": "Cómo perder a un chico en 10 días",
+      "file": "E:\\_Trailers\\tmdb_9919__Cómo perder a un chico en 10 días.mp4",
+      "added_at": 1772321597,
+      "preferred_lang": "es-ES"
+    },
+    "1573": {
+      "title": "La jungla 2: Alerta roja",
+      "file": "E:\\_Trailers\\tmdb_1573__La jungla 2_ Alerta roja.mp4",
+      "added_at": 1772321601,
+      "preferred_lang": "es-ES"
+    },
+    "207703": {
+      "title": "Kingsman: Servicio secreto",
+      "file": "E:\\_Trailers\\tmdb_207703__Kingsman_ Servicio secreto.mp4",
+      "added_at": 1772321605,
+      "preferred_lang": "es-ES"
+    },
+    "13": {
+      "title": "Forrest Gump",
+      "file": "E:\\_Trailers\\tmdb_13__Forrest Gump.mp4",
+      "added_at": 1772321608,
+      "preferred_lang": "es-ES"
+    },
+    "791373": {
+      "title": "La Liga de la Justicia de Zack Snyder",
+      "file": "E:\\_Trailers\\tmdb_791373__La Liga de la Justicia de Zack Snyder.mp4",
+      "added_at": 1772321612,
+      "preferred_lang": "es-ES"
+    },
+    "4935": {
+      "title": "El castillo ambulante",
+      "file": "E:\\_Trailers\\tmdb_4935__El castillo ambulante.mp4",
+      "added_at": 1772321615,
+      "preferred_lang": "es-ES"
+    },
+    "424": {
+      "title": "La lista de Schindler",
+      "file": "E:\\_Trailers\\tmdb_424__La lista de Schindler.mp4",
+      "added_at": 1772321621,
+      "preferred_lang": "es-ES"
+    },
+    "299537": {
+      "title": "Capitana Marvel",
+      "file": "E:\\_Trailers\\tmdb_299537__Capitana Marvel.mp4",
+      "added_at": 1772321624,
+      "preferred_lang": "es-ES"
+    },
+    "510": {
+      "title": "Alguien voló sobre el nido del cuco",
+      "file": "E:\\_Trailers\\tmdb_510__Alguien voló sobre el nido del cuco.mp4",
+      "added_at": 1772321628,
+      "preferred_lang": "es-ES"
+    },
+    "1375": {
+      "title": "Rocky V",
+      "file": "E:\\_Trailers\\tmdb_1375__Rocky V.mp4",
+      "added_at": 1772321632,
+      "preferred_lang": "es-ES"
+    },
+    "524": {
+      "title": "Casino",
+      "file": "E:\\_Trailers\\tmdb_524__Casino.mp4",
+      "added_at": 1772321637,
+      "preferred_lang": "es-ES"
+    },
+    "4614": {
+      "title": "Pánico nuclear",
+      "file": "E:\\_Trailers\\tmdb_4614__Pánico nuclear.mp4",
+      "added_at": 1772321641,
+      "preferred_lang": "es-ES"
+    },
+    "9479": {
+      "title": "Pesadilla antes de Navidad",
+      "file": "E:\\_Trailers\\tmdb_9479__Pesadilla antes de Navidad.mp4",
+      "added_at": 1772321645,
+      "preferred_lang": "es-ES"
+    },
+    "4105": {
+      "title": "Black Rain",
+      "file": "E:\\_Trailers\\tmdb_4105__Black Rain.mp4",
+      "added_at": 1772321649,
+      "preferred_lang": "es-ES"
+    },
+    "5038": {
+      "title": "Vicky Cristina Barcelona",
+      "file": "E:\\_Trailers\\tmdb_5038__Vicky Cristina Barcelona.mp4",
+      "added_at": 1772321654,
+      "preferred_lang": "es-ES"
+    },
+    "380": {
+      "title": "Rain Man",
+      "file": "E:\\_Trailers\\tmdb_380__Rain Man.mp4",
+      "added_at": 1772321658,
+      "preferred_lang": "es-ES"
+    },
+    "5780": {
+      "title": "Cortina rasgada",
+      "file": "E:\\_Trailers\\tmdb_5780__Cortina rasgada.mp4",
+      "added_at": 1772321661,
+      "preferred_lang": "es-ES"
+    },
+    "10858": {
+      "title": "Nixon",
+      "file": "E:\\_Trailers\\tmdb_10858__Nixon.mp4",
+      "added_at": 1772321665,
+      "preferred_lang": "es-ES"
+    },
+    "698": {
+      "title": "Moonraker",
+      "file": "E:\\_Trailers\\tmdb_698__Moonraker.mp4",
+      "added_at": 1772321671,
+      "preferred_lang": "es-ES"
+    },
+    "11299": {
+      "title": "Cowboy Bebop, la película: Llamando a las puertas del cielo",
+      "file": "E:\\_Trailers\\tmdb_11299__Cowboy Bebop_ la película_ Llamando a las puertas del cielo.mp4",
+      "added_at": 1772321676,
+      "preferred_lang": "es-ES"
+    },
+    "9593": {
+      "title": "El último gran héroe",
+      "file": "E:\\_Trailers\\tmdb_9593__El último gran héroe.mp4",
+      "added_at": 1772321679,
+      "preferred_lang": "es-ES"
+    },
+    "787": {
+      "title": "Sr. y Sra. Smith",
+      "file": "E:\\_Trailers\\tmdb_787__Sr. y Sra. Smith.mp4",
+      "added_at": 1772321686,
+      "preferred_lang": "es-ES"
+    },
+    "1865": {
+      "title": "Piratas del Caribe: En mareas misteriosas",
+      "file": "E:\\_Trailers\\tmdb_1865__Piratas del Caribe_ En mareas misteriosas.mp4",
+      "added_at": 1772321690,
+      "preferred_lang": "es-ES"
+    },
+    "857": {
+      "title": "Salvar al soldado Ryan",
+      "file": "E:\\_Trailers\\tmdb_857__Salvar al soldado Ryan.mp4",
+      "added_at": 1772321695,
+      "preferred_lang": "es-ES"
+    },
+    "872585": {
+      "title": "Oppenheimer",
+      "file": "E:\\_Trailers\\tmdb_872585__Oppenheimer.mp4",
+      "added_at": 1772321699,
+      "preferred_lang": "es-ES"
+    },
+    "2770": {
+      "title": "American Pie 2",
+      "file": "E:\\_Trailers\\tmdb_2770__American Pie 2.mp4",
+      "added_at": 1772321703,
+      "preferred_lang": "es-ES"
+    },
+    "122": {
+      "title": "El señor de los anillos: El retorno del rey",
+      "file": "E:\\_Trailers\\tmdb_122__El señor de los anillos_ El retorno del rey.mp4",
+      "added_at": 1772321707,
+      "preferred_lang": "es-ES"
+    },
+    "10637": {
+      "title": "Titanes, hicieron historia",
+      "file": "E:\\_Trailers\\tmdb_10637__Titanes_ hicieron historia.mp4",
+      "added_at": 1772321711,
+      "preferred_lang": "es-ES"
+    },
+    "619264": {
+      "title": "El hoyo",
+      "file": "E:\\_Trailers\\tmdb_619264__El hoyo.mp4",
+      "added_at": 1772321715,
+      "preferred_lang": "es-ES"
+    },
+    "664": {
+      "title": "Twister",
+      "file": "E:\\_Trailers\\tmdb_664__Twister.mp4",
+      "added_at": 1772321719,
+      "preferred_lang": "es-ES"
+    },
+    "762": {
+      "title": "Los caballeros de la mesa cuadrada y sus locos seguidores",
+      "file": "E:\\_Trailers\\tmdb_762__Los caballeros de la mesa cuadrada y sus locos seguidores.mp4",
+      "added_at": 1772321723,
+      "preferred_lang": "es-ES"
+    },
+    "629": {
+      "title": "Sospechosos habituales",
+      "file": "E:\\_Trailers\\tmdb_629__Sospechosos habituales.mp4",
+      "added_at": 1772321728,
+      "preferred_lang": "es-ES"
+    },
+    "810": {
+      "title": "Shrek tercero",
+      "file": "E:\\_Trailers\\tmdb_810__Shrek tercero.mp4",
+      "added_at": 1772321733,
+      "preferred_lang": "es-ES"
+    },
+    "11477": {
+      "title": "La comunidad",
+      "file": "E:\\_Trailers\\tmdb_11477__La comunidad.mp4",
+      "added_at": 1772321737,
+      "preferred_lang": "es-ES"
+    },
+    "72190": {
+      "title": "Guerra Mundial Z",
+      "file": "E:\\_Trailers\\tmdb_72190__Guerra Mundial Z.mp4",
+      "added_at": 1772321740,
+      "preferred_lang": "es-ES"
+    },
+    "1120821": {
+      "title": "The Blue Angels",
+      "file": "E:\\_Trailers\\tmdb_1120821__The Blue Angels.mp4",
+      "added_at": 1772321744,
+      "preferred_lang": "es-ES"
+    },
+    "95": {
+      "title": "Armageddon",
+      "file": "E:\\_Trailers\\tmdb_95__Armageddon.mp4",
+      "added_at": 1772321752,
       "preferred_lang": "es-ES"
     },
     "524348": {
       "title": "The Report",
       "file": "E:\\_Trailers\\tmdb_524348__The Report.mp4",
-      "added_at": 1772319894,
+      "added_at": 1772321756,
+      "preferred_lang": "es-ES"
+    },
+    "1125510": {
+      "title": "El hoyo 2",
+      "file": "E:\\_Trailers\\tmdb_1125510__El hoyo 2.mp4",
+      "added_at": 1772321759,
+      "preferred_lang": "es-ES"
+    },
+    "911430": {
+      "title": "F1 la película",
+      "file": "E:\\_Trailers\\tmdb_911430__F1 la película.mp4",
+      "added_at": 1772321763,
+      "preferred_lang": "es-ES"
+    },
+    "4824": {
+      "title": "The Jackal (Chacal)",
+      "file": "E:\\_Trailers\\tmdb_4824__The Jackal (Chacal).mp4",
+      "added_at": 1772321767,
+      "preferred_lang": "es-ES"
+    },
+    "2501": {
+      "title": "The Bourne Identity: El caso Bourne",
+      "file": "E:\\_Trailers\\tmdb_2501__The Bourne Identity_ El caso Bourne.mp4",
+      "added_at": 1772321771,
+      "preferred_lang": "es-ES"
+    },
+    "164": {
+      "title": "Desayuno con diamantes",
+      "file": "E:\\_Trailers\\tmdb_164__Desayuno con diamantes.mp4",
+      "added_at": 1772321775,
+      "preferred_lang": "es-ES"
+    },
+    "1290159": {
+      "title": "Una casa llena de dinamita",
+      "file": "E:\\_Trailers\\tmdb_1290159__Una casa llena de dinamita.mp4",
+      "added_at": 1772321779,
+      "preferred_lang": "es-ES"
+    },
+    "517331": {
+      "title": "El reino",
+      "file": "E:\\_Trailers\\tmdb_517331__El reino.mp4",
+      "added_at": 1772321782,
+      "preferred_lang": "es-ES"
+    },
+    "284054": {
+      "title": "Black Panther",
+      "file": "E:\\_Trailers\\tmdb_284054__Black Panther.mp4",
+      "added_at": 1772321785,
+      "preferred_lang": "es-ES"
+    },
+    "681": {
+      "title": "Diamantes para la eternidad",
+      "file": "E:\\_Trailers\\tmdb_681__Diamantes para la eternidad.mp4",
+      "added_at": 1772321791,
+      "preferred_lang": "es-ES"
+    },
+    "848685": {
+      "title": "As bestas",
+      "file": "E:\\_Trailers\\tmdb_848685__As bestas.mp4",
+      "added_at": 1772321795,
+      "preferred_lang": "es-ES"
+    },
+    "186": {
+      "title": "El caso Slevin",
+      "file": "E:\\_Trailers\\tmdb_186__El caso Slevin.mp4",
+      "added_at": 1772321799,
+      "preferred_lang": "es-ES"
+    },
+    "7512": {
+      "title": "Idiocracia",
+      "file": "E:\\_Trailers\\tmdb_7512__Idiocracia.mp4",
+      "added_at": 1772321803,
+      "preferred_lang": "es-ES"
+    },
+    "1830": {
+      "title": "El señor de la guerra",
+      "file": "E:\\_Trailers\\tmdb_1830__El señor de la guerra.mp4",
+      "added_at": 1772321807,
+      "preferred_lang": "es-ES"
+    },
+    "298618": {
+      "title": "Flash",
+      "file": "E:\\_Trailers\\tmdb_298618__Flash.mp4",
+      "added_at": 1772321814,
+      "preferred_lang": "es-ES"
+    },
+    "33": {
+      "title": "Sin perdón",
+      "file": "E:\\_Trailers\\tmdb_33__Sin perdón.mp4",
+      "added_at": 1772321818,
+      "preferred_lang": "es-ES"
+    },
+    "2277": {
+      "title": "El hombre bicentenario",
+      "file": "E:\\_Trailers\\tmdb_2277__El hombre bicentenario.mp4",
+      "added_at": 1772321823,
+      "preferred_lang": "es-ES"
+    },
+    "1371": {
+      "title": "Rocky III",
+      "file": "E:\\_Trailers\\tmdb_1371__Rocky III.mp4",
+      "added_at": 1772321827,
+      "preferred_lang": "es-ES"
+    },
+    "24428": {
+      "title": "Los Vengadores",
+      "file": "E:\\_Trailers\\tmdb_24428__Los Vengadores.mp4",
+      "added_at": 1772321831,
+      "preferred_lang": "es-ES"
+    },
+    "1124": {
+      "title": "El truco final (El prestigio)",
+      "file": "E:\\_Trailers\\tmdb_1124__El truco final (El prestigio).mp4",
+      "added_at": 1772321835,
+      "preferred_lang": "es-ES"
+    },
+    "644583": {
+      "title": "The Mauritanian",
+      "file": "E:\\_Trailers\\tmdb_644583__The Mauritanian.mp4",
+      "added_at": 1772321839,
+      "preferred_lang": "es-ES"
+    },
+    "603": {
+      "title": "Matrix",
+      "file": "E:\\_Trailers\\tmdb_603__Matrix.mp4",
+      "added_at": 1772321843,
+      "preferred_lang": "es-ES"
+    },
+    "40662": {
+      "title": "Batman: Capucha Roja",
+      "file": "E:\\_Trailers\\tmdb_40662__Batman_ Capucha Roja.mp4",
+      "added_at": 1772321850,
+      "preferred_lang": "es-ES"
+    },
+    "10393": {
+      "title": "Equipo a la fuerza",
+      "file": "E:\\_Trailers\\tmdb_10393__Equipo a la fuerza.mp4",
+      "added_at": 1772321853,
+      "preferred_lang": "es-ES"
+    },
+    "508883": {
+      "title": "El chico y la garza",
+      "file": "E:\\_Trailers\\tmdb_508883__El chico y la garza.mp4",
+      "added_at": 1772321856,
+      "preferred_lang": "es-ES"
+    },
+    "302946": {
+      "title": "El contable",
+      "file": "E:\\_Trailers\\tmdb_302946__El contable.mp4",
+      "added_at": 1772321860,
+      "preferred_lang": "es-ES"
+    },
+    "37136": {
+      "title": "Agárralo como puedas",
+      "file": "E:\\_Trailers\\tmdb_37136__Agárralo como puedas.mp4",
+      "added_at": 1772321867,
+      "preferred_lang": "es-ES"
+    },
+    "2493": {
+      "title": "La princesa prometida",
+      "file": "E:\\_Trailers\\tmdb_2493__La princesa prometida.mp4",
+      "added_at": 1772321872,
+      "preferred_lang": "es-ES"
+    },
+    "89": {
+      "title": "Indiana Jones y la última cruzada",
+      "file": "E:\\_Trailers\\tmdb_89__Indiana Jones y la última cruzada.mp4",
+      "added_at": 1772321875,
+      "preferred_lang": "es-ES"
+    },
+    "320288": {
+      "title": "X-Men: Fénix oscura",
+      "file": "E:\\_Trailers\\tmdb_320288__X-Men_ Fénix oscura.mp4",
+      "added_at": 1772321879,
+      "preferred_lang": "es-ES"
+    },
+    "744": {
+      "title": "Top Gun: Ídolos del aire",
+      "file": "E:\\_Trailers\\tmdb_744__Top Gun_ Ídolos del aire.mp4",
+      "added_at": 1772321883,
+      "preferred_lang": "es-ES"
+    },
+    "1771": {
+      "title": "Capitán América: El primer vengador",
+      "file": "E:\\_Trailers\\tmdb_1771__Capitán América_ El primer vengador.mp4",
+      "added_at": 1772321887,
+      "preferred_lang": "es-ES"
+    },
+    "6537": {
+      "title": "El orfanato",
+      "file": "E:\\_Trailers\\tmdb_6537__El orfanato.mp4",
+      "added_at": 1772321891,
+      "preferred_lang": "es-ES"
+    },
+    "818": {
+      "title": "Austin Powers en Miembro de Oro",
+      "file": "E:\\_Trailers\\tmdb_818__Austin Powers en Miembro de Oro.mp4",
+      "added_at": 1772321897,
+      "preferred_lang": "es-ES"
+    },
+    "1894": {
+      "title": "La guerra de las galaxias. Episodio II: El ataque de los clones",
+      "file": "E:\\_Trailers\\tmdb_1894__La guerra de las galaxias. Episodio II_ El ataque de los clones.mp4",
+      "added_at": 1772321901,
+      "preferred_lang": "es-ES"
+    },
+    "167444": {
+      "title": "La roca",
+      "file": "E:\\_Trailers\\tmdb_167444__La roca.mp4",
+      "added_at": 1772321906,
+      "preferred_lang": "es-ES"
+    },
+    "10798": {
+      "title": "Héroes del cielo",
+      "file": "E:\\_Trailers\\tmdb_10798__Héroes del cielo.mp4",
+      "added_at": 1772321911,
+      "preferred_lang": "es-ES"
+    },
+    "24253": {
+      "title": "Millennium 2: La chica que soñaba con una cerilla y un bidón de gasolina",
+      "file": "E:\\_Trailers\\tmdb_24253__Millennium 2_ La chica que soñaba con una cerilla y un bidón de gasolina.mp4",
+      "added_at": 1772321915,
+      "preferred_lang": "es-ES"
+    },
+    "823425": {
+      "title": "National Champions",
+      "file": "E:\\_Trailers\\tmdb_823425__National Champions.mp4",
+      "added_at": 1772321921,
+      "preferred_lang": "es-ES"
+    },
+    "521": {
+      "title": "Crimen perfecto",
+      "file": "E:\\_Trailers\\tmdb_521__Crimen perfecto.mp4",
+      "added_at": 1772321925,
+      "preferred_lang": "es-ES"
+    },
+    "14": {
+      "title": "American Beauty",
+      "file": "E:\\_Trailers\\tmdb_14__American Beauty.mp4",
+      "added_at": 1772321929,
+      "preferred_lang": "es-ES"
+    },
+    "10195": {
+      "title": "Thor",
+      "file": "E:\\_Trailers\\tmdb_10195__Thor.mp4",
+      "added_at": 1772321934,
+      "preferred_lang": "es-ES"
+    },
+    "624860": {
+      "title": "Matrix Resurrections",
+      "file": "E:\\_Trailers\\tmdb_624860__Matrix Resurrections.mp4",
+      "added_at": 1772321938,
+      "preferred_lang": "es-ES"
+    },
+    "784651": {
+      "title": "Dragones del aire",
+      "file": "E:\\_Trailers\\tmdb_784651__Dragones del aire.mp4",
+      "added_at": 1772321943,
+      "preferred_lang": "es-ES"
+    },
+    "9642": {
+      "title": "Astérix y los vikingos",
+      "file": "E:\\_Trailers\\tmdb_9642__Astérix y los vikingos.mp4",
+      "added_at": 1772321951,
+      "preferred_lang": "es-ES"
+    },
+    "496": {
+      "title": "Borat",
+      "file": "E:\\_Trailers\\tmdb_496__Borat.mp4",
+      "added_at": 1772321954,
+      "preferred_lang": "es-ES"
+    },
+    "213": {
+      "title": "Con la muerte en los talones",
+      "file": "E:\\_Trailers\\tmdb_213__Con la muerte en los talones.mp4",
+      "added_at": 1772321959,
+      "preferred_lang": "es-ES"
+    },
+    "333352": {
+      "title": "Espías desde el cielo",
+      "file": "E:\\_Trailers\\tmdb_333352__Espías desde el cielo.mp4",
+      "added_at": 1772321965,
+      "preferred_lang": "es-ES"
+    },
+    "1412": {
+      "title": "Sexo, mentiras y cintas de vídeo",
+      "file": "E:\\_Trailers\\tmdb_1412__Sexo_ mentiras y cintas de vídeo.mp4",
+      "added_at": 1772321968,
+      "preferred_lang": "es-ES"
+    },
+    "22881": {
+      "title": "Un sueño posible",
+      "file": "E:\\_Trailers\\tmdb_22881__Un sueño posible.mp4",
+      "added_at": 1772321972,
+      "preferred_lang": "es-ES"
+    },
+    "33273": {
+      "title": "Celda 211",
+      "file": "E:\\_Trailers\\tmdb_33273__Celda 211.mp4",
+      "added_at": 1772321976,
+      "preferred_lang": "es-ES"
+    },
+    "87101": {
+      "title": "Terminator Génesis",
+      "file": "E:\\_Trailers\\tmdb_87101__Terminator Génesis.mp4",
+      "added_at": 1772321981,
+      "preferred_lang": "es-ES"
+    },
+    "10663": {
+      "title": "El aguador",
+      "file": "E:\\_Trailers\\tmdb_10663__El aguador.mp4",
+      "added_at": 1772321984,
+      "preferred_lang": "es-ES"
+    },
+    "673": {
+      "title": "Harry Potter y el prisionero de Azkaban",
+      "file": "E:\\_Trailers\\tmdb_673__Harry Potter y el prisionero de Azkaban.mp4",
+      "added_at": 1772321988,
+      "preferred_lang": "es-ES"
+    },
+    "161": {
+      "title": "Ocean's Eleven. Hagan juego",
+      "file": "E:\\_Trailers\\tmdb_161__Ocean_s Eleven. Hagan juego.mp4",
+      "added_at": 1772321994,
+      "preferred_lang": "es-ES"
+    },
+    "435": {
+      "title": "El día de mañana",
+      "file": "E:\\_Trailers\\tmdb_435__El día de mañana.mp4",
+      "added_at": 1772321997,
+      "preferred_lang": "es-ES"
+    },
+    "196": {
+      "title": "Regreso al futuro III",
+      "file": "E:\\_Trailers\\tmdb_196__Regreso al futuro III.mp4",
+      "added_at": 1772322003,
+      "preferred_lang": "es-ES"
+    },
+    "458156": {
+      "title": "John Wick: Capítulo 3 - Parabellum",
+      "file": "E:\\_Trailers\\tmdb_458156__John Wick_ Capítulo 3 - Parabellum.mp4",
+      "added_at": 1772322007,
+      "preferred_lang": "es-ES"
+    },
+    "322": {
+      "title": "Mystic River",
+      "file": "E:\\_Trailers\\tmdb_322__Mystic River.mp4",
+      "added_at": 1772322011,
+      "preferred_lang": "es-ES"
+    },
+    "3865": {
+      "title": "AzulOscuroCasiNegro",
+      "file": "E:\\_Trailers\\tmdb_3865__AzulOscuroCasiNegro.mp4",
+      "added_at": 1772322014,
+      "preferred_lang": "es-ES"
+    },
+    "718930": {
+      "title": "Bullet Train",
+      "file": "E:\\_Trailers\\tmdb_718930__Bullet Train.mp4",
+      "added_at": 1772322020,
+      "preferred_lang": "es-ES"
+    },
+    "363088": {
+      "title": "Ant-Man y la Avispa",
+      "file": "E:\\_Trailers\\tmdb_363088__Ant-Man y la Avispa.mp4",
+      "added_at": 1772322024,
+      "preferred_lang": "es-ES"
+    },
+    "1061474": {
+      "title": "Superman",
+      "file": "E:\\_Trailers\\tmdb_1061474__Superman.mp4",
+      "added_at": 1772322030,
+      "preferred_lang": "es-ES"
+    },
+    "36657": {
+      "title": "X-Men",
+      "file": "E:\\_Trailers\\tmdb_36657__X-Men.mp4",
+      "added_at": 1772322035,
+      "preferred_lang": "es-ES"
+    },
+    "60308": {
+      "title": "Moneyball: Rompiendo las reglas",
+      "file": "E:\\_Trailers\\tmdb_60308__Moneyball_ Rompiendo las reglas.mp4",
+      "added_at": 1772322041,
+      "preferred_lang": "es-ES"
+    },
+    "621": {
+      "title": "Grease",
+      "file": "E:\\_Trailers\\tmdb_621__Grease.mp4",
+      "added_at": 1772322050,
+      "preferred_lang": "es-ES"
+    },
+    "102899": {
+      "title": "Ant-Man",
+      "file": "E:\\_Trailers\\tmdb_102899__Ant-Man.mp4",
+      "added_at": 1772322056,
+      "preferred_lang": "es-ES"
+    },
+    "855": {
+      "title": "Black Hawk derribado",
+      "file": "E:\\_Trailers\\tmdb_855__Black Hawk derribado.mp4",
+      "added_at": 1772322061,
+      "preferred_lang": "es-ES"
+    },
+    "37137": {
+      "title": "Agárralo como puedas 2½: El aroma del miedo",
+      "file": "E:\\_Trailers\\tmdb_37137__Agárralo como puedas 2½_ El aroma del miedo.mp4",
+      "added_at": 1772322066,
+      "preferred_lang": "es-ES"
+    },
+    "544": {
+      "title": "Algo pasa con Mary",
+      "file": "E:\\_Trailers\\tmdb_544__Algo pasa con Mary.mp4",
+      "added_at": 1772322071,
+      "preferred_lang": "es-ES"
+    },
+    "9475": {
+      "title": "Esencia de mujer",
+      "file": "E:\\_Trailers\\tmdb_9475__Esencia de mujer.mp4",
+      "added_at": 1772322076,
+      "preferred_lang": "es-ES"
+    },
+    "509": {
+      "title": "Notting Hill",
+      "file": "E:\\_Trailers\\tmdb_509__Notting Hill.mp4",
+      "added_at": 1772322099,
+      "preferred_lang": "es-ES"
+    },
+    "393624": {
+      "title": "Secretos de estado",
+      "file": "E:\\_Trailers\\tmdb_393624__Secretos de estado.mp4",
+      "added_at": 1772322106,
+      "preferred_lang": "es-ES"
+    },
+    "57158": {
+      "title": "El hobbit: La desolación de Smaug",
+      "file": "E:\\_Trailers\\tmdb_57158__El hobbit_ La desolación de Smaug.mp4",
+      "added_at": 1772322121,
+      "preferred_lang": "es-ES"
+    },
+    "62213": {
+      "title": "Sombras tenebrosas",
+      "file": "E:\\_Trailers\\tmdb_62213__Sombras tenebrosas.mp4",
+      "added_at": 1772322126,
+      "preferred_lang": "es-ES"
+    },
+    "930564": {
+      "title": "Saltburn",
+      "file": "E:\\_Trailers\\tmdb_930564__Saltburn.mp4",
+      "added_at": 1772322137,
+      "preferred_lang": "es-ES"
+    },
+    "10429": {
+      "title": "Hackers 2: Asalto final",
+      "file": "E:\\_Trailers\\tmdb_10429__Hackers 2_ Asalto final.mp4",
+      "added_at": 1772322150,
+      "preferred_lang": "es-ES"
+    },
+    "36643": {
+      "title": "El mundo nunca es suficiente",
+      "file": "E:\\_Trailers\\tmdb_36643__El mundo nunca es suficiente.mp4",
+      "added_at": 1772322168,
+      "preferred_lang": "es-ES"
+    },
+    "361743": {
+      "title": "Top Gun: Maverick",
+      "file": "E:\\_Trailers\\tmdb_361743__Top Gun_ Maverick.mp4",
+      "added_at": 1772322182,
+      "preferred_lang": "es-ES"
+    },
+    "290859": {
+      "title": "Terminator: Destino oscuro",
+      "file": "E:\\_Trailers\\tmdb_290859__Terminator_ Destino oscuro.mp4",
+      "added_at": 1772322202,
+      "preferred_lang": "es-ES"
+    },
+    "583": {
+      "title": "La vida de Brian",
+      "file": "E:\\_Trailers\\tmdb_583__La vida de Brian.mp4",
+      "added_at": 1772322233,
+      "preferred_lang": "es-ES"
+    },
+    "703": {
+      "title": "Annie Hall",
+      "file": "E:\\_Trailers\\tmdb_703__Annie Hall.mp4",
+      "added_at": 1772322241,
+      "preferred_lang": "es-ES"
+    },
+    "41154": {
+      "title": "Men in Black 3",
+      "file": "E:\\_Trailers\\tmdb_41154__Men in Black 3.mp4",
+      "added_at": 1772322267,
+      "preferred_lang": "es-ES"
+    },
+    "429351": {
+      "title": "12 valientes",
+      "file": "E:\\_Trailers\\tmdb_429351__12 valientes.mp4",
+      "added_at": 1772322273,
+      "preferred_lang": "es-ES"
+    },
+    "21700": {
+      "title": "Airbag",
+      "file": "E:\\_Trailers\\tmdb_21700__Airbag.mp4",
+      "added_at": 1772322286,
+      "preferred_lang": "es-ES"
+    },
+    "321741": {
+      "title": "La verdad duele",
+      "file": "E:\\_Trailers\\tmdb_321741__La verdad duele.mp4",
+      "added_at": 1772322301,
+      "preferred_lang": "es-ES"
+    },
+    "1364": {
+      "title": "Lucía y el sexo",
+      "file": "E:\\_Trailers\\tmdb_1364__Lucía y el sexo.mp4",
+      "added_at": 1772322312,
+      "preferred_lang": "es-ES"
+    },
+    "533535": {
+      "title": "Deadpool y Lobezno",
+      "file": "E:\\_Trailers\\tmdb_533535__Deadpool y Lobezno.mp4",
+      "added_at": 1772322321,
+      "preferred_lang": "es-ES"
+    },
+    "446354": {
+      "title": "Los archivos del Pentágono",
+      "file": "E:\\_Trailers\\tmdb_446354__Los archivos del Pentágono.mp4",
+      "added_at": 1772322332,
+      "preferred_lang": "es-ES"
+    },
+    "36955": {
+      "title": "Mentiras arriesgadas",
+      "file": "E:\\_Trailers\\tmdb_36955__Mentiras arriesgadas.mp4",
+      "added_at": 1772322363,
+      "preferred_lang": "es-ES"
+    },
+    "4922": {
+      "title": "El curioso caso de Benjamin Button",
+      "file": "E:\\_Trailers\\tmdb_4922__El curioso caso de Benjamin Button.mp4",
+      "added_at": 1772322401,
+      "preferred_lang": "es-ES"
+    },
+    "584": {
+      "title": "2 Fast 2 Furious: A todo gas 2",
+      "file": "E:\\_Trailers\\tmdb_584__2 Fast 2 Furious_ A todo gas 2.mp4",
+      "added_at": 1772322422,
+      "preferred_lang": "es-ES"
+    },
+    "605": {
+      "title": "Matrix Revolutions",
+      "file": "E:\\_Trailers\\tmdb_605__Matrix Revolutions.mp4",
+      "added_at": 1772322439,
+      "preferred_lang": "es-ES"
+    },
+    "105": {
+      "title": "Regreso al futuro",
+      "file": "E:\\_Trailers\\tmdb_105__Regreso al futuro.mp4",
+      "added_at": 1772322449,
+      "preferred_lang": "es-ES"
+    },
+    "17604": {
+      "title": "La diosa de fuego",
+      "file": "E:\\_Trailers\\tmdb_17604__La diosa de fuego.mp4",
+      "added_at": 1772322454,
+      "preferred_lang": "es-ES"
+    },
+    "1640": {
+      "title": "Crash (Colisión)",
+      "file": "E:\\_Trailers\\tmdb_1640__Crash (Colisión).mp4",
+      "added_at": 1772322459,
+      "preferred_lang": "es-ES"
+    },
+    "374720": {
+      "title": "Dunkerque",
+      "file": "E:\\_Trailers\\tmdb_374720__Dunkerque.mp4",
+      "added_at": 1772322484,
+      "preferred_lang": "es-ES"
+    },
+    "51497": {
+      "title": "Fast & Furious 5",
+      "file": "E:\\_Trailers\\tmdb_51497__Fast _ Furious 5.mp4",
+      "added_at": 1772322495,
+      "preferred_lang": "es-ES"
+    },
+    "236735": {
+      "title": "La isla mínima",
+      "file": "E:\\_Trailers\\tmdb_236735__La isla mínima.mp4",
+      "added_at": 1772322517,
+      "preferred_lang": "es-ES"
+    },
+    "25095": {
+      "title": "Cumbres  borrascosas",
+      "file": "E:\\_Trailers\\tmdb_25095__Cumbres borrascosas.mp4",
+      "added_at": 1772322532,
+      "preferred_lang": "es-ES"
+    },
+    "345": {
+      "title": "Eyes Wide Shut",
+      "file": "E:\\_Trailers\\tmdb_345__Eyes Wide Shut.mp4",
+      "added_at": 1772322552,
+      "preferred_lang": "es-ES"
+    },
+    "122906": {
+      "title": "Una cuestión de tiempo",
+      "file": "E:\\_Trailers\\tmdb_122906__Una cuestión de tiempo.mp4",
+      "added_at": 1772322562,
+      "preferred_lang": "es-ES"
+    },
+    "150540": {
+      "title": "Del revés (Inside Out)",
+      "file": "E:\\_Trailers\\tmdb_150540__Del revés (Inside Out).mp4",
+      "added_at": 1772322572,
+      "preferred_lang": "es-ES"
+    },
+    "296": {
+      "title": "Terminator 3: La rebelión de las máquinas",
+      "file": "E:\\_Trailers\\tmdb_296__Terminator 3_ La rebelión de las máquinas.mp4",
+      "added_at": 1772322576,
+      "preferred_lang": "es-ES"
+    },
+    "3933": {
+      "title": "La novia cadáver",
+      "file": "E:\\_Trailers\\tmdb_3933__La novia cadáver.mp4",
+      "added_at": 1772322587,
+      "preferred_lang": "es-ES"
+    },
+    "575264": {
+      "title": "Misión: Imposible - Sentencia mortal parte uno",
+      "file": "E:\\_Trailers\\tmdb_575264__Misión_ Imposible - Sentencia mortal parte uno.mp4",
+      "added_at": 1772322598,
+      "preferred_lang": "es-ES"
+    },
+    "330459": {
+      "title": "Rogue One: Una historia de Star Wars",
+      "file": "E:\\_Trailers\\tmdb_330459__Rogue One_ Una historia de Star Wars.mp4",
+      "added_at": 1772322608,
+      "preferred_lang": "es-ES"
+    },
+    "49538": {
+      "title": "X-Men: Primera Generación",
+      "file": "E:\\_Trailers\\tmdb_49538__X-Men_ Primera Generación.mp4",
+      "added_at": 1772322613,
+      "preferred_lang": "es-ES"
+    },
+    "197": {
+      "title": "Braveheart",
+      "file": "E:\\_Trailers\\tmdb_197__Braveheart.mp4",
+      "added_at": 1772322625,
+      "preferred_lang": "es-ES"
+    },
+    "634649": {
+      "title": "Spider-Man: No Way Home",
+      "file": "E:\\_Trailers\\tmdb_634649__Spider-Man_ No Way Home.mp4",
+      "added_at": 1772322636,
+      "preferred_lang": "es-ES"
+    },
+    "140607": {
+      "title": "Star Wars: El despertar de la fuerza",
+      "file": "E:\\_Trailers\\tmdb_140607__Star Wars_ El despertar de la fuerza.mp4",
+      "added_at": 1772322654,
+      "preferred_lang": "es-ES"
+    },
+    "531876": {
+      "title": "The Outpost",
+      "file": "E:\\_Trailers\\tmdb_531876__The Outpost.mp4",
+      "added_at": 1772322663,
+      "preferred_lang": "es-ES"
+    },
+    "421057": {
+      "title": "40 Years of Rocky: The Birth of a Classic",
+      "file": "E:\\_Trailers\\tmdb_421057__40 Years of Rocky_ The Birth of a Classic.mp4",
+      "added_at": 1772322671,
+      "preferred_lang": "es-ES"
+    },
+    "473": {
+      "title": "Pi, fe en el caos",
+      "file": "E:\\_Trailers\\tmdb_473__Pi_ fe en el caos.mp4",
+      "added_at": 1772322685,
+      "preferred_lang": "es-ES"
+    },
+    "707": {
+      "title": "Panorama para matar",
+      "file": "E:\\_Trailers\\tmdb_707__Panorama para matar.mp4",
+      "added_at": 1772322697,
+      "preferred_lang": "es-ES"
+    },
+    "75877": {
+      "title": "Los santos inocentes",
+      "file": "E:\\_Trailers\\tmdb_75877__Los santos inocentes.mp4",
+      "added_at": 1772322714,
+      "preferred_lang": "es-ES"
+    },
+    "18487": {
+      "title": "Asalto al tren Pelham 123",
+      "file": "E:\\_Trailers\\tmdb_18487__Asalto al tren Pelham 123.mp4",
+      "added_at": 1772322721,
+      "preferred_lang": "es-ES"
+    },
+    "9534": {
+      "title": "Crimen ferpecto",
+      "file": "E:\\_Trailers\\tmdb_9534__Crimen ferpecto.mp4",
+      "added_at": 1772322729,
+      "preferred_lang": "es-ES"
+    },
+    "157336": {
+      "title": "Interstellar",
+      "file": "E:\\_Trailers\\tmdb_157336__Interstellar.mp4",
+      "added_at": 1772322743,
       "preferred_lang": "es-ES"
     },
     "1895": {
       "title": "La guerra de las galaxias. Episodio III: La venganza de los Sith",
       "file": "E:\\_Trailers\\tmdb_1895__La guerra de las galaxias. Episodio III_ La venganza de los Sith.mp4",
-      "added_at": 1772319900,
+      "added_at": 1772322755,
+      "preferred_lang": "es-ES"
+    },
+    "710": {
+      "title": "GoldenEye",
+      "file": "E:\\_Trailers\\tmdb_710__GoldenEye.mp4",
+      "added_at": 1772322760,
+      "preferred_lang": "es-ES"
+    },
+    "363676": {
+      "title": "Sully",
+      "file": "E:\\_Trailers\\tmdb_363676__Sully.mp4",
+      "added_at": 1772322773,
+      "preferred_lang": "es-ES"
+    },
+    "745": {
+      "title": "El sexto sentido",
+      "file": "E:\\_Trailers\\tmdb_745__El sexto sentido.mp4",
+      "added_at": 1772322781,
+      "preferred_lang": "es-ES"
+    },
+    "820": {
+      "title": "JFK: Caso abierto",
+      "file": "E:\\_Trailers\\tmdb_820__JFK_ Caso abierto.mp4",
+      "added_at": 1772322786,
+      "preferred_lang": "es-ES"
+    },
+    "343668": {
+      "title": "Kingsman: El círculo de oro",
+      "file": "E:\\_Trailers\\tmdb_343668__Kingsman_ El círculo de oro.mp4",
+      "added_at": 1772322795,
+      "preferred_lang": "es-ES"
+    },
+    "534": {
+      "title": "Terminator: Salvation",
+      "file": "E:\\_Trailers\\tmdb_534__Terminator_ Salvation.mp4",
+      "added_at": 1772322806,
+      "preferred_lang": "es-ES"
+    },
+    "218": {
+      "title": "Terminator",
+      "file": "E:\\_Trailers\\tmdb_218__Terminator.mp4",
+      "added_at": 1772322820,
+      "preferred_lang": "es-ES"
+    },
+    "682": {
+      "title": "El hombre de la pistola de oro",
+      "file": "E:\\_Trailers\\tmdb_682__El hombre de la pistola de oro.mp4",
+      "added_at": 1772322831,
+      "preferred_lang": "es-ES"
+    },
+    "1109255": {
+      "title": "Parthenope",
+      "file": "E:\\_Trailers\\tmdb_1109255__Parthenope.mp4",
+      "added_at": 1772322844,
+      "preferred_lang": "es-ES"
+    },
+    "550": {
+      "title": "El Club de la Lucha",
+      "file": "E:\\_Trailers\\tmdb_550__El Club de la Lucha.mp4",
+      "added_at": 1772322851,
+      "preferred_lang": "es-ES"
+    },
+    "64": {
+      "title": "Hable con ella",
+      "file": "E:\\_Trailers\\tmdb_64__Hable con ella.mp4",
+      "added_at": 1772322863,
+      "preferred_lang": "es-ES"
+    },
+    "1106739": {
+      "title": "Jurado Nº 2",
+      "file": "E:\\_Trailers\\tmdb_1106739__Jurado Nº 2.mp4",
+      "added_at": 1772322873,
+      "preferred_lang": "es-ES"
+    },
+    "37684": {
+      "title": "36 Horas",
+      "file": "E:\\_Trailers\\tmdb_37684__36 Horas.mp4",
+      "added_at": 1772322882,
+      "preferred_lang": "es-ES"
+    },
+    "21641": {
+      "title": "The Damned United",
+      "file": "E:\\_Trailers\\tmdb_21641__The Damned United.mp4",
+      "added_at": 1772322895,
+      "preferred_lang": "es-ES"
+    },
+    "82620": {
+      "title": "Undefeated (Imbatidos)",
+      "file": "E:\\_Trailers\\tmdb_82620__Undefeated (Imbatidos).mp4",
+      "added_at": 1772322909,
+      "preferred_lang": "es-ES"
+    },
+    "847": {
+      "title": "Willow",
+      "file": "E:\\_Trailers\\tmdb_847__Willow.mp4",
+      "added_at": 1772322921,
+      "preferred_lang": "es-ES"
+    },
+    "70": {
+      "title": "Million Dollar Baby",
+      "file": "E:\\_Trailers\\tmdb_70__Million Dollar Baby.mp4",
+      "added_at": 1772322925,
+      "preferred_lang": "es-ES"
+    },
+    "37257": {
+      "title": "Testigo de cargo",
+      "file": "E:\\_Trailers\\tmdb_37257__Testigo de cargo.mp4",
+      "added_at": 1772322938,
+      "preferred_lang": "es-ES"
+    },
+    "15": {
+      "title": "Ciudadano Kane",
+      "file": "E:\\_Trailers\\tmdb_15__Ciudadano Kane.mp4",
+      "added_at": 1772322944,
+      "preferred_lang": "es-ES"
+    },
+    "639": {
+      "title": "Cuando Harry encontró a Sally",
+      "file": "E:\\_Trailers\\tmdb_639__Cuando Harry encontró a Sally.mp4",
+      "added_at": 1772322948,
+      "preferred_lang": "es-ES"
+    },
+    "9989": {
+      "title": "Conspiración en la red: Hackers 3",
+      "file": "E:\\_Trailers\\tmdb_9989__Conspiración en la red_ Hackers 3.mp4",
+      "added_at": 1772322954,
+      "preferred_lang": "es-ES"
+    },
+    "11973": {
+      "title": "Trece días",
+      "file": "E:\\_Trailers\\tmdb_11973__Trece días.mp4",
+      "added_at": 1772322958,
+      "preferred_lang": "es-ES"
+    },
+    "9678": {
+      "title": "Little Nicky",
+      "file": "E:\\_Trailers\\tmdb_9678__Little Nicky.mp4",
+      "added_at": 1772322963,
+      "preferred_lang": "es-ES"
+    },
+    "50722": {
+      "title": "Visión. La historia de Hildegard Von Bingen",
+      "file": "E:\\_Trailers\\tmdb_50722__Visión. La historia de Hildegard Von Bingen.mp4",
+      "added_at": 1772322969,
+      "preferred_lang": "es-ES"
+    },
+    "673309": {
+      "title": "American Underdog",
+      "file": "E:\\_Trailers\\tmdb_673309__American Underdog.mp4",
+      "added_at": 1772322974,
+      "preferred_lang": "es-ES"
+    },
+    "162903": {
+      "title": "El quinto poder",
+      "file": "E:\\_Trailers\\tmdb_162903__El quinto poder.mp4",
+      "added_at": 1772322980,
+      "preferred_lang": "es-ES"
+    },
+    "575265": {
+      "title": "Misión: Imposible - Sentencia final",
+      "file": "E:\\_Trailers\\tmdb_575265__Misión_ Imposible - Sentencia final.mp4",
+      "added_at": 1772322986,
+      "preferred_lang": "es-ES"
+    },
+    "337339": {
+      "title": "Fast & Furious 8",
+      "file": "E:\\_Trailers\\tmdb_337339__Fast _ Furious 8.mp4",
+      "added_at": 1772322990,
+      "preferred_lang": "es-ES"
+    },
+    "70349": {
+      "title": "La bella y la bestia",
+      "file": "E:\\_Trailers\\tmdb_70349__La bella y la bestia.mp4",
+      "added_at": 1772322994,
+      "preferred_lang": "es-ES"
+    },
+    "9679": {
+      "title": "60 Segundos",
+      "file": "E:\\_Trailers\\tmdb_9679__60 Segundos.mp4",
+      "added_at": 1772322998,
+      "preferred_lang": "es-ES"
+    },
+    "609681": {
+      "title": "The Marvels",
+      "file": "E:\\_Trailers\\tmdb_609681__The Marvels.mp4",
+      "added_at": 1772323003,
+      "preferred_lang": "es-ES"
+    },
+    "13195": {
+      "title": "Un plan brillante",
+      "file": "E:\\_Trailers\\tmdb_13195__Un plan brillante.mp4",
+      "added_at": 1772323006,
+      "preferred_lang": "es-ES"
+    },
+    "856": {
+      "title": "¿Quién engañó a Roger Rabbit?",
+      "file": "E:\\_Trailers\\tmdb_856___Quién engañó a Roger Rabbit_.mp4",
+      "added_at": 1772323012,
+      "preferred_lang": "es-ES"
+    },
+    "163": {
+      "title": "Ocean's Twelve",
+      "file": "E:\\_Trailers\\tmdb_163__Ocean_s Twelve.mp4",
+      "added_at": 1772323017,
+      "preferred_lang": "es-ES"
+    },
+    "330": {
+      "title": "El mundo perdido: Jurassic Park",
+      "file": "E:\\_Trailers\\tmdb_330__El mundo perdido_ Jurassic Park.mp4",
+      "added_at": 1772323021,
+      "preferred_lang": "es-ES"
+    },
+    "522241": {
+      "title": "El espía inglés",
+      "file": "E:\\_Trailers\\tmdb_522241__El espía inglés.mp4",
+      "added_at": 1772323027,
+      "preferred_lang": "es-ES"
+    },
+    "530915": {
+      "title": "1917",
+      "file": "E:\\_Trailers\\tmdb_530915__1917.mp4",
+      "added_at": 1772323031,
+      "preferred_lang": "es-ES"
+    },
+    "12162": {
+      "title": "En tierra hostil",
+      "file": "E:\\_Trailers\\tmdb_12162__En tierra hostil.mp4",
+      "added_at": 1772323035,
+      "preferred_lang": "es-ES"
+    },
+    "245916": {
+      "title": "Matar al mensajero",
+      "file": "E:\\_Trailers\\tmdb_245916__Matar al mensajero.mp4",
+      "added_at": 1772323041,
+      "preferred_lang": "es-ES"
+    },
+    "76170": {
+      "title": "Lobezno inmortal",
+      "file": "E:\\_Trailers\\tmdb_76170__Lobezno inmortal.mp4",
+      "added_at": 1772323049,
+      "preferred_lang": "es-ES"
+    },
+    "497698": {
+      "title": "Viuda Negra",
+      "file": "E:\\_Trailers\\tmdb_497698__Viuda Negra.mp4",
+      "added_at": 1772323053,
+      "preferred_lang": "es-ES"
+    },
+    "318846": {
+      "title": "La gran apuesta",
+      "file": "E:\\_Trailers\\tmdb_318846__La gran apuesta.mp4",
+      "added_at": 1772323057,
+      "preferred_lang": "es-ES"
+    },
+    "2502": {
+      "title": "El mito de Bourne",
+      "file": "E:\\_Trailers\\tmdb_2502__El mito de Bourne.mp4",
+      "added_at": 1772323062,
+      "preferred_lang": "es-ES"
+    },
+    "906126": {
+      "title": "La sociedad de la nieve",
+      "file": "E:\\_Trailers\\tmdb_906126__La sociedad de la nieve.mp4",
+      "added_at": 1772323066,
+      "preferred_lang": "es-ES"
+    },
+    "4203": {
+      "title": "Mujeres al borde de un ataque de nervios",
+      "file": "E:\\_Trailers\\tmdb_4203__Mujeres al borde de un ataque de nervios.mp4",
+      "added_at": 1772323071,
+      "preferred_lang": "es-ES"
+    },
+    "429617": {
+      "title": "Spider-Man: Lejos de casa",
+      "file": "E:\\_Trailers\\tmdb_429617__Spider-Man_ Lejos de casa.mp4",
+      "added_at": 1772323075,
+      "preferred_lang": "es-ES"
+    },
+    "709": {
+      "title": "Licencia para matar",
+      "file": "E:\\_Trailers\\tmdb_709__Licencia para matar.mp4",
+      "added_at": 1772323081,
+      "preferred_lang": "es-ES"
+    },
+    "284053": {
+      "title": "Thor: Ragnarok",
+      "file": "E:\\_Trailers\\tmdb_284053__Thor_ Ragnarok.mp4",
+      "added_at": 1772323087,
+      "preferred_lang": "es-ES"
+    },
+    "18886": {
+      "title": "El vuelo del Intruder",
+      "file": "E:\\_Trailers\\tmdb_18886__El vuelo del Intruder.mp4",
+      "added_at": 1772323094,
+      "preferred_lang": "es-ES"
+    },
+    "10234": {
+      "title": "Funny Games",
+      "file": "E:\\_Trailers\\tmdb_10234__Funny Games.mp4",
+      "added_at": 1772323097,
+      "preferred_lang": "es-ES"
+    },
+    "822119": {
+      "title": "Capitán América: Brave New World",
+      "file": "E:\\_Trailers\\tmdb_822119__Capitán América_ Brave New World.mp4",
+      "added_at": 1772323102,
+      "preferred_lang": "es-ES"
+    },
+    "385128": {
+      "title": "Fast & Furious 9",
+      "file": "E:\\_Trailers\\tmdb_385128__Fast _ Furious 9.mp4",
+      "added_at": 1772323105,
+      "preferred_lang": "es-ES"
+    },
+    "11324": {
+      "title": "Shutter Island",
+      "file": "E:\\_Trailers\\tmdb_11324__Shutter Island.mp4",
+      "added_at": 1772323110,
+      "preferred_lang": "es-ES"
+    },
+    "649409": {
+      "title": "Sin movimientos bruscos",
+      "file": "E:\\_Trailers\\tmdb_649409__Sin movimientos bruscos.mp4",
+      "added_at": 1772323115,
+      "preferred_lang": "es-ES"
+    },
+    "10340": {
+      "title": "La dama y el vagabundo",
+      "file": "E:\\_Trailers\\tmdb_10340__La dama y el vagabundo.mp4",
+      "added_at": 1772323121,
+      "preferred_lang": "es-ES"
+    },
+    "14325": {
+      "title": "The Express: La historia de Ernie Davis",
+      "file": "E:\\_Trailers\\tmdb_14325__The Express_ La historia de Ernie Davis.mp4",
+      "added_at": 1772323125,
+      "preferred_lang": "es-ES"
+    },
+    "268": {
+      "title": "Batman",
+      "file": "E:\\_Trailers\\tmdb_268__Batman.mp4",
+      "added_at": 1772323129,
+      "preferred_lang": "es-ES"
+    },
+    "58": {
+      "title": "Piratas del Caribe: El cofre del hombre muerto",
+      "file": "E:\\_Trailers\\tmdb_58__Piratas del Caribe_ El cofre del hombre muerto.mp4",
+      "added_at": 1772323133,
+      "preferred_lang": "es-ES"
+    },
+    "297": {
+      "title": "¿Conoces a Joe Black?",
+      "file": "E:\\_Trailers\\tmdb_297___Conoces a Joe Black_.mp4",
+      "added_at": 1772323137,
+      "preferred_lang": "es-ES"
+    },
+    "8274": {
+      "title": "American Pie presenta: Band Camp",
+      "file": "E:\\_Trailers\\tmdb_8274__American Pie presenta_ Band Camp.mp4",
+      "added_at": 1772323141,
+      "preferred_lang": "es-ES"
+    },
+    "130267": {
+      "title": "Código Gerónimo: La caza de Bin Laden",
+      "file": "E:\\_Trailers\\tmdb_130267__Código Gerónimo_ La caza de Bin Laden.mp4",
+      "added_at": 1772323145,
+      "preferred_lang": "es-ES"
+    },
+    "3293": {
+      "title": "Piratas de Silicon Valley",
+      "file": "E:\\_Trailers\\tmdb_3293__Piratas de Silicon Valley.mp4",
+      "added_at": 1772323150,
+      "preferred_lang": "es-ES"
+    },
+    "604": {
+      "title": "Matrix Reloaded",
+      "file": "E:\\_Trailers\\tmdb_604__Matrix Reloaded.mp4",
+      "added_at": 1772323154,
+      "preferred_lang": "es-ES"
+    },
+    "13597": {
+      "title": "Dentro del laberinto",
+      "file": "E:\\_Trailers\\tmdb_13597__Dentro del laberinto.mp4",
+      "added_at": 1772323159,
+      "preferred_lang": "es-ES"
+    },
+    "691": {
+      "title": "La espía que me amó",
+      "file": "E:\\_Trailers\\tmdb_691__La espía que me amó.mp4",
+      "added_at": 1772323164,
+      "preferred_lang": "es-ES"
+    },
+    "382127": {
+      "title": "Manifesto - Julian Rosefeldt",
+      "file": "E:\\_Trailers\\tmdb_382127__Manifesto - Julian Rosefeldt.mp4",
+      "added_at": 1772323169,
+      "preferred_lang": "es-ES"
+    },
+    "6883": {
+      "title": "Pánico en el estadio",
+      "file": "E:\\_Trailers\\tmdb_6883__Pánico en el estadio.mp4",
+      "added_at": 1772323178,
+      "preferred_lang": "es-ES"
+    },
+    "674": {
+      "title": "Harry Potter y el cáliz de fuego",
+      "file": "E:\\_Trailers\\tmdb_674__Harry Potter y el cáliz de fuego.mp4",
+      "added_at": 1772323182,
+      "preferred_lang": "es-ES"
+    },
+    "3116": {
+      "title": "Cowboy de medianoche",
+      "file": "E:\\_Trailers\\tmdb_3116__Cowboy de medianoche.mp4",
+      "added_at": 1772323189,
+      "preferred_lang": "es-ES"
+    },
+    "271110": {
+      "title": "Capitán América: Civil War",
+      "file": "E:\\_Trailers\\tmdb_271110__Capitán América_ Civil War.mp4",
+      "added_at": 1772323192,
+      "preferred_lang": "es-ES"
+    },
+    "293660": {
+      "title": "Deadpool",
+      "file": "E:\\_Trailers\\tmdb_293660__Deadpool.mp4",
+      "added_at": 1772323196,
+      "preferred_lang": "es-ES"
+    },
+    "686": {
+      "title": "Contact",
+      "file": "E:\\_Trailers\\tmdb_686__Contact.mp4",
+      "added_at": 1772323199,
+      "preferred_lang": "es-ES"
+    },
+    "870028": {
+      "title": "El contable 2",
+      "file": "E:\\_Trailers\\tmdb_870028__El contable 2.mp4",
+      "added_at": 1772323204,
+      "preferred_lang": "es-ES"
+    },
+    "280": {
+      "title": "Terminator 2: El juicio final",
+      "file": "E:\\_Trailers\\tmdb_280__Terminator 2_ El juicio final.mp4",
+      "added_at": 1772323208,
+      "preferred_lang": "es-ES"
+    },
+    "279": {
+      "title": "Amadeus",
+      "file": "E:\\_Trailers\\tmdb_279__Amadeus.mp4",
+      "added_at": 1772323213,
+      "preferred_lang": "es-ES"
+    },
+    "388": {
+      "title": "Plan oculto",
+      "file": "E:\\_Trailers\\tmdb_388__Plan oculto.mp4",
+      "added_at": 1772323218,
+      "preferred_lang": "es-ES"
+    },
+    "3291": {
+      "title": "Buenas noches, y buena suerte",
+      "file": "E:\\_Trailers\\tmdb_3291__Buenas noches_ y buena suerte.mp4",
+      "added_at": 1772323223,
+      "preferred_lang": "es-ES"
+    },
+    "2105": {
+      "title": "American Pie",
+      "file": "E:\\_Trailers\\tmdb_2105__American Pie.mp4",
+      "added_at": 1772323226,
+      "preferred_lang": "es-ES"
+    },
+    "635302": {
+      "title": "Guardianes de la Noche: Tren infinito",
+      "file": "E:\\_Trailers\\tmdb_635302__Guardianes de la Noche_ Tren infinito.mp4",
+      "added_at": 1772323230,
+      "preferred_lang": "es-ES"
+    },
+    "476669": {
+      "title": "The King's Man: La primera misión",
+      "file": "E:\\_Trailers\\tmdb_476669__The King_s Man_ La primera misión.mp4",
+      "added_at": 1772323234,
+      "preferred_lang": "es-ES"
+    },
+    "13804": {
+      "title": "Fast & Furious: Aún más rápido",
+      "file": "E:\\_Trailers\\tmdb_13804__Fast _ Furious_ Aún más rápido.mp4",
+      "added_at": 1772323237,
+      "preferred_lang": "es-ES"
+    },
+    "217": {
+      "title": "Indiana Jones y el reino de la calavera de cristal",
+      "file": "E:\\_Trailers\\tmdb_217__Indiana Jones y el reino de la calavera de cristal.mp4",
+      "added_at": 1772323242,
+      "preferred_lang": "es-ES"
+    },
+    "10077": {
+      "title": "El sonido del trueno",
+      "file": "E:\\_Trailers\\tmdb_10077__El sonido del trueno.mp4",
+      "added_at": 1772323249,
+      "preferred_lang": "es-ES"
+    },
+    "581734": {
+      "title": "Nomadland",
+      "file": "E:\\_Trailers\\tmdb_581734__Nomadland.mp4",
+      "added_at": 1772323253,
+      "preferred_lang": "es-ES"
+    },
+    "1417": {
+      "title": "El laberinto del fauno",
+      "file": "E:\\_Trailers\\tmdb_1417__El laberinto del fauno.mp4",
+      "added_at": 1772323257,
+      "preferred_lang": "es-ES"
+    },
+    "194": {
+      "title": "Amelie",
+      "file": "E:\\_Trailers\\tmdb_194__Amelie.mp4",
+      "added_at": 1772323264,
+      "preferred_lang": "es-ES"
+    },
+    "74643": {
+      "title": "The Artist",
+      "file": "E:\\_Trailers\\tmdb_74643__The Artist.mp4",
+      "added_at": 1772323271,
+      "preferred_lang": "es-ES"
+    },
+    "71552": {
+      "title": "American Pie: El reencuentro",
+      "file": "E:\\_Trailers\\tmdb_71552__American Pie_ El reencuentro.mp4",
+      "added_at": 1772323275,
+      "preferred_lang": "es-ES"
+    },
+    "866463": {
+      "title": "Reptiles",
+      "file": "E:\\_Trailers\\tmdb_866463__Reptiles.mp4",
+      "added_at": 1772323279,
+      "preferred_lang": "es-ES"
+    },
+    "75674": {
+      "title": "Acto de valor",
+      "file": "E:\\_Trailers\\tmdb_75674__Acto de valor.mp4",
+      "added_at": 1772323284,
+      "preferred_lang": "es-ES"
+    },
+    "562": {
+      "title": "Jungla de cristal",
+      "file": "E:\\_Trailers\\tmdb_562__Jungla de cristal.mp4",
+      "added_at": 1772323287,
+      "preferred_lang": "es-ES"
+    },
+    "1086548": {
+      "title": "Vera y el placer de los otros",
+      "file": "E:\\_Trailers\\tmdb_1086548__Vera y el placer de los otros.mp4",
+      "added_at": 1772323292,
+      "preferred_lang": "es-ES"
+    },
+    "4643": {
+      "title": "The Guardian",
+      "file": "E:\\_Trailers\\tmdb_4643__The Guardian.mp4",
+      "added_at": 1772323297,
+      "preferred_lang": "es-ES"
+    },
+    "185": {
+      "title": "La naranja mecánica",
+      "file": "E:\\_Trailers\\tmdb_185__La naranja mecánica.mp4",
+      "added_at": 1772323300,
+      "preferred_lang": "es-ES"
+    },
+    "162": {
+      "title": "Eduardo Manostijeras",
+      "file": "E:\\_Trailers\\tmdb_162__Eduardo Manostijeras.mp4",
+      "added_at": 1772323305,
+      "preferred_lang": "es-ES"
+    },
+    "121873": {
+      "title": "Hannah Arendt",
+      "file": "E:\\_Trailers\\tmdb_121873__Hannah Arendt.mp4",
+      "added_at": 1772323309,
+      "preferred_lang": "es-ES"
+    },
+    "701387": {
+      "title": "Bugonia",
+      "file": "E:\\_Trailers\\tmdb_701387__Bugonia.mp4",
+      "added_at": 1772323313,
+      "preferred_lang": "es-ES"
+    },
+    "10428": {
+      "title": "Hackers, piratas informáticos",
+      "file": "E:\\_Trailers\\tmdb_10428__Hackers_ piratas informáticos.mp4",
+      "added_at": 1772323318,
+      "preferred_lang": "es-ES"
+    },
+    "296524": {
+      "title": "Marea negra",
+      "file": "E:\\_Trailers\\tmdb_296524__Marea negra.mp4",
+      "added_at": 1772323322,
+      "preferred_lang": "es-ES"
+    },
+    "49040": {
+      "title": "El legado de Bourne",
+      "file": "E:\\_Trailers\\tmdb_49040__El legado de Bourne.mp4",
+      "added_at": 1772323326,
+      "preferred_lang": "es-ES"
+    },
+    "813": {
+      "title": "Aterriza como puedas",
+      "file": "E:\\_Trailers\\tmdb_813__Aterriza como puedas.mp4",
+      "added_at": 1772323330,
+      "preferred_lang": "es-ES"
+    },
+    "1022789": {
+      "title": "Del revés 2 (Inside Out 2)",
+      "file": "E:\\_Trailers\\tmdb_1022789__Del revés 2 (Inside Out 2).mp4",
+      "added_at": 1772323336,
+      "preferred_lang": "es-ES"
+    },
+    "1012837": {
+      "title": "Nacido para volar",
+      "file": "E:\\_Trailers\\tmdb_1012837__Nacido para volar.mp4",
+      "added_at": 1772323340,
+      "preferred_lang": "es-ES"
+    },
+    "56292": {
+      "title": "Misión imposible: Protocolo fantasma",
+      "file": "E:\\_Trailers\\tmdb_56292__Misión imposible_ Protocolo fantasma.mp4",
+      "added_at": 1772323344,
+      "preferred_lang": "es-ES"
+    },
+    "50839": {
+      "title": "Margin Call",
+      "file": "E:\\_Trailers\\tmdb_50839__Margin Call.mp4",
+      "added_at": 1772323347,
+      "preferred_lang": "es-ES"
+    },
+    "242": {
+      "title": "El Padrino Parte III",
+      "file": "E:\\_Trailers\\tmdb_242__El Padrino Parte III.mp4",
+      "added_at": 1772323353,
+      "preferred_lang": "es-ES"
+    },
+    "348350": {
+      "title": "Han Solo: Una historia de Star Wars",
+      "file": "E:\\_Trailers\\tmdb_348350__Han Solo_ Una historia de Star Wars.mp4",
+      "added_at": 1772323357,
+      "preferred_lang": "es-ES"
+    },
+    "77": {
+      "title": "Memento",
+      "file": "E:\\_Trailers\\tmdb_77__Memento.mp4",
+      "added_at": 1772323360,
+      "preferred_lang": "es-ES"
+    },
+    "400106": {
+      "title": "Bright",
+      "file": "E:\\_Trailers\\tmdb_400106__Bright.mp4",
+      "added_at": 1772323365,
+      "preferred_lang": "es-ES"
+    },
+    "324552": {
+      "title": "John Wick: Pacto de sangre",
+      "file": "E:\\_Trailers\\tmdb_324552__John Wick_ Pacto de sangre.mp4",
+      "added_at": 1772323369,
+      "preferred_lang": "es-ES"
+    },
+    "964960": {
+      "title": "A fuego lento",
+      "file": "E:\\_Trailers\\tmdb_964960__A fuego lento.mp4",
+      "added_at": 1772323375,
+      "preferred_lang": "es-ES"
+    },
+    "507086": {
+      "title": "Jurassic World: Dominion",
+      "file": "E:\\_Trailers\\tmdb_507086__Jurassic World_ Dominion.mp4",
+      "added_at": 1772323382,
+      "preferred_lang": "es-ES"
+    },
+    "29917": {
+      "title": "Examen",
+      "file": "E:\\_Trailers\\tmdb_29917__Examen.mp4",
+      "added_at": 1772323386,
+      "preferred_lang": "es-ES"
+    },
+    "1891": {
+      "title": "El imperio contraataca",
+      "file": "E:\\_Trailers\\tmdb_1891__El imperio contraataca.mp4",
+      "added_at": 1772323391,
+      "preferred_lang": "es-ES"
+    },
+    "592831": {
+      "title": "Megalópolis",
+      "file": "E:\\_Trailers\\tmdb_592831__Megalópolis.mp4",
+      "added_at": 1772323396,
+      "preferred_lang": "es-ES"
+    },
+    "127585": {
+      "title": "X-Men: Días del futuro pasado",
+      "file": "E:\\_Trailers\\tmdb_127585__X-Men_ Días del futuro pasado.mp4",
+      "added_at": 1772323400,
+      "preferred_lang": "es-ES"
+    },
+    "1402": {
+      "title": "En busca de la felicidad",
+      "file": "E:\\_Trailers\\tmdb_1402__En busca de la felicidad.mp4",
+      "added_at": 1772323408,
+      "preferred_lang": "es-ES"
+    },
+    "1414": {
+      "title": "Los amantes del Círculo Polar",
+      "file": "E:\\_Trailers\\tmdb_1414__Los amantes del Círculo Polar.mp4",
+      "added_at": 1772323413,
+      "preferred_lang": "es-ES"
+    },
+    "299536": {
+      "title": "Vengadores: Infinity War",
+      "file": "E:\\_Trailers\\tmdb_299536__Vengadores_ Infinity War.mp4",
+      "added_at": 1772323418,
+      "preferred_lang": "es-ES"
+    },
+    "49026": {
+      "title": "El caballero oscuro: La leyenda renace",
+      "file": "E:\\_Trailers\\tmdb_49026__El caballero oscuro_ La leyenda renace.mp4",
+      "added_at": 1772323422,
+      "preferred_lang": "es-ES"
+    },
+    "283995": {
+      "title": "Guardianes de la Galaxia Vol. 2",
+      "file": "E:\\_Trailers\\tmdb_283995__Guardianes de la Galaxia Vol. 2.mp4",
+      "added_at": 1772323425,
+      "preferred_lang": "es-ES"
+    },
+    "453395": {
+      "title": "Doctor Strange en el multiverso de la locura",
+      "file": "E:\\_Trailers\\tmdb_453395__Doctor Strange en el multiverso de la locura.mp4",
+      "added_at": 1772323430,
+      "preferred_lang": "es-ES"
+    },
+    "496743": {
+      "title": "Aniara",
+      "file": "E:\\_Trailers\\tmdb_496743__Aniara.mp4",
+      "added_at": 1772323434,
+      "preferred_lang": "es-ES"
+    },
+    "38363": {
+      "title": "Caza a la espía",
+      "file": "E:\\_Trailers\\tmdb_38363__Caza a la espía.mp4",
+      "added_at": 1772323437,
+      "preferred_lang": "es-ES"
+    },
+    "26123": {
+      "title": "American Pie presenta: El libro del amor",
+      "file": "E:\\_Trailers\\tmdb_26123__American Pie presenta_ El libro del amor.mp4",
+      "added_at": 1772323442,
+      "preferred_lang": "es-ES"
+    },
+    "99": {
+      "title": "Todo sobre mi madre",
+      "file": "E:\\_Trailers\\tmdb_99__Todo sobre mi madre.mp4",
+      "added_at": 1772323446,
+      "preferred_lang": "es-ES"
+    },
+    "1571": {
+      "title": "La jungla 4.0",
+      "file": "E:\\_Trailers\\tmdb_1571__La jungla 4.0.mp4",
+      "added_at": 1772323451,
+      "preferred_lang": "es-ES"
+    },
+    "14914": {
+      "title": "Destellos de genio",
+      "file": "E:\\_Trailers\\tmdb_14914__Destellos de genio.mp4",
+      "added_at": 1772323455,
+      "preferred_lang": "es-ES"
+    },
+    "36668": {
+      "title": "X-Men: La decisión final",
+      "file": "E:\\_Trailers\\tmdb_36668__X-Men_ La decisión final.mp4",
+      "added_at": 1772323458,
+      "preferred_lang": "es-ES"
+    },
+    "9352": {
+      "title": "Eurotrip",
+      "file": "E:\\_Trailers\\tmdb_9352__Eurotrip.mp4",
+      "added_at": 1772323464,
+      "preferred_lang": "es-ES"
+    },
+    "708": {
+      "title": "Alta tensión",
+      "file": "E:\\_Trailers\\tmdb_708__Alta tensión.mp4",
+      "added_at": 1772323467,
+      "preferred_lang": "es-ES"
+    },
+    "13416": {
+      "title": "Friday Night Lights",
+      "file": "E:\\_Trailers\\tmdb_13416__Friday Night Lights.mp4",
+      "added_at": 1772323474,
+      "preferred_lang": "es-ES"
+    },
+    "76338": {
+      "title": "Thor: el mundo oscuro",
+      "file": "E:\\_Trailers\\tmdb_76338__Thor_ el mundo oscuro.mp4",
+      "added_at": 1772323477,
+      "preferred_lang": "es-ES"
+    },
+    "500": {
+      "title": "Reservoir Dogs",
+      "file": "E:\\_Trailers\\tmdb_500__Reservoir Dogs.mp4",
+      "added_at": 1772323481,
+      "preferred_lang": "es-ES"
+    },
+    "601": {
+      "title": "E.T. el extraterrestre",
+      "file": "E:\\_Trailers\\tmdb_601__E.T. el extraterrestre.mp4",
+      "added_at": 1772323485,
+      "preferred_lang": "es-ES"
+    },
+    "33996": {
+      "title": "El caso Farewell",
+      "file": "E:\\_Trailers\\tmdb_33996__El caso Farewell.mp4",
+      "added_at": 1772323493,
+      "preferred_lang": "es-ES"
+    },
+    "419835": {
+      "title": "La casa torcida",
+      "file": "E:\\_Trailers\\tmdb_419835__La casa torcida.mp4",
+      "added_at": 1772323497,
+      "preferred_lang": "es-ES"
+    },
+    "9364": {
+      "title": "Cumbres borrascosas",
+      "file": "E:\\_Trailers\\tmdb_9364__Cumbres borrascosas.mp4",
+      "added_at": 1772323500,
+      "preferred_lang": "es-ES"
+    },
+    "792": {
+      "title": "Platoon",
+      "file": "E:\\_Trailers\\tmdb_792__Platoon.mp4",
+      "added_at": 1772323504,
+      "preferred_lang": "es-ES"
+    },
+    "22803": {
+      "title": "Un ciudadano ejemplar",
+      "file": "E:\\_Trailers\\tmdb_22803__Un ciudadano ejemplar.mp4",
+      "added_at": 1772323509,
+      "preferred_lang": "es-ES"
+    },
+    "13020": {
+      "title": "Enron, los tipos que estafaron a América",
+      "file": "E:\\_Trailers\\tmdb_13020__Enron_ los tipos que estafaron a América.mp4",
+      "added_at": 1772323513,
+      "preferred_lang": "es-ES"
+    },
+    "684700": {
+      "title": "Gimnasta A: El médico depredador",
+      "file": "E:\\_Trailers\\tmdb_684700__Gimnasta A_ El médico depredador.mp4",
+      "added_at": 1772323518,
+      "preferred_lang": "es-ES"
+    },
+    "7453": {
+      "title": "Guía del autoestopista galáctico",
+      "file": "E:\\_Trailers\\tmdb_7453__Guía del autoestopista galáctico.mp4",
+      "added_at": 1772323522,
+      "preferred_lang": "es-ES"
+    },
+    "74052": {
+      "title": "Yo soy la Juani",
+      "file": "E:\\_Trailers\\tmdb_74052__Yo soy la Juani.mp4",
+      "added_at": 1772323525,
+      "preferred_lang": "es-ES"
+    },
+    "24": {
+      "title": "Kill Bill: Volumen 1",
+      "file": "E:\\_Trailers\\tmdb_24__Kill Bill_ Volumen 1.mp4",
+      "added_at": 1772323530,
+      "preferred_lang": "es-ES"
+    },
+    "383498": {
+      "title": "Deadpool 2",
+      "file": "E:\\_Trailers\\tmdb_383498__Deadpool 2.mp4",
+      "added_at": 1772323534,
+      "preferred_lang": "es-ES"
+    },
+    "9654": {
+      "title": "The Italian Job",
+      "file": "E:\\_Trailers\\tmdb_9654__The Italian Job.mp4",
+      "added_at": 1772323539,
+      "preferred_lang": "es-ES"
+    },
+    "384018": {
+      "title": "Fast & Furious: Hobbs & Shaw",
+      "file": "E:\\_Trailers\\tmdb_384018__Fast _ Furious_ Hobbs _ Shaw.mp4",
+      "added_at": 1772323543,
+      "preferred_lang": "es-ES"
+    },
+    "1025389": {
+      "title": "Extraño río",
+      "file": "E:\\_Trailers\\tmdb_1025389__Extraño río.mp4",
+      "added_at": 1772323547,
+      "preferred_lang": "es-ES"
+    },
+    "9417": {
+      "title": "¡Vaya un fugitivo!",
+      "file": "E:\\_Trailers\\tmdb_9417___Vaya un fugitivo_.mp4",
+      "added_at": 1772323554,
+      "preferred_lang": "es-ES"
+    },
+    "8275": {
+      "title": "American Pie presenta: Una fiesta de pelotas",
+      "file": "E:\\_Trailers\\tmdb_8275__American Pie presenta_ Una fiesta de pelotas.mp4",
+      "added_at": 1772323557,
       "preferred_lang": "es-ES"
     }
   }

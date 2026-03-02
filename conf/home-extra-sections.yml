@@ -1,0 +1,74 @@
+server:
+  jellyfin_url: "http://192.168.1.113:8096"
+  jellyfin_api_key: "0b77ac9b41fa4bc1ad4a81963eb278bb"
+  verify_tls: false
+  timeout_seconds: 30
+  retries: 5
+  retry_base_sleep: 0.8
+
+http:
+  bind: "0.0.0.0"
+  port: 8787
+  cors_allow_origin: "*"   # puedes restringir a "http://192.168.1.113:8096" si quieres
+
+ui:
+  insert_at_end: true
+  container_id: "zenohome-extra-sections"
+
+sections:
+  - id: movies_random
+    title: "Películas random"
+    type: random
+    include_item_types: ["Movie"]
+    limit: 30
+    ttl_seconds: 300
+
+  - id: sports_random
+    title: "Deportes random"
+    type: random_mix_libraries
+    libraries: ["Futbol", "NFL", "Baloncesto", "Combates", "Olimpiadas"]
+    include_item_types: ["Movie", "Video"]
+    per_library_pool: 120
+    limit: 30
+    ttl_seconds: 300
+
+  - id: collection_a_random
+    title: "Colección A random"
+    type: random_from_collection
+    collection_name: "Colección A"
+    include_item_types: ["Movie"]
+    limit: 25
+    ttl_seconds: 600
+
+  - id: collection_b_random
+    title: "Colección B random"
+    type: random_from_collection
+    collection_name: "Colección B"
+    include_item_types: ["Movie"]
+    limit: 25
+    ttl_seconds: 600
+
+  - id: genre_a_random
+    title: "Género A random"
+    type: random_from_genre
+    genre: "Comedia"
+    include_item_types: ["Movie"]
+    limit: 25
+    ttl_seconds: 600
+
+  - id: genre_b_random
+    title: "Género B random"
+    type: random_from_genre
+    genre: "Bélica"
+    include_item_types: ["Movie"]
+    limit: 25
+    ttl_seconds: 600
+
+  - id: top_rated_shuffle
+    title: "Más valoradas (shuffle)"
+    type: top_rated_shuffle
+    include_item_types: ["Movie"]
+    min_community_rating: 7.5
+    pool_limit: 300
+    limit: 30
+    ttl_seconds: 600

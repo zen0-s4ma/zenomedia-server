@@ -87,6 +87,7 @@ services:
     ports:
       - "192.168.1.113:8096:8096"
       - "192.168.1.113:8920:8920"
+      - "192.168.1.113:8787:8787"
     environment:
       TZ: Europe/Madrid
       UMASK: "022"
@@ -786,6 +787,9 @@ services:
       # Media (Windows -> contenedor)
       - "F:/:/media_f:ro"
       - "E:/:/media_e:ro"
+      - "E:/_Trailers/:/media_trailers:ro"
+      - "E:/Youtube_Podcast:/media_podcast1:ro"
+      - "F:/Podcasts:/media_podcast2:ro"
     tmpfs:
       - /transcode
 
