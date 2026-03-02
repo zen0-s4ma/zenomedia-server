@@ -1,0 +1,157 @@
+{
+  "version": 1,
+  "managed": {
+    "# Belicas": {
+      "id": 19,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "# Catastrofistas": {
+      "id": 20,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "# Cazas": {
+      "id": 21,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "# Cine Clasico": {
+      "id": 22,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "# Cine Español": {
+      "id": 23,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "# Disney": {
+      "id": 24,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "# Drama discursivo": {
+      "id": 25,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "# Futbol Americano": {
+      "id": 26,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "# Oscars": {
+      "id": 27,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "# Peliculas de Deportes": {
+      "id": 28,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "# Real Madrid": {
+      "id": 29,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "# Sagas": {
+      "id": 30,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "# Superheroes": {
+      "id": 31,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "American Pie": {
+      "id": 32,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "Anime": {
+      "id": 33,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "Bourne": {
+      "id": 34,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "Comedia absurda": {
+      "id": 35,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "Dragon Ball": {
+      "id": 36,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "Hacking": {
+      "id": 37,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "Harry Potter": {
+      "id": 38,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "Indiana Jones": {
+      "id": 39,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "James Bond 007": {
+      "id": 40,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "Jhon Wick": {
+      "id": 41,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "Jurassic park": {
+      "id": 42,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "Kingsman": {
+      "id": 43,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "La jungla de cristal": {
+      "id": 44,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "Matrix": {
+      "id": 45,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "Millenium": {
+      "id": 46,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "Mision Impossible": {
+      "id": 47,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "Oceans": {
+      "id": 48,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "Piratas del caribe": {
+      "id": 49,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "Puñales por la espalda": {
+      "id": 50,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "Rambo": {
+      "id": 51,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "Rocky": {
+      "id": 52,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "Star Wars": {
+      "id": 53,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "Terminator": {
+      "id": 54,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "A todo gas": {
+      "id": 55,
+      "last_seen": "2026-03-02T20:15:18"
+    },
+    "Tolkien": {
+      "id": 56,
+      "last_seen": "2026-03-02T20:15:18"
+    }
+  }
+}

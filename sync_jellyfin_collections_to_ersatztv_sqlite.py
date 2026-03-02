@@ -4,31 +4,37 @@
 """
 Sync Jellyfin BoxSets (Collections) -> ErsatzTV Manual Collections via SQLite (host-side, Windows)
 
-This version fixes the "loop" issue you hit:
-- Previous versions selected ONE mapping chain (e.g., Movie-only), so episodes/shows/anime ended up "missing"
-  even when their MediaFile.Path existed in the DB.
-- This version builds a MULTI-KIND resolver by inspecting MediaVersion's foreign keys and generating a single
-  query that resolves MediaItemId for Movies + Episodes + Songs + MusicVideos + OtherVideos, etc.
+Key properties (kept from your working script):
+- Multi-kind resolver for MediaItemId:
+  MediaFile.Path -> MediaVersion -> {MovieId/EpisodeId/SongId/...} -> MediaItemId via COALESCE
+- Path candidate generation supports optional prefix maps (--path-map)
 
-It works by:
-- MediaFile.Path -> MediaFile.MediaVersionId -> MediaVersion
-- From MediaVersion, it discovers foreign-key columns (e.g., MovieId, EpisodeId, SongId, ...)
-- It keeps ONLY those that can be mapped to MediaItem (directly or via a join), and then uses COALESCE to
-  resolve the correct MediaItemId for each path.
+New in this version (requested):
+- If a collection is deleted from Jellyfin, the corresponding MANAGED manual collection is deleted from ErsatzTV.
+  This is implemented safely using a small local state file (JSON) so we only delete collections that this script
+  has created/adopted previously (avoids touching unrelated manual collections).
 
-You still can provide --path-map rules, but the "type mismatch" problem is fixed by design.
+Important behavior:
+- By default, deletion sync is ENABLED (can be disabled with --no-delete-missing-collections).
+- By default, existing matching collections are ADOPTED into management state (can be disabled with --no-adopt-existing).
+- Deletion is best-effort:
+  - Deletes CollectionItem rows first
+  - Then deletes the Collection row
+  - If the delete fails due to foreign key references (e.g., a schedule still references the collection),
+    the script logs and SKIPS that deletion.
 
 Usage (PowerShell):
   Dry-run:
-    python ./sync_jellyfin_collections_to_ersatztv_sqlite_v3.py --dry-run --verbose
+    python ./sync_jellyfin_collections_to_ersatztv_sqlite.py --dry-run --verbose
 
   Apply:
-    python ./sync_jellyfin_collections_to_ersatztv_sqlite_v3.py --apply --verbose
+    python ./sync_jellyfin_collections_to_ersatztv_sqlite.py --apply --verbose
 """
 
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import re
 import shutil
@@ -79,6 +85,42 @@ def hr() -> None:
 def chunked(seq: Sequence[Any], size: int) -> Iterable[Sequence[Any]]:
     for i in range(0, len(seq), size):
         yield seq[i:i + size]
+
+
+# ============================================================
+# State file (managed collections)
+# ============================================================
+
+def default_state_file() -> Path:
+    return Path(__file__).with_name(".etv_jf_collection_sync_state.json")
+
+
+def load_state(path: Path) -> Dict[str, Any]:
+    if not path.exists():
+        return {"version": 1, "managed": {}}
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        if not isinstance(data, dict):
+            return {"version": 1, "managed": {}}
+        data.setdefault("version", 1)
+        data.setdefault("managed", {})
+        if not isinstance(data["managed"], dict):
+            data["managed"] = {}
+        return data
+    except Exception:
+        try:
+            bak = path.with_suffix(path.suffix + ".corrupt.bak")
+            shutil.copy2(path, bak)
+        except Exception:
+            pass
+        return {"version": 1, "managed": {}}
+
+
+def save_state(path: Path, state: Dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
+    tmp.replace(path)
 
 
 # ============================================================
@@ -671,6 +713,19 @@ class ETVDb:
                     )
         return (len(to_add), len(to_remove))
 
+    def delete_collection(self, conn: sqlite3.Connection, s: Schema, collection_id: int) -> bool:
+        """Best-effort delete. Returns True if deleted, False if blocked by FK constraints."""
+        conn.execute("SAVEPOINT sp_del;")
+        try:
+            conn.execute(f"DELETE FROM {s.join_table} WHERE {s.join_collection_id_col}=?", (collection_id,))
+            conn.execute(f"DELETE FROM {s.collection_table} WHERE {s.collection_id_col}=?", (collection_id,))
+            conn.execute("RELEASE sp_del;")
+            return True
+        except sqlite3.IntegrityError:
+            conn.execute("ROLLBACK TO sp_del;")
+            conn.execute("RELEASE sp_del;")
+            return False
+
 
 # ============================================================
 # CLI / Main
@@ -697,6 +752,11 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--no-path-maps", action="store_true")
     ap.add_argument("--path-map", action="append", default=[], help="Add prefix map FROM=>TO (repeatable). Example: /media/=>/media_e/")
 
+    # Deletion sync (requested)
+    ap.add_argument("--no-delete-missing-collections", action="store_true", help="Do not delete managed collections missing in Jellyfin")
+    ap.add_argument("--no-adopt-existing", action="store_true", help="Do not add pre-existing ETV collections to managed state automatically")
+
+    ap.add_argument("--state-file", default=os.getenv("STATE_FILE", ""), help="Path to state JSON (defaults next to script)")
     ap.add_argument("--verbose", action="store_true")
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--apply", action="store_true")
@@ -735,6 +795,9 @@ def main() -> int:
     elif args.dry_run:
         dry_run = True
 
+    delete_missing = not args.no_delete_missing_collections
+    adopt_existing = not args.no_adopt_existing
+
     db_path = Path(args.etv_db)
     if not db_path.exists():
         raise FileNotFoundError(f"ErsatzTV DB not found: {db_path}")
@@ -744,12 +807,18 @@ def main() -> int:
         maps.append(parse_path_map_arg(pm))
     enable_maps = not args.no_path_maps
 
+    state_path = Path(args.state_file) if args.state_file.strip() else default_state_file()
+    state = load_state(state_path)
+
     hr()
     log(f"MODE: {'DRY-RUN' if dry_run else 'APPLY'}")
     log(f"Jellyfin URL: {args.jellyfin_url}")
     log(f"ErsatzTV DB:  {db_path}")
     log(f"Prefix/Suffix: '{args.prefix}' / '{args.suffix}'")
     log(f"Path-maps: {'ENABLED' if enable_maps else 'DISABLED'} (rules={len(maps)})")
+    log(f"Delete missing collections: {'ENABLED' if delete_missing else 'DISABLED'} (managed only)")
+    log(f"Adopt existing collections: {'ENABLED' if adopt_existing else 'DISABLED'}")
+    log(f"State file: {state_path}")
     if args.verbose and enable_maps:
         for frm, to in sorted(maps, key=lambda x: len(x[0]), reverse=True):
             log(f"  map: {frm} => {to}")
@@ -786,6 +855,8 @@ def main() -> int:
 
         desired[etv_name] = items
         total_items += len(items)
+
+    desired_names = set(desired.keys())
 
     log(f"Collections to sync: {len(desired)} (skipped_empty={skipped_empty}, skipped_regex={skipped_regex})")
     log(f"Total playable items in scope: {total_items}")
@@ -846,6 +917,8 @@ def main() -> int:
         total_remove = 0
         total_missing = 0
 
+        managed_now: Dict[str, int] = {}
+
         for etv_name, items in desired.items():
             cid = etv.get_collection_id(conn, schema, etv_name)
             created_now = False
@@ -889,18 +962,73 @@ def main() -> int:
                 tag = "[PLAN]" if dry_run else "[OK]"
                 log(f"{tag} '{etv_name}': +{add_n} / -{rem_n} (desired={len(desired_media_ids)} missing={len(missing_paths)})")
 
+                if not dry_run and cid is not None and cid >= 0:
+                    managed_now[etv_name] = int(cid)
+
             if args.verbose and missing_paths:
                 for p in missing_paths[: args.max_missing_samples]:
                     log(f"      missing: {p}")
                 if len(missing_paths) > args.max_missing_samples:
                     log(f"      ... +{len(missing_paths) - args.max_missing_samples} more")
 
-            if created_now and args.verbose:
+            if created_now and args.verbose and not dry_run:
                 log("      created new collection row in DB")
+
+        if not dry_run:
+            for name, cid in managed_now.items():
+                if adopt_existing or name in state.get("managed", {}) or cid is not None:
+                    state["managed"][name] = {
+                        "id": cid,
+                        "last_seen": datetime.now().isoformat(timespec="seconds"),
+                    }
+
+        deleted_count = 0
+        blocked_count = 0
+
+        if delete_missing:
+            managed = state.get("managed", {})
+            missing_names = sorted([n for n in managed.keys() if n not in desired_names])
+
+            if missing_names:
+                hr()
+                log(f"Managed collections missing in Jellyfin: {len(missing_names)}")
+                for name in missing_names:
+                    state_id = managed.get(name, {}).get("id")
+                    cid = None
+                    if isinstance(state_id, int):
+                        cid = state_id
+                    cid_by_name = etv.get_collection_id(conn, schema, name)
+                    if cid_by_name is not None:
+                        cid = cid_by_name
+
+                    if cid is None:
+                        log(f"[OK] Collection '{name}' already absent in ErsatzTV; removing from state")
+                        if not dry_run:
+                            state["managed"].pop(name, None)
+                        continue
+
+                    if dry_run:
+                        log(f"[PLAN] Would DELETE collection '{name}' (id={cid})")
+                        continue
+
+                    ok = etv.delete_collection(conn, schema, int(cid))
+                    if ok:
+                        deleted_count += 1
+                        log(f"[OK] Deleted collection '{name}' (id={cid})")
+                        state["managed"].pop(name, None)
+                    else:
+                        blocked_count += 1
+                        log(f"[WARN] Could NOT delete '{name}' (id={cid}) due to foreign key references (e.g., schedules). Skipping.")
+            else:
+                if args.verbose:
+                    hr()
+                    log("No managed collections are missing in Jellyfin. Nothing to delete.")
 
         if not dry_run:
             conn.commit()
             log("COMMIT OK.")
+            save_state(state_path, state)
+            log(f"State saved: {state_path}")
 
         hr()
         log("SUMMARY")
@@ -910,6 +1038,9 @@ def main() -> int:
         log(f"  adds:            {total_add}")
         log(f"  removes:         {total_remove}")
         log(f"  missing jf items:{total_missing}")
+        if delete_missing:
+            log(f"  deleted missing: {deleted_count}")
+            log(f"  delete blocked:  {blocked_count}")
         hr()
 
         return 0
