@@ -151,6 +151,8 @@ services:
       - "E:/Grabaciones:/recordings"
       # SCRIPTS
       - "E:/Docker_folders/jellifyn/scripts:/scripts"
+      # IPTV
+      - "E:/Docker_folders/_iptv/streaming:/live-tv"
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://localhost:8096/health"]
@@ -791,6 +793,48 @@ services:
       - "F:/Podcasts:/media_podcast2:ro"
     tmpfs:
       - /transcode
+
+  # --------------------------------------------------------
+  # --- tunarr
+  # --- Creador de canales IPTV / HDHomeRun desde Jellyfin o media local
+  # --- Ports: 8000 (Web UI + API)
+  # --------------------------------------------------------
+  tunarr:
+    image: ghcr.io/chrisbenincasa/tunarr:latest
+    container_name: tunarr
+    restart: unless-stopped
+    depends_on:
+      - jellyfin
+    ports:
+      - "127.0.0.1:8003:8000"
+    environment:
+      - TZ=Europe/Madrid
+      - TUNARR_LOG_LEVEL=${TUNARR_LOG_LEVEL:-info}
+      - TUNARR_SERVER_TRUST_PROXY=false
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,video,utility
+    volumes:
+      # Persistencia obligatoria de Tunarr
+      - "E:/Docker_folders/tunarr/config:/config/tunarr"
+
+      # Media local completa
+      - "E:/:/media_e:ro"
+      - "F:/:/media_f:ro"
+    tmpfs:
+      - /tmp
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD-SHELL", "(command -v wget >/dev/null 2>&1 && wget -qO- http://localhost:8000/ >/dev/null 2>&1) || (command -v curl >/dev/null 2>&1 && curl -fsS http://localhost:8000/ >/dev/null) || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
 
   nextpvr:
     image: nextpvr/nextpvr_amd64:latest
