@@ -2066,6 +2066,19 @@ services:
       - "E:/Docker_folders/epg:/data/epgs:ro"
     restart: unless-stopped
 
+  dispatcharr-ip-exporter:
+    image: alpine:3.20
+    container_name: dispatcharr-ip-exporter
+    network_mode: "service:vpn-stable"
+    depends_on:
+      vpn-stable:
+        condition: service_healthy
+    command: ["/bin/sh", "/scripts/write-source-ip-loop.sh"]
+    volumes:
+      - "E:/Docker_folders/dispatcharr/scripts:/scripts:ro"
+      - "E:/Docker_folders/streaming2/player:/shared-player"
+    restart: unless-stopped
+
 
   iptvnator-backend:
     image: 4gray/iptvnator-backend:latest
